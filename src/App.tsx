@@ -110,61 +110,73 @@ function App() {
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab}>
       {activeTab === 'home' && (
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <HealthWidget
-            current={data.hp.current}
-            max={data.hp.max}
-            onChange={updateHealth}
-          />
+        <div className="animate-fade-in">
+          <div className="animate-slide-up stagger-1">
+            <HealthWidget
+              current={data.hp.current}
+              max={data.hp.max}
+              onChange={updateHealth}
+            />
+          </div>
 
-          <ArmorClassWidget
-            baseAC={data.baseAC}
-            mageArmour={data.mageArmour}
-            hasShield={data.shield}
-            onToggle={updateAC}
-          />
+          <div className="animate-slide-up stagger-2">
+            <ArmorClassWidget
+              baseAC={data.baseAC}
+              mageArmour={data.mageArmour}
+              hasShield={data.shield}
+              onToggle={updateAC}
+            />
+          </div>
 
-          <SpellSlotsWidget
-            slots={data.slots}
-            onChange={updateSpellSlot}
-          />
+          <div className="animate-slide-up stagger-3">
+            <SpellSlotsWidget
+              slots={data.slots}
+              onChange={updateSpellSlot}
+            />
+          </div>
 
-          <DeathSavesWidget
-            successes={data.deathSaves.successes}
-            failures={data.deathSaves.failures}
-            onChange={updateDeathSaves}
+          <div className="animate-slide-up stagger-4">
+            <DeathSavesWidget
+              successes={data.deathSaves.successes}
+              failures={data.deathSaves.failures}
+              onChange={updateDeathSaves}
+            />
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'spells' && <div className="animate-fade-in"><SpellsView /></div>}
+
+      {activeTab === 'combat' && (
+        <div className="animate-fade-in">
+          <CombatView
+            minions={minions}
+            onAddMinion={addMinion}
+            onUpdateMinion={updateMinion}
+            onRemoveMinion={removeMinion}
+            onClearMinions={clearMinions}
           />
         </div>
       )}
 
-      {activeTab === 'spells' && <SpellsView />}
+      {activeTab === 'grimoire' && <div className="animate-fade-in"><GrimoireView /></div>}
 
-      {activeTab === 'combat' && (
-        <CombatView
-          minions={minions}
-          onAddMinion={addMinion}
-          onUpdateMinion={updateMinion}
-          onRemoveMinion={removeMinion}
-          onClearMinions={clearMinions}
-        />
-      )}
-
-      {activeTab === 'grimoire' && <GrimoireView />}
-
-      {activeTab === 'bio' && <BiographyView />}
+      {activeTab === 'bio' && <div className="animate-fade-in"><BiographyView /></div>}
 
       {activeTab === 'settings' && (
-        <ErrorBoundary>
-          <CharacterView data={data} />
-          <div className="mt-8 border-t border-gray-800 pt-8">
-            <RestView onShortRest={handleShortRest} onLongRest={handleLongRest} />
-          </div>
-        </ErrorBoundary>
+        <div className="animate-fade-in">
+          <ErrorBoundary>
+            <CharacterView data={data} />
+            <div className="mt-8 border-t border-gray-800 pt-8">
+              <RestView onShortRest={handleShortRest} onLongRest={handleLongRest} />
+            </div>
+          </ErrorBoundary>
+        </div>
       )}
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-accent/90 text-white px-6 py-3 rounded-lg shadow-xl shadow-accent/20 z-[100] animate-in fade-in slide-in-from-bottom-4 font-display text-sm uppercase tracking-widest border border-accent/50">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-accent/90 text-white px-6 py-3 rounded-lg shadow-xl shadow-accent/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-accent/50">
           {toast}
         </div>
       )}
