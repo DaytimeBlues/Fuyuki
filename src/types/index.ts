@@ -65,4 +65,11 @@ export interface CharacterData {
         [key: string]: MinionStats;
     };
     concentration: string | null; // Currently concentrating on this spell
+    attunement: string[]; // Max 3 attuned magic items
+    transformed: { // Wild Shape / Polymorph state
+        active: boolean;
+        creatureName: string;
+        hp: { current: number; max: number };
+        ac: number;
+    } | null;
 }

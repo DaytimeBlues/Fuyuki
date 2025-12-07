@@ -6,6 +6,8 @@ import { ArmorClassWidget } from './components/widgets/ArmorClassWidget';
 import { SpellSlotsWidget } from './components/widgets/SpellSlotsWidget';
 import { DeathSavesWidget } from './components/widgets/DeathSavesWidget';
 import { ConcentrationWidget } from './components/widgets/ConcentrationWidget';
+import { AttunementWidget } from './components/widgets/AttunementWidget';
+import { WildShapeWidget } from './components/widgets/WildShapeWidget';
 import { SpellsView } from './components/views/SpellsView';
 import { CharacterView } from './components/views/CharacterView';
 import { CombatView } from './components/views/CombatView';
@@ -38,6 +40,12 @@ function App() {
           current: Math.max(0, prev.hp.current - remainingDamage)
         }
       }));
+
+      // CON save for concentration when taking damage (RAW: DC = max(10, damage/2))
+      if (data.concentration && remainingDamage > 0) {
+        const conSaveDC = Math.max(10, Math.floor(damage / 2));
+        showToast(`CON Save DC ${conSaveDC} to maintain ${data.concentration}`);
+      }
     } else {
       // Healing - only affects current HP, not THP
       setData(prev => ({
@@ -194,12 +202,80 @@ function App() {
             onRemoveMinion={removeMinion}
             onClearMinions={clearMinions}
           />
+          <WildShapeWidget
+            transformed={data.transformed}
+            originalHP={data.hp.current}
+            onTransform={(creature) => setData(prev => ({
+              ...prev,
+              transformed: {
+                active: true,
+                creatureName: creature.name,
+                hp: { current: creature.hp, max: creature.hp },
+                ac: creature.ac
+              }
+            }))}
+            onDamage={(damage) => {
+              if (!data.transformed) return { revert: false, carryoverDamage: 0 };
+              const newHP = data.transformed.hp.current - damage;
+              if (newHP <= 0) {
+                const carryover = Math.abs(newHP);
+                setData(prev => ({ ...prev, transformed: null }));
+                if (carryover > 0) {
+                  updateHealth(data.hp.current - carryover);
+                  showToast(`Reverted! ${carryover} damage carried over`);
+                } else {
+                  showToast('Wild Shape ended');
+                }
+                return { revert: true, carryoverDamage: carryover };
+              }
+              setData(prev => ({
+                ...prev,
+                transformed: prev.transformed ? {
+                  ...prev.transformed,
+                  hp: { ...prev.transformed.hp, current: newHP }
+                } : null
+              }));
+              return { revert: false, carryoverDamage: 0 };
+            }}
+            onRevert={() => {
+              setData(prev => ({ ...prev, transformed: null }));
+              showToast('Wild Shape ended');
+            }}
+            onHeal={(amount) => setData(prev => ({
+              ...prev,
+              transformed: prev.transformed ? {
+                ...prev.transformed,
+                hp: {
+                  ...prev.transformed.hp,
+                  current: Math.min(prev.transformed.hp.max, prev.transformed.hp.current + amount)
+                }
+              } : null
+            }))}
+          />
         </div>
       )}
 
       {activeTab === 'grimoire' && <div className="animate-fade-in"><GrimoireView /></div>}
 
-      {activeTab === 'bio' && <div className="animate-fade-in"><BiographyView /></div>}
+      {activeTab === 'bio' && (
+        <div className="animate-fade-in">
+          <BiographyView />
+          <AttunementWidget
+            items={data.attunement}
+            onAdd={(item) => {
+              if (data.attunement.length < 3) {
+                setData(prev => ({ ...prev, attunement: [...prev.attunement, item] }));
+              } else {
+                showToast('Maximum 3 attuned items!');
+              }
+            }}
+            onRemove={(index) => setData(prev => ({
+              ...prev,
+              attunement: prev.attunement.filter((_, i) => i !== index)
+            }))}
+          />
+        </div>
+      )}
 
       {activeTab === 'settings' && (
         <div className="animate-fade-in">

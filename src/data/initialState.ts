@@ -45,5 +45,7 @@ export const initialCharacterData: CharacterData = {
         Skeleton: { hp: 13, ac: 13, notes: "Shortbow (1d6+2), Shortsword (1d6+2)" },
         Zombie: { hp: 22, ac: 8, notes: "Undead Fortitude, Slam (1d6+1)" }
     },
-    concentration: null
+    concentration: null,
+    attunement: [],
+    transformed: null
 };
