@@ -8,6 +8,7 @@ import { DeathSavesWidget } from './components/widgets/DeathSavesWidget';
 import { ConcentrationWidget } from './components/widgets/ConcentrationWidget';
 import { AttunementWidget } from './components/widgets/AttunementWidget';
 import { WildShapeWidget } from './components/widgets/WildShapeWidget';
+import { MulticlassSpellSlotsWidget } from './components/widgets/MulticlassSpellSlotsWidget';
 import { SpellsView } from './components/views/SpellsView';
 import { CharacterView } from './components/views/CharacterView';
 import { CombatView } from './components/views/CombatView';
@@ -283,6 +284,14 @@ function App() {
             <CharacterView data={data} />
             <div className="mt-8 border-t border-gray-800 pt-8">
               <RestView onShortRest={handleShortRest} onLongRest={handleLongRest} />
+            </div>
+            <div className="mt-8 border-t border-gray-800 pt-8">
+              <MulticlassSpellSlotsWidget
+                onSlotsCalculated={(newSlots) => {
+                  setData(prev => ({ ...prev, slots: newSlots }));
+                  showToast('Spell slots updated!');
+                }}
+              />
             </div>
           </ErrorBoundary>
         </div>
