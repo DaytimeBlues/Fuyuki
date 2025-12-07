@@ -1,7 +1,7 @@
 import type { CharacterData } from '../types';
 
 export const initialCharacterData: CharacterData = {
-    hp: { current: 35, max: 35 },
+    hp: { current: 35, max: 35, temp: 0 },
     baseAC: 13,
     mageArmour: false,
     shield: false,
@@ -44,5 +44,6 @@ export const initialCharacterData: CharacterData = {
     defaultMinion: {
         Skeleton: { hp: 13, ac: 13, notes: "Shortbow (1d6+2), Shortsword (1d6+2)" },
         Zombie: { hp: 22, ac: 8, notes: "Undead Fortitude, Slam (1d6+1)" }
-    }
+    },
+    concentration: null
 };

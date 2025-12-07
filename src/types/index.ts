@@ -40,7 +40,7 @@ export interface Minion {
 }
 
 export interface CharacterData {
-    hp: { current: number; max: number };
+    hp: { current: number; max: number; temp: number };
     baseAC: number;
     mageArmour: boolean;
     shield: boolean;
@@ -64,4 +64,5 @@ export interface CharacterData {
     defaultMinion: {
         [key: string]: MinionStats;
     };
+    concentration: string | null; // Currently concentrating on this spell
 }

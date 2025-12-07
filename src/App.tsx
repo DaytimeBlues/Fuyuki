@@ -5,6 +5,7 @@ import { HealthWidget } from './components/widgets/HealthWidget';
 import { ArmorClassWidget } from './components/widgets/ArmorClassWidget';
 import { SpellSlotsWidget } from './components/widgets/SpellSlotsWidget';
 import { DeathSavesWidget } from './components/widgets/DeathSavesWidget';
+import { ConcentrationWidget } from './components/widgets/ConcentrationWidget';
 import { SpellsView } from './components/views/SpellsView';
 import { CharacterView } from './components/views/CharacterView';
 import { CombatView } from './components/views/CombatView';
@@ -21,9 +22,35 @@ function App() {
   const [toast, setToast] = useState<string | null>(null);
 
   const updateHealth = (newCurrent: number) => {
+    const delta = newCurrent - data.hp.current;
+
+    // If taking damage (negative delta), THP absorbs first per RAW
+    if (delta < 0) {
+      const damage = Math.abs(delta);
+      const tempAbsorbed = Math.min(data.hp.temp, damage);
+      const remainingDamage = damage - tempAbsorbed;
+
+      setData(prev => ({
+        ...prev,
+        hp: {
+          ...prev.hp,
+          temp: prev.hp.temp - tempAbsorbed,
+          current: Math.max(0, prev.hp.current - remainingDamage)
+        }
+      }));
+    } else {
+      // Healing - only affects current HP, not THP
+      setData(prev => ({
+        ...prev,
+        hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) }
+      }));
+    }
+  };
+
+  const updateTempHP = (newTemp: number) => {
     setData(prev => ({
       ...prev,
-      hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) }
+      hp: { ...prev.hp, temp: Math.max(0, newTemp) }
     }));
   };
 
@@ -97,7 +124,7 @@ function App() {
   const handleLongRest = () => {
     setData(prev => ({
       ...prev,
-      hp: { ...prev.hp, current: prev.hp.max },
+      hp: { ...prev.hp, current: prev.hp.max, temp: 0 },
       slots: Object.fromEntries(Object.entries(prev.slots).map(([k, v]) => [k, { ...v, used: 0 }])),
       mageArmour: false,
       shield: false,
@@ -115,13 +142,16 @@ function App() {
             <HealthWidget
               current={data.hp.current}
               max={data.hp.max}
+              temp={data.hp.temp}
               onChange={updateHealth}
+              onTempChange={updateTempHP}
             />
           </div>
 
           <div className="animate-slide-up stagger-2">
             <ArmorClassWidget
               baseAC={data.baseAC}
+              dexMod={data.abilities.dex.mod}
               mageArmour={data.mageArmour}
               hasShield={data.shield}
               onToggle={updateAC}
@@ -136,6 +166,14 @@ function App() {
           </div>
 
           <div className="animate-slide-up stagger-4">
+            <ConcentrationWidget
+              spell={data.concentration}
+              onClear={() => setData(prev => ({ ...prev, concentration: null }))}
+              onSet={(spell) => setData(prev => ({ ...prev, concentration: spell }))}
+            />
+          </div>
+
+          <div className="animate-slide-up stagger-5">
             <DeathSavesWidget
               successes={data.deathSaves.successes}
               failures={data.deathSaves.failures}

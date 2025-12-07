@@ -2,13 +2,18 @@ import { Shield } from 'lucide-react';
 
 interface ArmorClassWidgetProps {
     baseAC: number;
+    dexMod: number; // Added: DEX modifier for Mage Armor calculation
     mageArmour: boolean;
     hasShield: boolean;
     onToggle: (key: 'mageArmour' | 'shield') => void;
 }
 
-export function ArmorClassWidget({ baseAC, mageArmour, hasShield, onToggle }: ArmorClassWidgetProps) {
-    const currentAC = baseAC + (mageArmour ? 2 : 0) + (hasShield ? 5 : 0);
+export function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onToggle }: ArmorClassWidgetProps) {
+    // RAW: Mage Armor sets base AC to 13 + DEX (replaces worn armor, mutually exclusive)
+    // Shield (spell) adds +5 AC (stacks with base)
+    const mageArmorAC = 13 + dexMod;
+    const effectiveBaseAC = mageArmour ? mageArmorAC : baseAC;
+    const currentAC = effectiveBaseAC + (hasShield ? 5 : 0);
 
     return (
         <div className="card-parchment p-4 mb-4">
@@ -37,8 +42,8 @@ export function ArmorClassWidget({ baseAC, mageArmour, hasShield, onToggle }: Ar
                         </div>
                         <div
                             className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${mageArmour
-                                    ? 'bg-accent border-accent'
-                                    : 'border-parchment-dark/50 hover:border-accent/50'
+                                ? 'bg-accent border-accent'
+                                : 'border-parchment-dark/50 hover:border-accent/50'
                                 }`}
                         >
                             {mageArmour && <div className="w-2 h-2 rounded-sm bg-bg-dark" />}
@@ -61,8 +66,8 @@ export function ArmorClassWidget({ baseAC, mageArmour, hasShield, onToggle }: Ar
                         </div>
                         <div
                             className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${hasShield
-                                    ? 'bg-accent border-accent'
-                                    : 'border-parchment-dark/50 hover:border-accent/50'
+                                ? 'bg-accent border-accent'
+                                : 'border-parchment-dark/50 hover:border-accent/50'
                                 }`}
                         >
                             {hasShield && <div className="w-2 h-2 rounded-sm bg-bg-dark" />}
