@@ -66,6 +66,7 @@ export interface CharacterData {
     };
     concentration: string | null; // Currently concentrating on this spell
     attunement: string[]; // Max 3 attuned magic items
+    inventory: string[]; // General inventory items
     transformed: { // Wild Shape / Polymorph state
         active: boolean;
         creatureName: string;

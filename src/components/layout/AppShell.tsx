@@ -89,7 +89,7 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
                 </header>
 
                 {/* Main Content */}
-                <main className="pt-24 px-4 pb-28 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto relative z-10">
+                <main className="pt-24 px-4 pb-40 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto relative z-10">
                     {children}
                 </main>
 

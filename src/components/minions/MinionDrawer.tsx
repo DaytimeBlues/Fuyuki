@@ -57,8 +57,12 @@ export function MinionDrawer({
                                 Release All
                             </button>
                         )}
-                        <button onClick={onClose} className="p-2 hover:bg-parchment-dark/20 rounded-full mt-2 transition-colors">
-                            <X size={20} className="text-muted hover:text-parchment-light" />
+                        <button 
+                            onClick={onClose} 
+                            className="flex items-center gap-1 p-2 hover:bg-parchment-dark/20 rounded-full mt-2 transition-colors group"
+                        >
+                            <span className="text-xs text-muted group-hover:text-parchment-light font-display uppercase tracking-wider hidden sm:inline">Close</span>
+                            <X size={20} className="text-muted group-hover:text-parchment-light" />
                         </button>
                     </div>
                 </div>
