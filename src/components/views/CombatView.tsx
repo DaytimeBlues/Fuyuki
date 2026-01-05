@@ -161,7 +161,8 @@ export function CombatView({
                                 <h2 className="text-xl font-display text-parchment-light">{selectedStatBlock.name}</h2>
                                 <p className="text-xs text-muted italic">{selectedStatBlock.type}</p>
                             </div>
-                            <button onClick={() => setSelectedStatBlock(null)} className="text-muted hover:text-accent transition-colors">
+                            <button onClick={() => setSelectedStatBlock(null)} className="flex items-center gap-1 text-muted hover:text-accent transition-colors">
+                                <span className="text-xs font-display uppercase tracking-wider">Close</span>
                                 <X size={24} />
                             </button>
                         </div>

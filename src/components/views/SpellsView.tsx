@@ -31,8 +31,9 @@ export function SpellsView() {
                         {/* Close Button */}
                         <button
                             onClick={() => setSelectedSpell(null)}
-                            className="absolute top-4 right-4 text-muted hover:text-accent transition-colors z-10"
+                            className="absolute top-4 right-4 flex items-center gap-1 text-muted hover:text-accent transition-colors z-10"
                         >
+                            <span className="text-xs font-display uppercase tracking-wider">Close</span>
                             <X size={24} />
                         </button>
 
@@ -122,12 +123,12 @@ const SpellList = ({ title, list, onSelect }: { title: string, list: Spell[], on
                     onClick={() => onSelect(spell)}
                     className="w-full text-left card-parchment p-3 hover:border-accent/50 transition-all group"
                 >
-                    <div className="flex justify-between items-center relative z-10">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded bg-card-elevated flex items-center justify-center border border-parchment-dark/20 group-hover:border-accent/30 transition-colors">
+                    <div className="flex justify-between items-center relative z-10 min-w-0">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="w-8 h-8 rounded bg-card-elevated flex items-center justify-center border border-parchment-dark/20 group-hover:border-accent/30 transition-colors shrink-0">
                                 <Scroll size={14} className="text-muted group-hover:text-accent transition-colors" />
                             </div>
-                            <span className="font-display text-parchment group-hover:text-parchment-light transition-colors">
+                            <span className="font-display text-parchment group-hover:text-parchment-light transition-colors truncate pr-2">
                                 {spell.name}
                             </span>
                         </div>

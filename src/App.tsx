@@ -7,6 +7,7 @@ import { SpellSlotsWidget } from './components/widgets/SpellSlotsWidget';
 import { DeathSavesWidget } from './components/widgets/DeathSavesWidget';
 import { ConcentrationWidget } from './components/widgets/ConcentrationWidget';
 import { AttunementWidget } from './components/widgets/AttunementWidget';
+import { InventoryWidget } from './components/widgets/InventoryWidget';
 import { WildShapeWidget } from './components/widgets/WildShapeWidget';
 import { MulticlassSpellSlotsWidget } from './components/widgets/MulticlassSpellSlotsWidget';
 import { SpellsView } from './components/views/SpellsView';
@@ -273,6 +274,14 @@ function App() {
             onRemove={(index) => setData(prev => ({
               ...prev,
               attunement: prev.attunement.filter((_, i) => i !== index)
+            }))}
+          />
+          <InventoryWidget
+            items={data.inventory || []}
+            onAdd={(item) => setData(prev => ({ ...prev, inventory: [...(prev.inventory || []), item] }))}
+            onRemove={(index) => setData(prev => ({
+              ...prev,
+              inventory: (prev.inventory || []).filter((_, i) => i !== index)
             }))}
           />
         </div>
