@@ -308,7 +308,7 @@ function App() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-accent/90 text-white px-6 py-3 rounded-lg shadow-xl shadow-accent/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-accent/50">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
           {toast}
         </div>
       )}

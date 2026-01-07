@@ -17,7 +17,7 @@ export function ConcentrationWidget({ spell, onClear, onSet }: ConcentrationWidg
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                    <Eye size={18} className={spell ? 'text-purple-400' : 'text-muted'} />
+                    <Eye size={18} className={spell ? 'text-white' : 'text-muted'} />
                     <h3 className="font-display text-sm text-parchment tracking-wider">Concentration</h3>
                 </div>
                 {spell && (
@@ -33,10 +33,10 @@ export function ConcentrationWidget({ spell, onClear, onSet }: ConcentrationWidg
 
             {spell ? (
                 <div className="flex items-center gap-3">
-                    <div className="flex-1 bg-purple-500/10 border border-purple-500/30 rounded-lg px-3 py-2">
+                    <div className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                            <span className="text-sm text-purple-300 font-display">{spell}</span>
+                            <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                            <span className="text-sm text-white font-display">{spell}</span>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@ export function ConcentrationWidget({ spell, onClear, onSet }: ConcentrationWidg
                             <button
                                 key={s}
                                 onClick={() => onSet(s)}
-                                className="text-[10px] px-2 py-1 bg-card-elevated border border-parchment-dark/30 rounded text-muted hover:text-accent hover:border-accent/50 transition-colors"
+                                className="text-[10px] px-2 py-1 bg-card-elevated border border-white/10 rounded text-muted hover:text-white hover:border-white/30 transition-colors"
                             >
                                 {s}
                             </button>

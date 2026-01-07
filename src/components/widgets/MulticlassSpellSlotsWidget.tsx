@@ -73,29 +73,29 @@ export function MulticlassSpellSlotsWidget({ onSlotsCalculated }: MulticlassSpel
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                    <BookOpen size={18} className="text-blue-400" />
+                    <BookOpen size={18} className="text-white" />
                     <h3 className="font-display text-sm text-parchment tracking-wider">
                         Multiclass Spellcasting
                     </h3>
                 </div>
                 <button
                     onClick={() => setShowConfig(!showConfig)}
-                    className="text-xs text-accent hover:text-accent/80"
+                    className="text-xs text-white hover:text-white/80"
                 >
                     {showConfig ? 'Hide' : 'Configure'}
                 </button>
             </div>
 
             {/* Summary */}
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mb-3">
+            <div className="bg-white/10 border border-white/20 rounded-lg p-3 mb-3">
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-xs text-muted">Classes</p>
-                        <p className="text-sm text-blue-300">{formatClassLevels(classLevels)}</p>
+                        <p className="text-sm text-white">{formatClassLevels(classLevels)}</p>
                     </div>
                     <div className="text-right">
                         <p className="text-xs text-muted">Caster Level</p>
-                        <p className="text-2xl font-display text-blue-300">{casterLevel}</p>
+                        <p className="text-2xl font-display text-white">{casterLevel}</p>
                     </div>
                 </div>
             </div>
@@ -103,7 +103,7 @@ export function MulticlassSpellSlotsWidget({ onSlotsCalculated }: MulticlassSpel
             {/* Calculated Slots Preview */}
             <div className="flex flex-wrap gap-2 mb-3">
                 {Object.entries(slots).map(([level, max]) => (
-                    <div key={level} className="text-center bg-card-elevated rounded px-2 py-1">
+                    <div key={level} className="text-center bg-card-elevated rounded px-2 py-1 border border-white/10">
                         <p className="text-[10px] text-muted">Lv{level}</p>
                         <p className="text-sm text-parchment">{max}</p>
                     </div>
@@ -112,7 +112,7 @@ export function MulticlassSpellSlotsWidget({ onSlotsCalculated }: MulticlassSpel
 
             {/* Configuration Panel */}
             {showConfig && (
-                <div className="border-t border-parchment-dark/20 pt-3 space-y-3">
+                <div className="border-t border-white/10 pt-3 space-y-3">
                     {classLevels.map((cl, index) => (
                         <div key={index} className="flex items-center gap-2">
                             <select
@@ -125,7 +125,7 @@ export function MulticlassSpellSlotsWidget({ onSlotsCalculated }: MulticlassSpel
                                         ));
                                     }
                                 }}
-                                className="flex-1 bg-card-elevated border border-parchment-dark/30 rounded px-2 py-1 text-sm text-parchment"
+                                className="flex-1 bg-card-elevated border border-white/10 rounded px-2 py-1 text-sm text-parchment focus:outline-none focus:border-white/30"
                             >
                                 {CASTER_CLASSES.map(c => (
                                     <option key={c.name} value={c.name}>{c.name}</option>
@@ -174,7 +174,7 @@ export function MulticlassSpellSlotsWidget({ onSlotsCalculated }: MulticlassSpel
                         </button>
                         <button
                             onClick={handleApply}
-                            className="flex-1 btn-fantasy text-xs py-2 bg-accent/20"
+                            className="flex-1 btn-fantasy text-xs py-2 bg-white/20"
                         >
                             <RefreshCw size={12} className="inline mr-1" />
                             Apply Slots

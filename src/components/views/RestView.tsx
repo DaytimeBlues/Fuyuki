@@ -11,7 +11,7 @@ export function RestView({ onShortRest, onLongRest }: RestViewProps) {
             <div className="text-center mb-10">
                 <div className="relative inline-block mb-4">
                     <Tent size={48} className="text-parchment" />
-                    <Sparkles size={16} className="text-accent absolute -top-1 -right-1 animate-pulse" />
+                    <Sparkles size={16} className="text-white absolute -top-1 -right-1 animate-pulse" />
                 </div>
                 <h2 className="font-display text-2xl text-parchment-light tracking-wider mb-2">Rest & Recovery</h2>
                 <p className="text-sm text-muted max-w-xs mx-auto">
@@ -23,14 +23,14 @@ export function RestView({ onShortRest, onLongRest }: RestViewProps) {
                 {/* Short Rest */}
                 <button
                     onClick={onShortRest}
-                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_20px_rgba(212,184,150,0.1)]"
+                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                 >
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="p-3 bg-card-elevated rounded-full border border-parchment-dark/30 group-hover:border-accent/50 transition-colors">
-                            <Sun size={24} className="text-parchment group-hover:text-accent transition-colors" />
+                        <div className="p-3 bg-card-elevated rounded-full border border-white/10 group-hover:border-white/30 transition-colors">
+                            <Sun size={24} className="text-parchment group-hover:text-white transition-colors" />
                         </div>
                         <div>
-                            <h3 className="font-display text-lg text-parchment-light group-hover:text-accent transition-colors tracking-wider">
+                            <h3 className="font-display text-lg text-parchment-light group-hover:text-white transition-colors tracking-wider">
                                 Short Rest
                             </h3>
                             <p className="text-xs text-muted">Use Hit Dice to heal</p>
@@ -45,14 +45,14 @@ export function RestView({ onShortRest, onLongRest }: RestViewProps) {
                             onLongRest();
                         }
                     }}
-                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_25px_rgba(34,197,94,0.15)]"
+                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_25px_rgba(255,255,255,0.08)]"
                 >
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="p-3 bg-card-elevated rounded-full border border-parchment-dark/30 group-hover:border-accent/50 group-hover:bg-accent/10 transition-colors">
-                            <Moon size={24} className="text-parchment group-hover:text-accent transition-colors" />
+                        <div className="p-3 bg-card-elevated rounded-full border border-white/10 group-hover:border-white/30 group-hover:bg-white/10 transition-colors">
+                            <Moon size={24} className="text-parchment group-hover:text-white transition-colors" />
                         </div>
                         <div>
-                            <h3 className="font-display text-lg text-parchment-light group-hover:text-accent transition-colors tracking-wider">
+                            <h3 className="font-display text-lg text-parchment-light group-hover:text-white transition-colors tracking-wider">
                                 Long Rest
                             </h3>
                             <p className="text-xs text-muted">Reset HP, Slots & Abilities</p>

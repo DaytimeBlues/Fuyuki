@@ -10,11 +10,11 @@ export function SpellSlotsWidget({ slots, onChange }: SpellSlotsWidgetProps) {
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                    <Wand2 size={18} className="text-accent" />
+                    <Wand2 size={18} className="text-white" />
                     <h3 className="font-display text-sm text-parchment tracking-wider">Spell Slots</h3>
                 </div>
                 <div className="text-xs text-muted">
-                    Save DC <span className="text-accent font-semibold">14</span>
+                    Save DC <span className="text-white font-semibold">14</span>
                 </div>
             </div>
 
@@ -47,7 +47,7 @@ export function SpellSlotsWidget({ slots, onChange }: SpellSlotsWidgetProps) {
 
                         {/* Count Display */}
                         <div className="text-xs text-muted min-w-[40px] text-right">
-                            <span className="text-accent">{max - used}</span>/{max}
+                            <span className="text-white">{max - used}</span>/{max}
                         </div>
                     </div>
                 ))}
@@ -55,4 +55,3 @@ export function SpellSlotsWidget({ slots, onChange }: SpellSlotsWidgetProps) {
         </div>
     );
 }
-

@@ -9,8 +9,8 @@ export function GrimoireView() {
         <div className="pb-20">
             {/* Header */}
             <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-accent/10 rounded-lg border border-accent/30">
-                    <BookOpen className="text-accent" size={20} />
+                <div className="p-2 bg-white/10 rounded-lg border border-white/20">
+                    <BookOpen className="text-white" size={20} />
                 </div>
                 <div>
                     <h2 className="font-display text-xl text-parchment-light tracking-wider">Grimoire</h2>
@@ -22,7 +22,7 @@ export function GrimoireView() {
                 {magicSchools.map((school) => (
                     <div
                         key={school.name}
-                        className={`card-parchment overflow-hidden transition-all duration-300 ${selectedSchool === school.name ? 'ring-1 ring-accent shadow-[0_0_20px_rgba(34,197,94,0.15)]' : ''
+                        className={`card-parchment overflow-hidden transition-all duration-300 ${selectedSchool === school.name ? 'ring-1 ring-white/30 shadow-[0_0_20px_rgba(255,255,255,0.08)]' : ''
                             }`}
                     >
                         <button
@@ -31,29 +31,29 @@ export function GrimoireView() {
                         >
                             <div className="flex items-center gap-3">
                                 <div className={`w-2.5 h-2.5 rounded-full transition-colors ${school.name === 'Necromancy'
-                                    ? 'bg-accent shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse'
-                                    : 'bg-parchment-dark/50'
+                                    ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)] animate-pulse'
+                                    : 'bg-white/30'
                                     }`} />
-                                <span className={`font-display text-base tracking-wide transition-colors ${selectedSchool === school.name ? 'text-accent' : 'text-parchment-light'
+                                <span className={`font-display text-base tracking-wide transition-colors ${selectedSchool === school.name ? 'text-white' : 'text-parchment-light'
                                     }`}>
                                     {school.name}
                                 </span>
                                 {school.name === 'Necromancy' && (
-                                    <span className="text-[9px] text-accent bg-accent/10 px-2 py-0.5 rounded-full border border-accent/20">
+                                    <span className="text-[9px] text-white bg-white/10 px-2 py-0.5 rounded-full border border-white/20">
                                         Specialty
                                     </span>
                                 )}
                             </div>
                             <ChevronRight
                                 size={18}
-                                className={`text-muted transition-all duration-300 ${selectedSchool === school.name ? 'rotate-90 text-accent' : ''
+                                className={`text-muted transition-all duration-300 ${selectedSchool === school.name ? 'rotate-90 text-white' : ''
                                     }`}
                             />
                         </button>
 
                         {selectedSchool === school.name && (
                             <div className="px-4 pb-4 relative z-10">
-                                <div className="border-l-2 border-accent/30 pl-4 mb-4">
+                                <div className="border-l-2 border-white/20 pl-4 mb-4">
                                     <p className="text-sm text-parchment leading-relaxed">
                                         {school.description}
                                     </p>
@@ -61,16 +61,16 @@ export function GrimoireView() {
 
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-2">
-                                        <Crown size={14} className="text-accent" />
+                                        <Crown size={14} className="text-white" />
                                         <h4 className="text-xs font-display text-parchment-light uppercase tracking-widest">
                                             Famous Practitioners
                                         </h4>
                                     </div>
                                     {school.famousWizards.map((wizard) => (
-                                        <div key={wizard.name} className="bg-card-elevated/60 rounded-lg p-3 border border-parchment-dark/20">
+                                        <div key={wizard.name} className="bg-card-elevated/60 rounded-lg p-3 border border-white/10">
                                             <div className="flex justify-between items-start mb-1">
                                                 <span className="text-sm font-display text-parchment-light">{wizard.name}</span>
-                                                <span className="text-[9px] text-accent/70 uppercase tracking-wider">{wizard.title}</span>
+                                                <span className="text-[9px] text-white/60 uppercase tracking-wider">{wizard.title}</span>
                                             </div>
                                             <p className="text-xs text-muted italic">"{wizard.desc}"</p>
                                         </div>

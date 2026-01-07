@@ -50,7 +50,7 @@ export function WildShapeWidget({
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                    <Sparkles size={18} className={transformed ? 'text-green-400' : 'text-muted'} />
+                    <Sparkles size={18} className={transformed ? 'text-white' : 'text-muted'} />
                     <h3 className="font-display text-sm text-parchment tracking-wider">Wild Shape</h3>
                 </div>
                 {transformed && (
@@ -67,23 +67,23 @@ export function WildShapeWidget({
             {transformed ? (
                 <div className="space-y-3">
                     {/* Creature Info */}
-                    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                    <div className="bg-white/10 border border-white/20 rounded-lg p-3">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="font-display text-green-300">{transformed.creatureName}</span>
+                            <span className="font-display text-white">{transformed.creatureName}</span>
                             <span className="text-xs text-muted">AC {transformed.ac}</span>
                         </div>
 
                         {/* HP Bar */}
                         <div className="flex items-center gap-3">
                             <div className="flex-1">
-                                <div className="h-2 bg-card-elevated rounded-full overflow-hidden">
+                                <div className="h-2 bg-card-elevated rounded-full overflow-hidden border border-white/10">
                                     <div
-                                        className="h-full bg-green-500 transition-all"
+                                        className="h-full bg-white transition-all"
                                         style={{ width: `${(transformed.hp.current / transformed.hp.max) * 100}%` }}
                                     />
                                 </div>
                             </div>
-                            <span className="text-sm text-green-300">
+                            <span className="text-sm text-white">
                                 {transformed.hp.current}/{transformed.hp.max}
                             </span>
                         </div>
@@ -97,7 +97,7 @@ export function WildShapeWidget({
                             value={damageInput}
                             onChange={(e) => setDamageInput(e.target.value)}
                             placeholder="Damage"
-                            className="flex-1 bg-card-elevated border border-parchment-dark/30 rounded px-2 py-1 text-sm text-parchment text-center"
+                            className="flex-1 bg-card-elevated border border-white/10 rounded px-2 py-1 text-sm text-parchment text-center focus:outline-none focus:border-white/30"
                         />
                         <button
                             onClick={handleDamage}
@@ -111,7 +111,7 @@ export function WildShapeWidget({
                                 if (heal > 0) onHeal(heal);
                                 setDamageInput('');
                             }}
-                            className="btn-fantasy text-xs px-2 py-1 text-green-400"
+                            className="btn-fantasy text-xs px-2 py-1 text-white"
                         >
                             <Plus size={14} />
                         </button>
@@ -129,7 +129,7 @@ export function WildShapeWidget({
                             <button
                                 key={beast.name}
                                 onClick={() => onTransform(beast)}
-                                className="text-left p-2 bg-card-elevated border border-parchment-dark/30 rounded hover:border-green-500/50 transition-colors"
+                                className="text-left p-2 bg-card-elevated border border-white/10 rounded hover:border-white/30 transition-colors"
                             >
                                 <div className="text-xs text-parchment">{beast.name}</div>
                                 <div className="text-[10px] text-muted">

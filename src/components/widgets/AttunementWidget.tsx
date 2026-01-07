@@ -37,7 +37,7 @@ export function AttunementWidget({ items, onAdd, onRemove }: AttunementWidgetPro
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                    <Gem size={18} className="text-purple-400" />
+                    <Gem size={18} className="text-white" />
                     <h3 className="font-display text-sm text-parchment tracking-wider">Attunement</h3>
                 </div>
                 <span className={`text-xs ${slotsUsed >= MAX_ATTUNEMENT ? 'text-red-400' : 'text-muted'}`}>
@@ -53,9 +53,9 @@ export function AttunementWidget({ items, onAdd, onRemove }: AttunementWidgetPro
                     items.map((item, index) => (
                         <div
                             key={index}
-                            className="flex items-center justify-between bg-purple-500/10 border border-purple-500/30 rounded px-3 py-2"
+                            className="flex items-center justify-between bg-white/10 border border-white/20 rounded px-3 py-2"
                         >
-                            <span className="text-sm text-purple-300">{item}</span>
+                            <span className="text-sm text-white">{item}</span>
                             <button
                                 onClick={() => onRemove(index)}
                                 className="text-red-400 hover:text-red-300"
@@ -69,7 +69,7 @@ export function AttunementWidget({ items, onAdd, onRemove }: AttunementWidgetPro
 
             {/* Add New Item */}
             {canAdd && (
-                <div className="border-t border-parchment-dark/20 pt-3">
+                <div className="border-t border-white/10 pt-3">
                     <div className="flex gap-2">
                         <input
                             type="text"
@@ -80,7 +80,7 @@ export function AttunementWidget({ items, onAdd, onRemove }: AttunementWidgetPro
                             }}
                             onFocus={() => setShowSuggestions(true)}
                             placeholder="Add magic item..."
-                            className="flex-1 bg-card-elevated border border-parchment-dark/30 rounded px-3 py-2 text-sm text-parchment"
+                            className="flex-1 bg-card-elevated border border-white/10 rounded px-3 py-2 text-sm text-parchment focus:outline-none focus:border-white/30"
                         />
                         <button
                             onClick={() => handleAdd(inputValue)}
@@ -98,7 +98,7 @@ export function AttunementWidget({ items, onAdd, onRemove }: AttunementWidgetPro
                                 <button
                                     key={item}
                                     onClick={() => handleAdd(item)}
-                                    className="text-[10px] px-2 py-1 bg-card-elevated border border-parchment-dark/30 rounded text-muted hover:text-accent hover:border-accent/50 transition-colors"
+                                    className="text-[10px] px-2 py-1 bg-card-elevated border border-white/10 rounded text-muted hover:text-white hover:border-white/30 transition-colors"
                                 >
                                     {item}
                                 </button>
