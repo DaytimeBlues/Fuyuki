@@ -46,6 +46,16 @@ export interface CharacterData {
     shield: boolean;
     dc: number;
     profBonus: number;
+    initiative: number;
+    hitDice: { current: number; max: number; dieType: number };
+    savingThrows: {
+        str: number;
+        dex: number;
+        con: number;
+        int: number;
+        wis: number;
+        cha: number;
+    };
     deathSaves: { successes: number; failures: number };
     abilities: {
         str: Ability;

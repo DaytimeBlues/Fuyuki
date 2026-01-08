@@ -7,6 +7,16 @@ export const initialCharacterData: CharacterData = {
     shield: false,
     dc: 14,
     profBonus: 3,
+    initiative: 2,
+    hitDice: { current: 5, max: 5, dieType: 6 },
+    savingThrows: {
+        str: -1,
+        dex: 2,
+        con: 2,
+        int: 8,
+        wis: 5,
+        cha: 0
+    },
     deathSaves: { successes: 0, failures: 0 },
     abilities: {
         str: { score: 8, mod: -1 },
