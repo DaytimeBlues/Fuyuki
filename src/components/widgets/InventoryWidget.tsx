@@ -21,7 +21,7 @@ export function InventoryWidget({ items, onAdd, onRemove }: InventoryWidgetProps
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                    <Backpack size={18} className="text-amber-600" />
+                    <Backpack size={18} className="text-white" />
                     <h3 className="font-display text-sm text-parchment tracking-wider">Inventory</h3>
                 </div>
                 <span className="text-xs text-muted">
@@ -29,7 +29,7 @@ export function InventoryWidget({ items, onAdd, onRemove }: InventoryWidgetProps
                 </span>
             </div>
 
-            {/* Inventory Items */}
+            {/* Inventory Items - Scrollable */}
             <div className="space-y-2 mb-3 max-h-60 overflow-y-auto pr-1">
                 {items.length === 0 ? (
                     <p className="text-xs text-muted italic">Empty backpack...</p>
@@ -37,7 +37,7 @@ export function InventoryWidget({ items, onAdd, onRemove }: InventoryWidgetProps
                     items.map((item, index) => (
                         <div
                             key={index}
-                            className="flex items-center justify-between bg-card-elevated border border-parchment-dark/30 rounded px-3 py-2 group hover:border-accent/30 transition-colors"
+                            className="flex items-center justify-between bg-card-elevated border border-white/10 rounded px-3 py-2 group hover:border-white/30 transition-colors"
                         >
                             <span className="text-sm text-parchment-light">{item}</span>
                             <button
@@ -53,7 +53,7 @@ export function InventoryWidget({ items, onAdd, onRemove }: InventoryWidgetProps
             </div>
 
             {/* Add New Item */}
-            <div className="border-t border-parchment-dark/20 pt-3">
+            <div className="border-t border-white/10 pt-3">
                 <div className="flex gap-2">
                     <input
                         type="text"
@@ -63,7 +63,7 @@ export function InventoryWidget({ items, onAdd, onRemove }: InventoryWidgetProps
                             if (e.key === 'Enter') handleAdd(inputValue);
                         }}
                         placeholder="Add item..."
-                        className="flex-1 bg-card-elevated border border-parchment-dark/30 rounded px-3 py-2 text-sm text-parchment placeholder-muted focus:outline-none focus:border-accent/50"
+                        className="flex-1 bg-card-elevated border border-white/10 rounded px-3 py-2 text-sm text-parchment placeholder-muted focus:outline-none focus:border-white/30"
                     />
                     <button
                         onClick={() => handleAdd(inputValue)}

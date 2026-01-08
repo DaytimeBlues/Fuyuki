@@ -27,10 +27,10 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
     return (
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center gap-2 mb-4">
-                <Skull size={18} className="text-accent" />
+                <Skull size={18} className="text-white" />
                 <h3 className="font-display text-sm text-parchment tracking-wider">Hit Points</h3>
                 {temp > 0 && (
-                    <span className="ml-auto text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">
+                    <span className="ml-auto text-xs bg-white/10 text-white px-2 py-0.5 rounded-full border border-white/20">
                         +{temp} THP
                     </span>
                 )}
@@ -50,9 +50,9 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                 {/* HP Bar and Controls */}
                 <div className="flex-1">
                     {/* Progress Bar */}
-                    <div className="h-2 bg-card-elevated rounded-full overflow-hidden mb-3 border border-parchment-dark/20">
+                    <div className="h-2 bg-card-elevated rounded-full overflow-hidden mb-3 border border-white/10">
                         <div
-                            className={`h-full transition-all duration-300 ease-out rounded-full ${isCritical ? 'bg-red-500' : isLow ? 'bg-orange-500' : 'bg-accent'
+                            className={`h-full transition-all duration-300 ease-out rounded-full ${isCritical ? 'bg-red-500' : isLow ? 'bg-orange-500' : 'bg-white'
                                 }`}
                             style={{ width: `${percentage}%` }}
                         />
@@ -77,9 +77,9 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
             </div>
 
             {/* Temporary HP Section */}
-            <div className="mt-4 pt-3 border-t border-parchment-dark/20">
+            <div className="mt-4 pt-3 border-t border-white/10">
                 <div className="flex items-center gap-2">
-                    <Shield size={14} className="text-blue-400" />
+                    <Shield size={14} className="text-white/70" />
                     <span className="text-xs text-muted">Temp HP</span>
                     <input
                         type="number"
@@ -87,7 +87,7 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                         value={tempInput}
                         onChange={(e) => setTempInput(e.target.value)}
                         placeholder={temp.toString()}
-                        className="flex-1 bg-card-elevated border border-parchment-dark/30 rounded px-2 py-1 text-sm text-parchment w-16 text-center"
+                        className="flex-1 bg-card-elevated border border-white/10 rounded px-2 py-1 text-sm text-parchment w-16 text-center focus:outline-none focus:border-white/30"
                     />
                     <button
                         onClick={handleAddTemp}
