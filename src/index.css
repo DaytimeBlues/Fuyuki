@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Gothic Fantasy Fonts */
+/* Gothic Fantasy Fonts - Optimized Loading */
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
 @theme {
@@ -175,6 +175,50 @@ h6 {
   background: rgba(200, 200, 200, 0.5);
 }
 
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+/* Hardware acceleration for smooth animations */
+.card-parchment,
+.btn-fantasy,
+.btn-primary,
+.stat-circle,
+.animate-fade-in,
+.animate-slide-up,
+.animate-slide-down,
+.animate-slide-in-right,
+.animate-slide-in-left {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* CSS Containment for better rendering performance */
+.card-parchment {
+  contain: layout style paint;
+}
+
+/* Smooth scrolling with overscroll behavior */
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch action optimization */
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* Remove tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
 /* Animations */
 @keyframes pulse-glow {
 
@@ -190,9 +234,11 @@ h6 {
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+  will-change: box-shadow;
+  transform: translate3d(0, 0, 0);
 }
 
-/* ===== Page Transitions ===== */
+/* ===== Page Transitions - Hardware Accelerated ===== */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -206,69 +252,74 @@ h6 {
 @keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translate3d(0, 20px, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slide-down {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translate3d(0, -20px, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slide-in-right {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translate3d(30px, 0, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slide-in-left {
   from {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translate3d(-30px, 0, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s ease-out forwards;
+  animation: fade-in 0.3s ease-out forwards;
+  will-change: opacity;
 }
 
 .animate-slide-up {
-  animation: slide-up 0.5s ease-out forwards;
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-slide-down {
-  animation: slide-down 0.5s ease-out forwards;
+  animation: slide-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-slide-in-right {
-  animation: slide-in-right 0.4s ease-out forwards;
+  animation: slide-in-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-slide-in-left {
-  animation: slide-in-left 0.4s ease-out forwards;
+  animation: slide-in-left 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* ===== Staggered Widget Entrance ===== */
@@ -300,15 +351,15 @@ h6 {
 /* ===== Button & Interactive Feedback ===== */
 @keyframes press-down {
   0% {
-    transform: scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 
   50% {
-    transform: scale(0.95);
+    transform: translate3d(0, 0, 0) scale(0.96);
   }
 
   100% {
-    transform: scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -316,11 +367,13 @@ h6 {
 .btn-primary {
   position: relative;
   overflow: hidden;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .btn-fantasy:active,
 .btn-primary:active {
-  animation: press-down 0.15s ease-out;
+  animation: press-down 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Ripple Effect */
@@ -349,19 +402,23 @@ h6 {
   background-position: 50%;
   transform: scale(0);
   opacity: 0;
+  will-change: transform, opacity;
 }
 
 .ripple-effect:active::after {
-  animation: ripple 0.4s ease-out;
+  animation: ripple 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ===== Card Hover Effects ===== */
 .card-parchment {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
 }
 
 .card-parchment:hover {
-  transform: translateY(-2px);
+  transform: translate3d(0, -2px, 0);
   box-shadow:
     0 8px 30px rgba(0, 0, 0, 0.7),
     0 0 50px rgba(255, 255, 255, 0.03),
@@ -372,34 +429,36 @@ h6 {
 /* ===== Drawer Animation ===== */
 @keyframes drawer-slide-up {
   from {
-    transform: translateY(100%);
+    transform: translate3d(0, 100%, 0);
     opacity: 0;
   }
 
   to {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
     opacity: 1;
   }
 }
 
 @keyframes drawer-slide-down {
   from {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
     opacity: 1;
   }
 
   to {
-    transform: translateY(100%);
+    transform: translate3d(0, 100%, 0);
     opacity: 0;
   }
 }
 
 .drawer-enter {
-  animation: drawer-slide-up 0.3s ease-out forwards;
+  animation: drawer-slide-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .drawer-exit {
-  animation: drawer-slide-down 0.3s ease-in forwards;
+  animation: drawer-slide-down 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* ===== Skeleton Loading ===== */
@@ -445,31 +504,33 @@ h6 {
 
   0%,
   100% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 
   50% {
-    transform: translateY(-6px);
+    transform: translate3d(0, -6px, 0);
   }
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* ===== Spin Animation ===== */
 @keyframes spin-slow {
   from {
-    transform: rotate(0deg);
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
 
   to {
-    transform: rotate(360deg);
+    transform: translate3d(0, 0, 0) rotate(360deg);
   }
 }
 
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
+  will-change: transform;
 }
 
 /* ===== Shake Animation (for damage/errors) ===== */
@@ -477,7 +538,7 @@ h6 {
 
   0%,
   100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   10%,
@@ -485,36 +546,38 @@ h6 {
   50%,
   70%,
   90% {
-    transform: translateX(-4px);
+    transform: translate3d(-4px, 0, 0);
   }
 
   20%,
   40%,
   60%,
   80% {
-    transform: translateX(4px);
+    transform: translate3d(4px, 0, 0);
   }
 }
 
 .animate-shake {
-  animation: shake 0.5s ease-in-out;
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  will-change: transform;
 }
 
 /* ===== Scale In (for modals/popups) ===== */
 @keyframes scale-in {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: translate3d(0, 0, 0) scale(0.92);
   }
 
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 .animate-scale-in {
-  animation: scale-in 0.3s ease-out forwards;
+  animation: scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* White Orb (for spell slots) */
