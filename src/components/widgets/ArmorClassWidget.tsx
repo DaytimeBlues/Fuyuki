@@ -12,7 +12,7 @@ interface ArmorClassWidgetProps {
 export const ArmorClassWidget = memo(function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onToggle }: ArmorClassWidgetProps) {
     // RAW: Mage Armor sets base AC to 13 + DEX (replaces worn armor, mutually exclusive)
     // Shield (spell) adds +5 AC (stacks with base)
-    const mageArmorAC = useMemo(() => 13 + dexMod, [dexMod]);
+    const mageArmorAC = 13 + dexMod; // Simple arithmetic - no useMemo needed
     const effectiveBaseAC = useMemo(() => mageArmour ? mageArmorAC : baseAC, [mageArmour, mageArmorAC, baseAC]);
     const currentAC = useMemo(() => effectiveBaseAC + (hasShield ? 5 : 0), [effectiveBaseAC, hasShield]);
 

@@ -96,21 +96,28 @@ function App() {
   }, []);
 
   const addMinion = useCallback((type: 'Skeleton' | 'Zombie') => {
-    setData(prev => {
-      const stats = prev.defaultMinion[type];
+    setMinions(prevMinions => {
+      // Count existing minions of this type for naming
+      const count = prevMinions.filter(m => m.type === type).length;
+      
+      // Get stats from data - we'll need to access data from closure
+      // This is acceptable since defaultMinion is static and doesn't change
+      const stats = data.defaultMinion[type];
+      
       const newMinion: Minion = {
         id: crypto.randomUUID(),
         type,
-        name: `${type} ${minions.filter(m => m.type === type).length + 1}`,
+        name: `${type} ${count + 1}`,
         hp: { current: stats.hp, max: stats.hp },
         ac: stats.ac,
         notes: stats.notes
       };
-      setMinions(prevMinions => [...prevMinions, newMinion]);
-      showToast(`Raised ${type}`);
-      return prev;
+      
+      return [...prevMinions, newMinion];
     });
-  }, [minions, showToast]);
+    
+    showToast(`Raised ${type}`);
+  }, [data.defaultMinion, showToast]);
 
   const updateMinion = useCallback((id: string, hp: number) => {
     setMinions(prev => prev.map(m => {

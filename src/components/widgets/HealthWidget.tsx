@@ -12,10 +12,12 @@ interface HealthWidgetProps {
 export const HealthWidget = memo(function HealthWidget({ current, max, temp, onChange, onTempChange }: HealthWidgetProps) {
     const [tempInput, setTempInput] = useState('');
     
-    // Memoize calculated values
+    // Memoize calculated percentage (more complex calculation)
     const percentage = useMemo(() => Math.min(100, Math.max(0, (current / max) * 100)), [current, max]);
-    const isLow = useMemo(() => percentage <= 25, [percentage]);
-    const isCritical = useMemo(() => current === 0, [current]);
+    
+    // Simple comparisons - no need for useMemo overhead
+    const isLow = percentage <= 25;
+    const isCritical = current === 0;
 
     // RAW: THP doesn't stack - new THP replaces old (player chooses larger)
     const handleAddTemp = useCallback(() => {
