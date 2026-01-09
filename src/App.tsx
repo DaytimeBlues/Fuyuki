@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HealthWidget } from './components/widgets/HealthWidget';
@@ -25,53 +25,60 @@ function App() {
   const [minions, setMinions] = useState<Minion[]>([]);
   const [toast, setToast] = useState<string | null>(null);
 
-  const updateHealth = (newCurrent: number) => {
-    const delta = newCurrent - data.hp.current;
+  const showToast = useCallback((message: string) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 2000);
+  }, []);
 
-    // If taking damage (negative delta), THP absorbs first per RAW
-    if (delta < 0) {
-      const damage = Math.abs(delta);
-      const tempAbsorbed = Math.min(data.hp.temp, damage);
-      const remainingDamage = damage - tempAbsorbed;
+  const updateHealth = useCallback((newCurrent: number) => {
+    setData(prev => {
+      const delta = newCurrent - prev.hp.current;
 
-      setData(prev => ({
-        ...prev,
-        hp: {
-          ...prev.hp,
-          temp: prev.hp.temp - tempAbsorbed,
-          current: Math.max(0, prev.hp.current - remainingDamage)
+      // If taking damage (negative delta), THP absorbs first per RAW
+      if (delta < 0) {
+        const damage = Math.abs(delta);
+        const tempAbsorbed = Math.min(prev.hp.temp, damage);
+        const remainingDamage = damage - tempAbsorbed;
+
+        // CON save for concentration when taking damage (RAW: DC = max(10, damage/2))
+        if (prev.concentration && remainingDamage > 0) {
+          const conSaveDC = Math.max(10, Math.floor(damage / 2));
+          setTimeout(() => showToast(`CON Save DC ${conSaveDC} to maintain ${prev.concentration}`), 0);
         }
-      }));
 
-      // CON save for concentration when taking damage (RAW: DC = max(10, damage/2))
-      if (data.concentration && remainingDamage > 0) {
-        const conSaveDC = Math.max(10, Math.floor(damage / 2));
-        showToast(`CON Save DC ${conSaveDC} to maintain ${data.concentration}`);
+        return {
+          ...prev,
+          hp: {
+            ...prev.hp,
+            temp: prev.hp.temp - tempAbsorbed,
+            current: Math.max(0, prev.hp.current - remainingDamage)
+          }
+        };
+      } else {
+        // Healing - only affects current HP, not THP
+        return {
+          ...prev,
+          hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) }
+        };
       }
-    } else {
-      // Healing - only affects current HP, not THP
-      setData(prev => ({
-        ...prev,
-        hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) }
-      }));
-    }
-  };
+    });
+  }, [showToast]);
 
-  const updateTempHP = (newTemp: number) => {
+  const updateTempHP = useCallback((newTemp: number) => {
     setData(prev => ({
       ...prev,
       hp: { ...prev.hp, temp: Math.max(0, newTemp) }
     }));
-  };
+  }, []);
 
-  const updateAC = (key: 'mageArmour' | 'shield') => {
+  const updateAC = useCallback((key: 'mageArmour' | 'shield') => {
     setData(prev => ({
       ...prev,
       [key]: !prev[key]
     }));
-  };
+  }, []);
 
-  const updateSpellSlot = (level: number, used: number) => {
+  const updateSpellSlot = useCallback((level: number, used: number) => {
     setData(prev => ({
       ...prev,
       slots: {
@@ -79,59 +86,57 @@ function App() {
         [level]: { ...prev.slots[level], used }
       }
     }));
-  };
+  }, []);
 
-  const updateDeathSaves = (type: 'successes' | 'failures', value: number) => {
+  const updateDeathSaves = useCallback((type: 'successes' | 'failures', value: number) => {
     setData(prev => ({
       ...prev,
       deathSaves: { ...prev.deathSaves, [type]: value }
     }));
-  };
+  }, []);
 
-  const addMinion = (type: 'Skeleton' | 'Zombie') => {
-    const stats = data.defaultMinion[type];
-    const newMinion: Minion = {
-      id: crypto.randomUUID(),
-      type,
-      name: `${type} ${minions.filter(m => m.type === type).length + 1}`,
-      hp: { current: stats.hp, max: stats.hp },
-      ac: stats.ac,
-      notes: stats.notes
-    };
-    setMinions(prev => [...prev, newMinion]);
-    showToast(`Raised ${type}`);
-  };
+  const addMinion = useCallback((type: 'Skeleton' | 'Zombie') => {
+    setData(prev => {
+      const stats = prev.defaultMinion[type];
+      const newMinion: Minion = {
+        id: crypto.randomUUID(),
+        type,
+        name: `${type} ${minions.filter(m => m.type === type).length + 1}`,
+        hp: { current: stats.hp, max: stats.hp },
+        ac: stats.ac,
+        notes: stats.notes
+      };
+      setMinions(prevMinions => [...prevMinions, newMinion]);
+      showToast(`Raised ${type}`);
+      return prev;
+    });
+  }, [minions, showToast]);
 
-  const updateMinion = (id: string, hp: number) => {
+  const updateMinion = useCallback((id: string, hp: number) => {
     setMinions(prev => prev.map(m => {
       if (m.id === id) {
         return { ...m, hp: { ...m.hp, current: Math.max(0, hp) } };
       }
       return m;
     }));
-  };
+  }, []);
 
-  const removeMinion = (id: string) => {
+  const removeMinion = useCallback((id: string) => {
     setMinions(prev => prev.filter(m => m.id !== id));
     showToast("Minion Destroyed");
-  };
+  }, [showToast]);
 
-  const clearMinions = () => {
+  const clearMinions = useCallback(() => {
     setMinions([]);
     showToast("All Minions Released");
-  };
+  }, [showToast]);
 
-  const showToast = (message: string) => {
-    setToast(message);
-    setTimeout(() => setToast(null), 2000);
-  };
-
-  const handleShortRest = () => {
+  const handleShortRest = useCallback(() => {
     // Logic for short rest (could be expanded)
     showToast("Short Rest Taken");
-  };
+  }, [showToast]);
 
-  const handleLongRest = () => {
+  const handleLongRest = useCallback(() => {
     setData(prev => ({
       ...prev,
       hp: { ...prev.hp, current: prev.hp.max, temp: 0 },
@@ -142,7 +147,7 @@ function App() {
     }));
     showToast("Long Rest Completed");
     setActiveTab('home');
-  };
+  }, [showToast]);
 
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab}>

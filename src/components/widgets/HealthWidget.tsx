@@ -1,5 +1,5 @@
 import { Skull, Minus, Plus, Shield } from 'lucide-react';
-import { useState } from 'react';
+import { useState, memo, useCallback, useMemo } from 'react';
 
 interface HealthWidgetProps {
     current: number;
@@ -9,20 +9,26 @@ interface HealthWidgetProps {
     onTempChange: (newTemp: number) => void;
 }
 
-export function HealthWidget({ current, max, temp, onChange, onTempChange }: HealthWidgetProps) {
+export const HealthWidget = memo(function HealthWidget({ current, max, temp, onChange, onTempChange }: HealthWidgetProps) {
     const [tempInput, setTempInput] = useState('');
-    const percentage = Math.min(100, Math.max(0, (current / max) * 100));
-    const isLow = percentage <= 25;
-    const isCritical = current === 0;
+    
+    // Memoize calculated values
+    const percentage = useMemo(() => Math.min(100, Math.max(0, (current / max) * 100)), [current, max]);
+    const isLow = useMemo(() => percentage <= 25, [percentage]);
+    const isCritical = useMemo(() => current === 0, [current]);
 
     // RAW: THP doesn't stack - new THP replaces old (player chooses larger)
-    const handleAddTemp = () => {
+    const handleAddTemp = useCallback(() => {
         const newTemp = parseInt(tempInput) || 0;
         if (newTemp > temp) {
             onTempChange(newTemp);
         }
         setTempInput('');
-    };
+    }, [tempInput, temp, onTempChange]);
+
+    const handleIncrement = useCallback(() => onChange(current + 1), [onChange, current]);
+    const handleDecrement = useCallback(() => onChange(current - 1), [onChange, current]);
+    const handleClearTemp = useCallback(() => onTempChange(0), [onTempChange]);
 
     return (
         <div className="card-parchment p-4 mb-4">
@@ -61,13 +67,13 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                     {/* +/- Buttons */}
                     <div className="flex gap-2">
                         <button
-                            onClick={() => onChange(current - 1)}
+                            onClick={handleDecrement}
                             className="btn-fantasy flex-1 flex items-center justify-center py-2"
                         >
                             <Minus size={16} />
                         </button>
                         <button
-                            onClick={() => onChange(current + 1)}
+                            onClick={handleIncrement}
                             className="btn-fantasy flex-1 flex items-center justify-center py-2"
                         >
                             <Plus size={16} />
@@ -97,7 +103,7 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                     </button>
                     {temp > 0 && (
                         <button
-                            onClick={() => onTempChange(0)}
+                            onClick={handleClearTemp}
                             className="text-xs text-red-400 hover:text-red-300"
                         >
                             Clear
@@ -110,4 +116,4 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
             </div>
         </div>
     );
-}
+});
