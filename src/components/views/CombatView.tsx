@@ -3,7 +3,7 @@ import { MinionDrawer } from '../minions/MinionDrawer';
 import type { Minion } from '../../types';
 import { undeadStats } from '../../data/undeadStats';
 import type { UndeadStatBlock } from '../../data/undeadStats';
-import { Skull, Shield, Sword, Info, X, Users, Ghost, Biohazard, Bone } from 'lucide-react';
+import { Skull, Shield, Sword, Info, X, Users, Ghost, Biohazard, Bone, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface CombatViewProps {
     minions: Minion[];
@@ -22,6 +22,7 @@ export function CombatView({
 }: CombatViewProps) {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedStatBlock, setSelectedStatBlock] = useState<UndeadStatBlock | null>(null);
+    const [showSummons, setShowSummons] = useState(false);
 
     const openStats = (name: string) => {
         const stats = undeadStats.find(s => s.name.includes(name));
@@ -80,60 +81,68 @@ export function CombatView({
                 </button>
             </div>
 
-            {/* Summon Undead Reference */}
+            {/* Summon Undead Reference - Collapsible */}
             <div className="card-parchment p-4">
-                <div className="flex items-center gap-2 mb-4 relative z-10">
-                    <Bone size={18} className="text-white" />
-                    <h3 className="font-display text-sm text-parchment tracking-wider">Summon Undead</h3>
-                    <span className="text-[10px] text-white bg-white/10 px-2 py-0.5 rounded-full border border-white/20">Level 3</span>
-                </div>
-
-                <div className="space-y-2 relative z-10">
-                    {/* Ghostly */}
-                    <div
-                        className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer hover:border-white/30 transition-all group"
-                        onClick={() => openStats('Ghostly')}
-                    >
-                        <div className="p-2.5 bg-card rounded-lg border border-white/10 group-hover:border-white/30 transition-colors">
-                            <Ghost size={18} className="text-parchment group-hover:text-white transition-colors" />
-                        </div>
-                        <div className="flex-1">
-                            <div className="text-sm font-display text-parchment-light group-hover:text-white transition-colors">Ghostly</div>
-                            <div className="text-xs text-muted">Fly 40ft • 1d8+7 Necrotic • Frighten</div>
-                        </div>
-                        <Info size={14} className="text-muted group-hover:text-white transition-colors" />
+                <button
+                    className="flex items-center justify-between w-full mb-2 relative z-10"
+                    onClick={() => setShowSummons(!showSummons)}
+                >
+                    <div className="flex items-center gap-2">
+                        <Bone size={18} className="text-white" />
+                        <h3 className="font-display text-sm text-parchment tracking-wider">Summon Undead</h3>
+                        <span className="text-[10px] text-white bg-white/10 px-2 py-0.5 rounded-full border border-white/20">Level 3</span>
                     </div>
+                    {showSummons ? <ChevronUp size={16} className="text-muted" /> : <ChevronDown size={16} className="text-muted" />}
+                </button>
 
-                    {/* Putrid */}
-                    <div
-                        className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer hover:border-white/30 transition-all group"
-                        onClick={() => openStats('Putrid')}
-                    >
-                        <div className="p-2.5 bg-card rounded-lg border border-white/10 group-hover:border-white/30 transition-colors">
-                            <Shield size={18} className="text-parchment group-hover:text-white transition-colors" />
+                {showSummons && (
+                    <div className="space-y-2 relative z-10 mt-3">
+                        {/* Ghostly */}
+                        <div
+                            className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer hover:border-white/30 transition-all group"
+                            onClick={() => openStats('Ghostly')}
+                        >
+                            <div className="p-2.5 bg-card rounded-lg border border-white/10 group-hover:border-white/30 transition-colors">
+                                <Ghost size={18} className="text-parchment group-hover:text-white transition-colors" />
+                            </div>
+                            <div className="flex-1">
+                                <div className="text-sm font-display text-parchment-light group-hover:text-white transition-colors">Ghostly</div>
+                                <div className="text-xs text-muted">Fly 40ft • 1d8+7 Necrotic • Frighten</div>
+                            </div>
+                            <Info size={14} className="text-muted group-hover:text-white transition-colors" />
                         </div>
-                        <div className="flex-1">
-                            <div className="text-sm font-display text-parchment-light group-hover:text-white transition-colors">Putrid</div>
-                            <div className="text-xs text-muted">Poison Aura • 1d6+7 Slash • Paralyze</div>
-                        </div>
-                        <Info size={14} className="text-muted group-hover:text-white transition-colors" />
-                    </div>
 
-                    {/* Skeletal */}
-                    <div
-                        className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer hover:border-white/30 transition-all group"
-                        onClick={() => openStats('Skeletal')}
-                    >
-                        <div className="p-2.5 bg-card rounded-lg border border-white/10 group-hover:border-white/30 transition-colors">
-                            <Sword size={18} className="text-parchment group-hover:text-white transition-colors" />
+                        {/* Putrid */}
+                        <div
+                            className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer hover:border-white/30 transition-all group"
+                            onClick={() => openStats('Putrid')}
+                        >
+                            <div className="p-2.5 bg-card rounded-lg border border-white/10 group-hover:border-white/30 transition-colors">
+                                <Shield size={18} className="text-parchment group-hover:text-white transition-colors" />
+                            </div>
+                            <div className="flex-1">
+                                <div className="text-sm font-display text-parchment-light group-hover:text-white transition-colors">Putrid</div>
+                                <div className="text-xs text-muted">Poison Aura • 1d6+7 Slash • Paralyze</div>
+                            </div>
+                            <Info size={14} className="text-muted group-hover:text-white transition-colors" />
                         </div>
-                        <div className="flex-1">
-                            <div className="text-sm font-display text-parchment-light group-hover:text-white transition-colors">Skeletal</div>
-                            <div className="text-xs text-muted">Ranged 150ft • 2d4+7 Necrotic • Multiattack</div>
+
+                        {/* Skeletal */}
+                        <div
+                            className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer hover:border-white/30 transition-all group"
+                            onClick={() => openStats('Skeletal')}
+                        >
+                            <div className="p-2.5 bg-card rounded-lg border border-white/10 group-hover:border-white/30 transition-colors">
+                                <Sword size={18} className="text-parchment group-hover:text-white transition-colors" />
+                            </div>
+                            <div className="flex-1">
+                                <div className="text-sm font-display text-parchment-light group-hover:text-white transition-colors">Skeletal</div>
+                                <div className="text-xs text-muted">Ranged 150ft • 2d4+7 Necrotic • Multiattack</div>
+                            </div>
+                            <Info size={14} className="text-muted group-hover:text-white transition-colors" />
                         </div>
-                        <Info size={14} className="text-muted group-hover:text-white transition-colors" />
                     </div>
-                </div>
+                )}
             </div>
 
             <MinionDrawer

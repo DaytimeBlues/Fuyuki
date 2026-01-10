@@ -54,7 +54,6 @@ export interface CharacterData {
     dc: number;
     profBonus: number;
     level: number;
-    hitDice: { total: number; used: number; dieType: number };
     savingThrowProficiencies: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha')[];
     deathSaves: { successes: number; failures: number };
     abilities: {
@@ -83,4 +82,14 @@ export interface CharacterData {
         hp: { current: number; max: number };
         ac: number;
     } | null;
+}
+
+export interface Session {
+    id: string;
+    sessionNumber: number;
+    date: string;
+    label?: string;
+    characterData: CharacterData;
+    minions: Minion[];
+    lastModified: string;
 }

@@ -103,34 +103,32 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
                         <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-white/20" />
 
                         <div className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto">
-                            {/* Scrollable container */}
-                            <div className="overflow-x-auto scrollbar-hide">
-                                <div className="flex items-center justify-start gap-1 px-2 py-3 min-w-max">
-                                    {navItems.map(({ id, icon: Icon, label }) => (
-                                        <button
-                                            key={id}
-                                            onClick={() => onTabChange(id)}
-                                            className={`flex flex-col items-center gap-1.5 px-4 py-2 rounded-lg transition-all duration-300 group shrink-0 ${activeTab === id
-                                                ? 'text-white'
-                                                : 'text-muted hover:text-parchment'
-                                                }`}
-                                        >
-                                            <div className={`relative p-2 rounded-lg transition-all duration-300 ${activeTab === id
-                                                ? 'bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.25)] border border-white/20'
-                                                : 'group-hover:bg-white/5'
-                                                }`}>
-                                                <Icon size={18} />
-                                                {activeTab === id && (
-                                                    <div className="absolute inset-0 rounded-lg bg-white/5 animate-pulse" />
-                                                )}
-                                            </div>
-                                            <span className={`text-[9px] font-sans uppercase tracking-widest transition-colors duration-300 ${activeTab === id ? 'text-white' : 'group-hover:text-parchment'
-                                                }`}>
-                                                {label}
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
+                            {/* Evenly distributed nav items */}
+                            <div className="flex items-center justify-evenly py-2 px-1">
+                                {navItems.map(({ id, icon: Icon, label }) => (
+                                    <button
+                                        key={id}
+                                        onClick={() => onTabChange(id)}
+                                        className={`flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg transition-all duration-300 group ${activeTab === id
+                                            ? 'text-white'
+                                            : 'text-muted hover:text-parchment'
+                                            }`}
+                                    >
+                                        <div className={`relative p-1.5 rounded-lg transition-all duration-300 ${activeTab === id
+                                            ? 'bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.25)] border border-white/20'
+                                            : 'group-hover:bg-white/5'
+                                            }`}>
+                                            <Icon size={16} />
+                                            {activeTab === id && (
+                                                <div className="absolute inset-0 rounded-lg bg-white/5 animate-pulse" />
+                                            )}
+                                        </div>
+                                        <span className={`text-[8px] font-sans uppercase tracking-wide transition-colors duration-300 ${activeTab === id ? 'text-white' : 'group-hover:text-parchment'
+                                            }`}>
+                                            {label}
+                                        </span>
+                                    </button>
+                                ))}
                             </div>
                         </div>
                     </div>
