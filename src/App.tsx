@@ -19,32 +19,36 @@ import { CombatView } from './components/views/CombatView';
 import { RestView } from './components/views/RestView';
 import { GrimoireView } from './components/views/GrimoireView';
 import { BiographyView } from './components/views/BiographyView';
+import { SessionPicker } from './components/SessionPicker';
 import { initialCharacterData } from './data/initialState';
-import type { CharacterData, Minion } from './types';
-
-const STORAGE_KEY = 'aramancia-character-state';
-const MINIONS_KEY = 'aramancia-minions';
+import { getActiveSession, updateActiveSession } from './utils/sessionStorage';
+import type { CharacterData, Minion, Session } from './types';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [showSessionPicker, setShowSessionPicker] = useState<boolean>(() => {
+    return !getActiveSession();
+  });
   const [data, setData] = useState<CharacterData>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : initialCharacterData;
+    const session = getActiveSession();
+    return session ? session.characterData : initialCharacterData;
   });
   const [minions, setMinions] = useState<Minion[]>(() => {
-    const saved = localStorage.getItem(MINIONS_KEY);
-    return saved ? JSON.parse(saved) : [];
+    const session = getActiveSession();
+    return session ? session.minions : [];
   });
   const [toast, setToast] = useState<string | null>(null);
 
-  // Persist state to localStorage
+  // Persist state to active session
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
+    updateActiveSession(data, minions);
+  }, [data, minions]);
 
-  useEffect(() => {
-    localStorage.setItem(MINIONS_KEY, JSON.stringify(minions));
-  }, [minions]);
+  const handleSessionSelected = (session: Session) => {
+    setData(session.characterData);
+    setMinions(session.minions);
+    setShowSessionPicker(false);
+  };
 
   // Toast notification - declared early so other callbacks can use it
   const showToast = useCallback((message: string) => {
@@ -393,6 +397,11 @@ function App() {
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
           {toast}
         </div>
+      )}
+
+      {/* Session Picker Modal */}
+      {showSessionPicker && (
+        <SessionPicker onSessionSelected={handleSessionSelected} />
       )}
     </AppShell>
   );

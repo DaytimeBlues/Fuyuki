@@ -83,3 +83,13 @@ export interface CharacterData {
         ac: number;
     } | null;
 }
+
+export interface Session {
+    id: string;
+    sessionNumber: number;
+    date: string;
+    label?: string;
+    characterData: CharacterData;
+    minions: Minion[];
+    lastModified: string;
+}
