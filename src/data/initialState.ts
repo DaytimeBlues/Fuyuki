@@ -2,6 +2,7 @@ import type { CharacterData } from '../types';
 
 export const initialCharacterData: CharacterData = {
     hp: { current: 35, max: 35, temp: 0 },
+    hitDice: { current: 5, max: 5, size: 6 }, // Wizard level 5, d6 hit die
     baseAC: 13,
     mageArmour: false,
     shield: false,

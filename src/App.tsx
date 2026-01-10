@@ -162,20 +162,34 @@ function App() {
     setTimeout(() => setToast(null), 2000);
   };
 
-  const handleShortRest = () => {
-    // Logic for short rest (could be expanded)
-    showToast("Short Rest Taken");
+  const handleSpendHitDie = (healed: number, diceSpent: number) => {
+    setData(prev => ({
+      ...prev,
+      hp: { ...prev.hp, current: Math.min(prev.hp.max, prev.hp.current + healed) },
+      hitDice: { ...prev.hitDice, current: Math.max(0, prev.hitDice.current - diceSpent) }
+    }));
+    if (healed > 0) {
+      showToast(`Healed ${healed} HP`);
+    }
   };
 
   const handleLongRest = () => {
-    setData(prev => ({
-      ...prev,
-      hp: { ...prev.hp, current: prev.hp.max, temp: 0 },
-      slots: Object.fromEntries(Object.entries(prev.slots).map(([k, v]) => [k, { ...v, used: 0 }])),
-      mageArmour: false,
-      shield: false,
-      deathSaves: { successes: 0, failures: 0 }
-    }));
+    setData(prev => {
+      // RAW: Recover half of max hit dice (minimum 1) on long rest
+      const hitDiceRecovered = Math.max(1, Math.ceil(prev.hitDice.max / 2));
+      const newHitDice = Math.min(prev.hitDice.max, prev.hitDice.current + hitDiceRecovered);
+
+      return {
+        ...prev,
+        hp: { ...prev.hp, current: prev.hp.max, temp: 0 },
+        hitDice: { ...prev.hitDice, current: newHitDice },
+        slots: Object.fromEntries(Object.entries(prev.slots).map(([k, v]) => [k, { ...v, used: 0 }])),
+        mageArmour: false,
+        shield: false,
+        concentration: null,
+        deathSaves: { successes: 0, failures: 0 }
+      };
+    });
     showToast("Long Rest Completed");
     setActiveTab('home');
   };
@@ -329,7 +343,14 @@ function App() {
           <ErrorBoundary>
             <CharacterView data={data} />
             <div className="mt-8 border-t border-gray-800 pt-8">
-              <RestView onShortRest={handleShortRest} onLongRest={handleLongRest} />
+              <RestView
+                hitDice={data.hitDice}
+                conMod={data.abilities.con.mod}
+                currentHP={data.hp.current}
+                maxHP={data.hp.max}
+                onSpendHitDie={handleSpendHitDie}
+                onLongRest={handleLongRest}
+              />
             </div>
             <div className="mt-8 border-t border-gray-800 pt-8">
               <MulticlassSpellSlotsWidget

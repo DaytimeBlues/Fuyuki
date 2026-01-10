@@ -39,8 +39,15 @@ export interface Minion {
     notes: string;
 }
 
+export interface HitDice {
+    current: number;  // Available to spend
+    max: number;      // Equal to character level
+    size: number;     // Die size (6 for d6, 8 for d8, etc.)
+}
+
 export interface CharacterData {
     hp: { current: number; max: number; temp: number };
+    hitDice: HitDice;
     baseAC: number;
     mageArmour: boolean;
     shield: boolean;
