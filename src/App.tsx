@@ -14,38 +14,49 @@ import { HitDiceWidget } from './components/widgets/HitDiceWidget';
 import { InitiativeWidget } from './components/widgets/InitiativeWidget';
 import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
+import { CharacterEditor } from './components/widgets/CharacterEditor';
 import { SpellsView } from './components/views/SpellsView';
-import { CharacterView } from './components/views/CharacterView';
 import { CombatView } from './components/views/CombatView';
 import { RestView } from './components/views/RestView';
 import { GrimoireView } from './components/views/GrimoireView';
 import { BiographyView } from './components/views/BiographyView';
+import { SessionPicker } from './components/SessionPicker';
 import { initialCharacterData } from './data/initialState';
-import type { CharacterData, Minion } from './types';
-
-const STORAGE_KEY = 'aramancia-character-state';
-const MINIONS_KEY = 'aramancia-minions';
+import { getActiveSession, updateActiveSession } from './utils/sessionStorage';
+import {
+  getProfBonus,
+  getAbilityMod,
+  getSpellSlotsWithUsed,
+  calculateMaxHP,
+  calculateSpellSaveDC,
+} from './utils/srdRules';
+import type { CharacterData, Minion, Session } from './types';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [showSessionPicker, setShowSessionPicker] = useState<boolean>(() => {
+    return !getActiveSession();
+  });
   const [data, setData] = useState<CharacterData>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : initialCharacterData;
+    const session = getActiveSession();
+    return session ? session.characterData : initialCharacterData;
   });
   const [minions, setMinions] = useState<Minion[]>(() => {
-    const saved = localStorage.getItem(MINIONS_KEY);
-    return saved ? JSON.parse(saved) : [];
+    const session = getActiveSession();
+    return session ? session.minions : [];
   });
   const [toast, setToast] = useState<string | null>(null);
 
-  // Persist state to localStorage
+  // Persist state to active session
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
+    updateActiveSession(data, minions);
+  }, [data, minions]);
 
-  useEffect(() => {
-    localStorage.setItem(MINIONS_KEY, JSON.stringify(minions));
-  }, [minions]);
+  const handleSessionSelected = (session: Session) => {
+    setData(session.characterData);
+    setMinions(session.minions);
+    setShowSessionPicker(false);
+  };
 
   // Toast notification - declared early so other callbacks can use it
   const showToast = useCallback((message: string) => {
@@ -92,8 +103,8 @@ function App() {
       setData(prev => ({
         ...prev,
         hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) },
-        deathSaves: wasAtZero && newCurrent > 0 
-          ? { successes: 0, failures: 0 } 
+        deathSaves: wasAtZero && newCurrent > 0
+          ? { successes: 0, failures: 0 }
           : prev.deathSaves
       }));
 
@@ -199,12 +210,70 @@ function App() {
     setActiveTab('home');
   }, [showToast]);
 
-  const updateHitDice = (used: number) => {
-    setData(prev => ({
-      ...prev,
-      hitDice: { ...prev.hitDice, used: Math.max(0, Math.min(prev.hitDice.total, used)) }
-    }));
-  };
+  /**
+   * Handle level change with cascade updates per SRD 5.1
+   * Cascades: proficiency bonus, hit dice max, spell slots, max HP, spell save DC
+   */
+  const handleLevelChange = useCallback((newLevel: number) => {
+    setData(prev => {
+      const newProfBonus = getProfBonus(newLevel);
+      const conMod = prev.abilities.con.mod;
+      const intMod = prev.abilities.int.mod; // Wizard spellcasting ability
+      const newMaxHP = calculateMaxHP(newLevel, prev.hitDice.size, conMod);
+      const newSpellSlots = getSpellSlotsWithUsed(newLevel, prev.slots);
+      const newSpellDC = calculateSpellSaveDC(newProfBonus, intMod);
+
+      // Cap current HP/Hit Dice at new max if level decreased
+      const newCurrentHP = Math.min(prev.hp.current, newMaxHP);
+      const newCurrentHitDice = Math.min(prev.hitDice.current, newLevel);
+
+      return {
+        ...prev,
+        level: newLevel,
+        profBonus: newProfBonus,
+        hp: { ...prev.hp, current: newCurrentHP, max: newMaxHP },
+        hitDice: { ...prev.hitDice, current: newCurrentHitDice, max: newLevel },
+        slots: newSpellSlots,
+        dc: newSpellDC,
+      };
+    });
+    showToast(`Level changed to ${newLevel}`);
+  }, [showToast]);
+
+  /**
+   * Handle ability score change with cascade updates per SRD 5.1
+   * Cascades: ability modifier, and if CON/INT: max HP, spell save DC
+   */
+  const handleAbilityChange = useCallback((ability: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha', newScore: number) => {
+    setData(prev => {
+      const newMod = getAbilityMod(newScore);
+      const newAbilities = {
+        ...prev.abilities,
+        [ability]: { score: newScore, mod: newMod },
+      };
+
+      // Base updates with new abilities
+      const updates: Partial<CharacterData> = {
+        abilities: newAbilities,
+      };
+
+      // CON change affects max HP
+      if (ability === 'con') {
+        const newMaxHP = calculateMaxHP(prev.level, prev.hitDice.size, newMod);
+        const newCurrentHP = Math.min(prev.hp.current, newMaxHP);
+        updates.hp = { ...prev.hp, current: newCurrentHP, max: newMaxHP };
+      }
+
+      // INT change affects spell save DC (Wizard)
+      if (ability === 'int') {
+        updates.dc = calculateSpellSaveDC(prev.profBonus, newMod);
+      }
+
+      return { ...prev, ...updates };
+    });
+    showToast(`${ability.toUpperCase()} updated to ${newScore}`);
+  }, [showToast]);
+
 
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab}>
@@ -353,6 +422,11 @@ function App() {
       {activeTab === 'settings' && (
         <div className="animate-fade-in">
           <ErrorBoundary>
+            <CharacterEditor
+              data={data}
+              onLevelChange={handleLevelChange}
+              onAbilityChange={handleAbilityChange}
+            />
             <InitiativeWidget
               dexMod={data.abilities.dex.mod}
               profBonus={data.profBonus}
@@ -367,13 +441,12 @@ function App() {
               savingThrowProficiencies={data.savingThrowProficiencies}
             />
             <HitDiceWidget
-              total={data.hitDice.total}
-              used={data.hitDice.used}
-              dieType={data.hitDice.dieType}
+              hitDice={data.hitDice}
               conMod={data.abilities.con.mod}
-              onChange={updateHitDice}
+              currentHP={data.hp.current}
+              maxHP={data.hp.max}
+              onSpend={handleSpendHitDie}
             />
-            <CharacterView data={data} />
             <div className="mt-8 border-t border-gray-800 pt-8">
               <RestView
                 hitDice={data.hitDice}
@@ -401,6 +474,11 @@ function App() {
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
           {toast}
         </div>
+      )}
+
+      {/* Session Picker Modal */}
+      {showSessionPicker && (
+        <SessionPicker onSessionSelected={handleSessionSelected} />
       )}
     </AppShell>
   );

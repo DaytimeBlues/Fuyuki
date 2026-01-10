@@ -2,9 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   lint-test-build:
@@ -26,13 +24,14 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage
+        run: npm test -- --coverage
 
       - name: Build project
         run: npm run build
 
       - name: Upload build artifact
+        if: github.ref == 'refs/heads/master'
         uses: actions/upload-artifact@v4
         with:
           name: vite-preview
