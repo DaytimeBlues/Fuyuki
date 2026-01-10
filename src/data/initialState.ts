@@ -12,12 +12,20 @@ export const initialCharacterData: CharacterData = {
     savingThrowProficiencies: ['int', 'wis'],
     deathSaves: { successes: 0, failures: 0 },
     abilities: {
-        str: { score: 8, mod: -1 },
-        dex: { score: 14, mod: 2 },
-        con: { score: 14, mod: 2 },
-        int: { score: 17, mod: 3 },  // INT 17 for Arcana +7 (3 mod + 3 prof + 1 expertise)
-        wis: { score: 15, mod: 2 },
-        cha: { score: 10, mod: 0 }
+        str: 8,
+        dex: 14,
+        con: 14,
+        int: 17,  // INT 17 for Arcana +7 (3 mod + 3 prof + 1 expertise)
+        wis: 15,
+        cha: 10
+    },
+    abilityMods: {
+        str: -1,
+        dex: 2,
+        con: 2,
+        int: 3,
+        wis: 2,
+        cha: 0
     },
     skills: {
         acrobatics: { name: 'Acrobatics', attr: 'dex', prof: false },

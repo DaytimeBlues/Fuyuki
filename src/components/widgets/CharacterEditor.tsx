@@ -7,9 +7,7 @@ import {
     LEVEL_MAX,
     clamp,
 } from '../../utils/srdRules';
-import type { CharacterData } from '../../types';
-
-type AbilityKey = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
+import type { AbilityKey, CharacterData } from '../../types';
 
 const ABILITY_NAMES: Record<AbilityKey, string> = {
     str: 'Strength',
@@ -41,7 +39,7 @@ export function CharacterEditor({
     };
 
     const handleAbilityIncrement = (ability: AbilityKey, delta: number) => {
-        const currentScore = data.abilities[ability].score;
+        const currentScore = data.abilities[ability];
         const newScore = clamp(currentScore + delta, ABILITY_SCORE_MIN, ABILITY_SCORE_STANDARD_MAX);
         if (newScore !== currentScore) {
             onAbilityChange(ability, newScore);
@@ -147,13 +145,13 @@ export function CharacterEditor({
                                             {ability}
                                         </span>
                                         <span className="text-xs text-accent font-display">
-                                            {formatMod(data.abilities[ability].mod)}
+                                            {formatMod(data.abilityMods[ability])}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between gap-2">
                                         <button
                                             onClick={() => handleAbilityIncrement(ability, -1)}
-                                            disabled={data.abilities[ability].score <= ABILITY_SCORE_MIN}
+                                            disabled={data.abilities[ability] <= ABILITY_SCORE_MIN}
                                             className="btn-fantasy w-8 h-8 text-sm flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
                                             aria-label={`Decrease ${ABILITY_NAMES[ability]}`}
                                         >
@@ -161,12 +159,12 @@ export function CharacterEditor({
                                         </button>
                                         <div className="flex-1 text-center">
                                             <span className="font-display text-xl text-parchment-light">
-                                                {data.abilities[ability].score}
+                                                {data.abilities[ability]}
                                             </span>
                                         </div>
                                         <button
                                             onClick={() => handleAbilityIncrement(ability, 1)}
-                                            disabled={data.abilities[ability].score >= ABILITY_SCORE_STANDARD_MAX}
+                                            disabled={data.abilities[ability] >= ABILITY_SCORE_STANDARD_MAX}
                                             className="btn-fantasy w-8 h-8 text-sm flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
                                             aria-label={`Increase ${ABILITY_NAMES[ability]}`}
                                         >

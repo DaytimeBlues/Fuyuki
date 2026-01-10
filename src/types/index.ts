@@ -1,11 +1,11 @@
-export interface Ability {
-    score: number;
-    mod: number;
-}
+export type AbilityKey = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
+
+export type AbilityScores = Record<AbilityKey, number>;
+export type AbilityMods = Record<AbilityKey, number>;
 
 export interface Skill {
     name: string;
-    attr: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
+    attr: AbilityKey;
     prof: boolean;
 }
 
@@ -54,16 +54,15 @@ export interface CharacterData {
     dc: number;
     profBonus: number;
     level: number;
-    savingThrowProficiencies: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha')[];
+    savingThrowProficiencies: AbilityKey[];
     deathSaves: { successes: number; failures: number };
-    abilities: {
-        str: Ability;
-        dex: Ability;
-        con: Ability;
-        int: Ability;
-        wis: Ability;
-        cha: Ability;
-    };
+    /**
+     * Base (editable) ability scores.
+     * Derived (calculated) modifiers are stored separately in `abilityMods`.
+     */
+    abilities: AbilityScores;
+    /** Derived (calculated) ability modifiers */
+    abilityMods: AbilityMods;
     skills: {
         [key: string]: Skill;
     };

@@ -24,11 +24,7 @@ import { SessionPicker } from './components/SessionPicker';
 import { initialCharacterData } from './data/initialState';
 import { getActiveSession, updateActiveSession } from './utils/sessionStorage';
 import {
-  getProfBonus,
-  getAbilityMod,
-  getSpellSlotsWithUsed,
-  calculateMaxHP,
-  calculateSpellSaveDC,
+  recalculateDerivedCharacterData,
 } from './utils/srdRules';
 import type { CharacterData, Minion, Session } from './types';
 
@@ -216,26 +212,7 @@ function App() {
    */
   const handleLevelChange = useCallback((newLevel: number) => {
     setData(prev => {
-      const newProfBonus = getProfBonus(newLevel);
-      const conMod = prev.abilities.con.mod;
-      const intMod = prev.abilities.int.mod; // Wizard spellcasting ability
-      const newMaxHP = calculateMaxHP(newLevel, prev.hitDice.size, conMod);
-      const newSpellSlots = getSpellSlotsWithUsed(newLevel, prev.slots);
-      const newSpellDC = calculateSpellSaveDC(newProfBonus, intMod);
-
-      // Cap current HP/Hit Dice at new max if level decreased
-      const newCurrentHP = Math.min(prev.hp.current, newMaxHP);
-      const newCurrentHitDice = Math.min(prev.hitDice.current, newLevel);
-
-      return {
-        ...prev,
-        level: newLevel,
-        profBonus: newProfBonus,
-        hp: { ...prev.hp, current: newCurrentHP, max: newMaxHP },
-        hitDice: { ...prev.hitDice, current: newCurrentHitDice, max: newLevel },
-        slots: newSpellSlots,
-        dc: newSpellDC,
-      };
+      return recalculateDerivedCharacterData({ ...prev, level: newLevel });
     });
     showToast(`Level changed to ${newLevel}`);
   }, [showToast]);
@@ -246,30 +223,11 @@ function App() {
    */
   const handleAbilityChange = useCallback((ability: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha', newScore: number) => {
     setData(prev => {
-      const newMod = getAbilityMod(newScore);
-      const newAbilities = {
-        ...prev.abilities,
-        [ability]: { score: newScore, mod: newMod },
+      const next: CharacterData = {
+        ...prev,
+        abilities: { ...prev.abilities, [ability]: newScore },
       };
-
-      // Base updates with new abilities
-      const updates: Partial<CharacterData> = {
-        abilities: newAbilities,
-      };
-
-      // CON change affects max HP
-      if (ability === 'con') {
-        const newMaxHP = calculateMaxHP(prev.level, prev.hitDice.size, newMod);
-        const newCurrentHP = Math.min(prev.hp.current, newMaxHP);
-        updates.hp = { ...prev.hp, current: newCurrentHP, max: newMaxHP };
-      }
-
-      // INT change affects spell save DC (Wizard)
-      if (ability === 'int') {
-        updates.dc = calculateSpellSaveDC(prev.profBonus, newMod);
-      }
-
-      return { ...prev, ...updates };
+      return recalculateDerivedCharacterData(next);
     });
     showToast(`${ability.toUpperCase()} updated to ${newScore}`);
   }, [showToast]);
@@ -292,7 +250,7 @@ function App() {
           <div className="animate-slide-up stagger-2">
             <ArmorClassWidget
               baseAC={data.baseAC}
-              dexMod={data.abilities.dex.mod}
+              dexMod={data.abilityMods.dex}
               mageArmour={data.mageArmour}
               hasShield={data.shield}
               onToggle={updateAC}
@@ -442,7 +400,7 @@ function App() {
               onAbilityChange={handleAbilityChange}
             />
             <InitiativeWidget
-              dexMod={data.abilities.dex.mod}
+              dexMod={data.abilityMods.dex}
               profBonus={data.profBonus}
             />
             <ProficiencyWidget
@@ -450,13 +408,13 @@ function App() {
               level={data.level}
             />
             <SavingThrowsWidget
-              abilities={data.abilities}
+              abilityMods={data.abilityMods}
               profBonus={data.profBonus}
               savingThrowProficiencies={data.savingThrowProficiencies}
             />
             <HitDiceWidget
               hitDice={data.hitDice}
-              conMod={data.abilities.con.mod}
+              conMod={data.abilityMods.con}
               currentHP={data.hp.current}
               maxHP={data.hp.max}
               onSpend={handleSpendHitDie}
@@ -464,7 +422,7 @@ function App() {
             <div className="mt-8 border-t border-gray-800 pt-8">
               <RestView
                 hitDice={data.hitDice}
-                conMod={data.abilities.con.mod}
+                conMod={data.abilityMods.con}
                 currentHP={data.hp.current}
                 maxHP={data.hp.max}
                 onSpendHitDie={handleSpendHitDie}

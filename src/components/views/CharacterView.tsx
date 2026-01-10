@@ -16,7 +16,7 @@ export function CharacterView({ data }: CharacterViewProps) {
             {/* Core Stats Grid */}
             <div className="grid grid-cols-2 gap-3 mb-6">
                 <InitiativeWidget
-                    dexMod={data.abilities.dex.mod}
+                    dexMod={data.abilityMods.dex}
                     profBonus={data.profBonus}
                 />
                 <ProficiencyWidget
@@ -27,7 +27,7 @@ export function CharacterView({ data }: CharacterViewProps) {
 
             <div className="mb-6">
                 <SavingThrowsWidget
-                    abilities={data.abilities}
+                    abilityMods={data.abilityMods}
                     profBonus={data.profBonus}
                     savingThrowProficiencies={data.savingThrowProficiencies}
                 />
@@ -41,14 +41,14 @@ export function CharacterView({ data }: CharacterViewProps) {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
-                    {Object.entries(data.abilities || {}).map(([key, ability]) => (
+                    {Object.entries(data.abilities || {}).map(([key, score]) => (
                         <div key={key} className="card-parchment p-3 text-center">
                             <div className="relative z-10">
                                 <div className="text-[10px] text-muted uppercase tracking-wider mb-1">{key}</div>
-                                <div className={`text-xl font-display ${(ability?.mod ?? 0) >= 0 ? 'text-white' : 'text-red-400'}`}>
-                                    {(ability?.mod ?? 0) >= 0 ? '+' : ''}{ability?.mod}
+                                <div className={`text-xl font-display ${((data.abilityMods as Record<string, number>)?.[key] ?? 0) >= 0 ? 'text-white' : 'text-red-400'}`}>
+                                    {((data.abilityMods as Record<string, number>)?.[key] ?? 0) >= 0 ? '+' : ''}{(data.abilityMods as Record<string, number>)?.[key] ?? 0}
                                 </div>
-                                <div className="text-[10px] text-muted/50">{ability?.score}</div>
+                                <div className="text-[10px] text-muted/50">{score}</div>
                             </div>
                         </div>
                     ))}
@@ -70,7 +70,7 @@ export function CharacterView({ data }: CharacterViewProps) {
                 <div className="divide-y divide-white/5 relative z-10 max-h-[400px] overflow-y-auto">
                     {Object.entries(data.skills || {}).map(([key, skill]) => {
                         if (!skill) return null;
-                        const abilityMod = data.abilities?.[skill.attr]?.mod || 0;
+                        const abilityMod = data.abilityMods?.[skill.attr] || 0;
                         const totalMod = abilityMod + (skill.prof ? data.profBonus : 0);
 
                         return (

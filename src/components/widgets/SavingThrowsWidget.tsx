@@ -2,12 +2,12 @@ import { Shield } from 'lucide-react';
 import type { CharacterData } from '../../types';
 
 interface SavingThrowsWidgetProps {
-    abilities: CharacterData['abilities'];
+    abilityMods: CharacterData['abilityMods'];
     profBonus: number;
     savingThrowProficiencies: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha')[];
 }
 
-export function SavingThrowsWidget({ abilities, profBonus, savingThrowProficiencies }: SavingThrowsWidgetProps) {
+export function SavingThrowsWidget({ abilityMods, profBonus, savingThrowProficiencies }: SavingThrowsWidgetProps) {
     const saves: { key: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha'; label: string }[] = [
         { key: 'str', label: 'STR' },
         { key: 'dex', label: 'DEX' },
@@ -27,7 +27,7 @@ export function SavingThrowsWidget({ abilities, profBonus, savingThrowProficienc
             <div className="grid grid-cols-2 gap-3">
                 {saves.map(({ key, label }) => {
                     const isProficient = savingThrowProficiencies.includes(key);
-                    const abilityMod = abilities[key]?.mod || 0;
+                    const abilityMod = abilityMods[key] || 0;
                     const total = abilityMod + (isProficient ? profBonus : 0);
 
                     return (

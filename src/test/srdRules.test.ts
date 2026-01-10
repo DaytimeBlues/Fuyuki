@@ -165,7 +165,7 @@ describe('SRD 5.1 Rules', () => {
     describe('calculateMaxHP', () => {
         it('calculates level 1 wizard HP correctly', () => {
             // Level 1 Wizard, d6, CON +2: 6 + 2 = 8
-            expect(calculateMaxHP(1, 6, 2)).toBe(8);
+            expect(calculateMaxHP(1, 14, 6)).toBe(8);
         });
 
         it('calculates level 5 wizard HP correctly', () => {
@@ -174,18 +174,18 @@ describe('SRD 5.1 Rules', () => {
             // Levels 2-5: 4 * (4 + 2) = 24
             // Total: 8 + 24 = 32
             // Note: avg for d6 is floor(6/2)+1 = 4
-            expect(calculateMaxHP(5, 6, 2)).toBe(32);
+            expect(calculateMaxHP(5, 14, 6)).toBe(32);
         });
 
         it('handles negative CON modifier', () => {
             // Level 1 Wizard, d6, CON -2: 6 + (-2) = 4
-            expect(calculateMaxHP(1, 6, -2)).toBe(4);
+            expect(calculateMaxHP(1, 6, 6)).toBe(4);
             
             // Level 5 Wizard, d6, CON -2:
             // Level 1: 6 - 2 = 4
             // Levels 2-5: 4 * (4 - 2) = 8
             // Total: 4 + 8 = 12
-            expect(calculateMaxHP(5, 6, -2)).toBe(12);
+            expect(calculateMaxHP(5, 6, 6)).toBe(12);
         });
 
         it('returns minimum 1 HP per level for extreme negative CON', () => {
@@ -194,7 +194,7 @@ describe('SRD 5.1 Rules', () => {
             // Levels 2-5: 4 * (4 - 5) = -4
             // Raw Total: 1 - 4 = -3
             // But minimum is 1 HP per level, so minimum 5 HP
-            expect(calculateMaxHP(5, 6, -5)).toBe(5);
+            expect(calculateMaxHP(5, 1, 6)).toBe(5);
         });
 
         it('calculates other hit die sizes correctly', () => {
@@ -202,7 +202,7 @@ describe('SRD 5.1 Rules', () => {
             // Level 1: 10 + 2 = 12
             // Levels 2-5: 4 * (6 + 2) = 32 (avg for d10 is 6)
             // Total: 12 + 32 = 44
-            expect(calculateMaxHP(5, 10, 2)).toBe(44);
+            expect(calculateMaxHP(5, 14, 10)).toBe(44);
         });
     });
 

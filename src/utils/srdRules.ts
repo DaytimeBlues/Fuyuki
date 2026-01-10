@@ -3,13 +3,15 @@
  * Pure functions for D&D 5e character stat calculations
  */
 
+import type { AbilityMods, AbilityScores, CharacterData } from '../types';
+
 /**
  * Calculate proficiency bonus by character level
  * SRD 5.1: +2 (L1-4), +3 (L5-8), +4 (L9-12), +5 (L13-16), +6 (L17-20)
  * @param level Character level (1-20)
  * @returns Proficiency bonus
  */
-export function getProfBonus(level: number): number {
+export function getProficiencyBonus(level: number): number {
     const clampedLevel = Math.max(1, Math.min(20, level));
     return Math.floor((clampedLevel - 1) / 4) + 2;
 }
@@ -20,7 +22,7 @@ export function getProfBonus(level: number): number {
  * @param score Ability score (1-30, typical 3-20)
  * @returns Ability modifier
  */
-export function getAbilityMod(score: number): number {
+export function getAbilityModifier(score: number): number {
     return Math.floor((score - 10) / 2);
 }
 
@@ -85,15 +87,17 @@ export function getSpellSlotsWithUsed(
 }
 
 /**
- * Calculate maximum HP for a Wizard (d6 hit die)
- * SRD 5.1: First level = max hit die + CON mod, subsequent = avg (rounded down) + CON mod
+ * Calculate maximum HP
+ * SRD 5.1: First level = max hit die + CON mod, subsequent = avg (fixed) + CON mod
+ * Fixed average per SRD/PHB: \( \lfloor \frac{\text{hitDie}}{2} \rfloor + 1 \)
  * @param level Character level
+ * @param conScore Constitution score
  * @param hitDieSize Hit die size (6 for d6, 8 for d8, etc.)
- * @param conMod Constitution modifier
  * @returns Maximum HP
  */
-export function calculateMaxHP(level: number, hitDieSize: number, conMod: number): number {
+export function calculateMaxHP(level: number, conScore: number, hitDieSize: number): number {
     const clampedLevel = Math.max(1, Math.min(20, level));
+    const conMod = getAbilityModifier(conScore);
     
     // First level: max hit die + CON mod (minimum 1 per level per RAW interpretation)
     const firstLevelHP = hitDieSize + conMod;
@@ -121,8 +125,53 @@ export function calculateMaxHP(level: number, hitDieSize: number, conMod: number
  * @param spellcastingMod Spellcasting ability modifier (INT for Wizard)
  * @returns Spell Save DC
  */
-export function calculateSpellSaveDC(profBonus: number, spellcastingMod: number): number {
+export function getSpellSaveDC(profBonus: number, spellcastingMod: number): number {
     return 8 + profBonus + spellcastingMod;
+}
+
+export function getAbilityMods(scores: AbilityScores): AbilityMods {
+    return {
+        str: getAbilityModifier(scores.str),
+        dex: getAbilityModifier(scores.dex),
+        con: getAbilityModifier(scores.con),
+        int: getAbilityModifier(scores.int),
+        wis: getAbilityModifier(scores.wis),
+        cha: getAbilityModifier(scores.cha),
+    };
+}
+
+/**
+ * Recalculate common derived character fields from base values.
+ * Keeps "used"/"current" values but caps them at new derived maximums.
+ *
+ * Note: Assumes a full-caster slot table (Wizard-style) and INT spellcasting.
+ */
+export function recalculateDerivedCharacterData(prev: CharacterData): CharacterData {
+    const level = clamp(prev.level, LEVEL_MIN, LEVEL_MAX);
+    const abilityScores = prev.abilities;
+    const abilityMods = getAbilityMods(abilityScores);
+    const profBonus = getProficiencyBonus(level);
+    const slots = getSpellSlotsWithUsed(level, prev.slots);
+
+    const maxHP = calculateMaxHP(level, abilityScores.con, prev.hitDice.size);
+    const currentHP = Math.min(prev.hp.current, maxHP);
+
+    const hitDiceMax = level;
+    const hitDiceCurrent = Math.min(prev.hitDice.current, hitDiceMax);
+
+    const dc = getSpellSaveDC(profBonus, abilityMods.int);
+
+    return {
+        ...prev,
+        level,
+        abilities: abilityScores,
+        abilityMods,
+        profBonus,
+        dc,
+        hp: { ...prev.hp, current: currentHP, max: maxHP },
+        hitDice: { ...prev.hitDice, current: hitDiceCurrent, max: hitDiceMax },
+        slots,
+    };
 }
 
 /**
@@ -144,3 +193,11 @@ export const LEVEL_MAX = 20;
 export function clamp(value: number, min: number, max: number): number {
     return Math.max(min, Math.min(max, value));
 }
+
+/**
+ * Compatibility exports (older naming used across the app/tests).
+ * Prefer the new names above.
+ */
+export const getProfBonus = getProficiencyBonus;
+export const getAbilityMod = getAbilityModifier;
+export const calculateSpellSaveDC = getSpellSaveDC;
