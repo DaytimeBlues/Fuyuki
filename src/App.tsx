@@ -14,6 +14,7 @@ import { HitDiceWidget } from './components/widgets/HitDiceWidget';
 import { InitiativeWidget } from './components/widgets/InitiativeWidget';
 import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
+import { CharacterEditor } from './components/widgets/CharacterEditor';
 import { SpellsView } from './components/views/SpellsView';
 import { CombatView } from './components/views/CombatView';
 import { RestView } from './components/views/RestView';
@@ -22,6 +23,13 @@ import { BiographyView } from './components/views/BiographyView';
 import { SessionPicker } from './components/SessionPicker';
 import { initialCharacterData } from './data/initialState';
 import { getActiveSession, updateActiveSession } from './utils/sessionStorage';
+import {
+  getProfBonus,
+  getAbilityMod,
+  getSpellSlotsWithUsed,
+  calculateMaxHP,
+  calculateSpellSaveDC,
+} from './utils/srdRules';
 import type { CharacterData, Minion, Session } from './types';
 
 function App() {
@@ -202,6 +210,70 @@ function App() {
     setActiveTab('home');
   }, [showToast]);
 
+  /**
+   * Handle level change with cascade updates per SRD 5.1
+   * Cascades: proficiency bonus, hit dice max, spell slots, max HP, spell save DC
+   */
+  const handleLevelChange = useCallback((newLevel: number) => {
+    setData(prev => {
+      const newProfBonus = getProfBonus(newLevel);
+      const conMod = prev.abilities.con.mod;
+      const intMod = prev.abilities.int.mod; // Wizard spellcasting ability
+      const newMaxHP = calculateMaxHP(newLevel, prev.hitDice.size, conMod);
+      const newSpellSlots = getSpellSlotsWithUsed(newLevel, prev.slots);
+      const newSpellDC = calculateSpellSaveDC(newProfBonus, intMod);
+
+      // Cap current HP/Hit Dice at new max if level decreased
+      const newCurrentHP = Math.min(prev.hp.current, newMaxHP);
+      const newCurrentHitDice = Math.min(prev.hitDice.current, newLevel);
+
+      return {
+        ...prev,
+        level: newLevel,
+        profBonus: newProfBonus,
+        hp: { ...prev.hp, current: newCurrentHP, max: newMaxHP },
+        hitDice: { ...prev.hitDice, current: newCurrentHitDice, max: newLevel },
+        slots: newSpellSlots,
+        dc: newSpellDC,
+      };
+    });
+    showToast(`Level changed to ${newLevel}`);
+  }, [showToast]);
+
+  /**
+   * Handle ability score change with cascade updates per SRD 5.1
+   * Cascades: ability modifier, and if CON/INT: max HP, spell save DC
+   */
+  const handleAbilityChange = useCallback((ability: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha', newScore: number) => {
+    setData(prev => {
+      const newMod = getAbilityMod(newScore);
+      const newAbilities = {
+        ...prev.abilities,
+        [ability]: { score: newScore, mod: newMod },
+      };
+
+      // Base updates with new abilities
+      const updates: Partial<CharacterData> = {
+        abilities: newAbilities,
+      };
+
+      // CON change affects max HP
+      if (ability === 'con') {
+        const newMaxHP = calculateMaxHP(prev.level, prev.hitDice.size, newMod);
+        const newCurrentHP = Math.min(prev.hp.current, newMaxHP);
+        updates.hp = { ...prev.hp, current: newCurrentHP, max: newMaxHP };
+      }
+
+      // INT change affects spell save DC (Wizard)
+      if (ability === 'int') {
+        updates.dc = calculateSpellSaveDC(prev.profBonus, newMod);
+      }
+
+      return { ...prev, ...updates };
+    });
+    showToast(`${ability.toUpperCase()} updated to ${newScore}`);
+  }, [showToast]);
+
 
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab}>
@@ -350,6 +422,11 @@ function App() {
       {activeTab === 'settings' && (
         <div className="animate-fade-in">
           <ErrorBoundary>
+            <CharacterEditor
+              data={data}
+              onLevelChange={handleLevelChange}
+              onAbilityChange={handleAbilityChange}
+            />
             <InitiativeWidget
               dexMod={data.abilities.dex.mod}
               profBonus={data.profBonus}
