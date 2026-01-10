@@ -19,7 +19,7 @@ const navItems = [
 export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
     return (
         <>
-            {/* Flame Video Background - OUTSIDE main container */}
+            {/* Background Image - OUTSIDE main container */}
             <BackgroundVideo />
 
             <div className="min-h-screen w-full relative z-10 bg-transparent text-text overflow-x-hidden">
