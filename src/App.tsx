@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HealthWidget } from './components/widgets/HealthWidget';
@@ -19,11 +19,29 @@ import { BiographyView } from './components/views/BiographyView';
 import { initialCharacterData } from './data/initialState';
 import type { CharacterData, Minion } from './types';
 
+const STORAGE_KEY = 'aramancia-character-state';
+const MINIONS_KEY = 'aramancia-minions';
+
 function App() {
   const [activeTab, setActiveTab] = useState('home');
-  const [data, setData] = useState<CharacterData>(initialCharacterData);
-  const [minions, setMinions] = useState<Minion[]>([]);
+  const [data, setData] = useState<CharacterData>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : initialCharacterData;
+  });
+  const [minions, setMinions] = useState<Minion[]>(() => {
+    const saved = localStorage.getItem(MINIONS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  });
   const [toast, setToast] = useState<string | null>(null);
+
+  // Persist state to localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }, [data]);
+
+  useEffect(() => {
+    localStorage.setItem(MINIONS_KEY, JSON.stringify(minions));
+  }, [minions]);
 
   const updateHealth = (newCurrent: number) => {
     const delta = newCurrent - data.hp.current;
@@ -33,27 +51,45 @@ function App() {
       const damage = Math.abs(delta);
       const tempAbsorbed = Math.min(data.hp.temp, damage);
       const remainingDamage = damage - tempAbsorbed;
+      const newHP = Math.max(0, data.hp.current - remainingDamage);
 
       setData(prev => ({
         ...prev,
         hp: {
           ...prev.hp,
           temp: prev.hp.temp - tempAbsorbed,
-          current: Math.max(0, prev.hp.current - remainingDamage)
-        }
+          current: newHP
+        },
+        // RAW: Concentration ends when incapacitated (0 HP)
+        concentration: newHP === 0 ? null : prev.concentration
       }));
 
-      // CON save for concentration when taking damage (RAW: DC = max(10, damage/2))
-      if (data.concentration && remainingDamage > 0) {
+      // CON save for concentration when taking damage
+      // RAW: DC = max(10, damage/2) - using total damage taken (common ruling)
+      if (data.concentration && remainingDamage > 0 && newHP > 0) {
         const conSaveDC = Math.max(10, Math.floor(damage / 2));
         showToast(`CON Save DC ${conSaveDC} to maintain ${data.concentration}`);
       }
+
+      // Notify if concentration lost due to dropping to 0 HP
+      if (data.concentration && newHP === 0) {
+        showToast(`Concentration on ${data.concentration} lost - Incapacitated!`);
+      }
     } else {
       // Healing - only affects current HP, not THP
+      // RAW: Reset death saves when healed from 0 HP
+      const wasAtZero = data.hp.current === 0;
       setData(prev => ({
         ...prev,
-        hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) }
+        hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) },
+        deathSaves: wasAtZero && newCurrent > 0 
+          ? { successes: 0, failures: 0 } 
+          : prev.deathSaves
       }));
+
+      if (wasAtZero && newCurrent > 0) {
+        showToast("Stabilized! Death saves reset.");
+      }
     }
   };
 
@@ -172,6 +208,7 @@ function App() {
             <SpellSlotsWidget
               slots={data.slots}
               onChange={updateSpellSlot}
+              spellSaveDC={data.dc}
             />
           </div>
 

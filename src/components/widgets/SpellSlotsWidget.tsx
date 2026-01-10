@@ -3,9 +3,10 @@ import { Wand2 } from 'lucide-react';
 interface SpellSlotsWidgetProps {
     slots: { [level: number]: { used: number; max: number } };
     onChange: (level: number, used: number) => void;
+    spellSaveDC?: number;
 }
 
-export function SpellSlotsWidget({ slots, onChange }: SpellSlotsWidgetProps) {
+export function SpellSlotsWidget({ slots, onChange, spellSaveDC = 14 }: SpellSlotsWidgetProps) {
     return (
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-4">
@@ -14,7 +15,7 @@ export function SpellSlotsWidget({ slots, onChange }: SpellSlotsWidgetProps) {
                     <h3 className="font-display text-sm text-parchment tracking-wider">Spell Slots</h3>
                 </div>
                 <div className="text-xs text-muted">
-                    Save DC <span className="text-white font-semibold">14</span>
+                    Save DC <span className="text-white font-semibold">{spellSaveDC}</span>
                 </div>
             </div>
 
