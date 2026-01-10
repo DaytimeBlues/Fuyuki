@@ -94,11 +94,14 @@ src/
 | Max 3 attunement | ✅ | Hard limit enforced |
 
 ## Known Issues / TODOs
-- [ ] Persist state to localStorage/Firebase
+- [x] ~~Persist state to localStorage/Firebase~~ (Done: localStorage)
+- [ ] Short Rest functionality (Hit Dice spending)
+- [ ] Massive Damage instant death rule
+- [ ] Natural 1/20 death save handling
 - [ ] Add more spell definitions
 - [ ] Implement spell preparation system
 - [ ] Add conditions/status effects
-- [ ] Mobile responsiveness improvements
+- [ ] Header level/class from state (currently hardcoded)
 
 ## Development Commands
 ```bash
@@ -109,7 +112,8 @@ npm run preview  # Preview production build
 ```
 
 ## Recent Changes
-(Updated via /cleanup command)
+- **2026-01-09**: Critical fixes - localStorage persistence, dynamic DC, RAW compliance (death saves reset, concentration auto-clear)
+- **2026-01-09**: Morphic System implementation
 
 ---
 *Last updated: 2026-01-09*
