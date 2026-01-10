@@ -2,31 +2,78 @@ import { Shield } from 'lucide-react';
 import type { CharacterData } from '../../types';
 
 interface SavingThrowsWidgetProps {
-  data: CharacterData;
+    abilities: CharacterData['abilities'];
+    profBonus: number;
+    savingThrowProficiencies: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha')[];
 }
 
-export function SavingThrowsWidget({ data }: SavingThrowsWidgetProps) {
-  const { savingThrows } = data;
+export function SavingThrowsWidget({ abilities, profBonus, savingThrowProficiencies }: SavingThrowsWidgetProps) {
+    const saves: { key: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha'; label: string }[] = [
+        { key: 'str', label: 'STR' },
+        { key: 'dex', label: 'DEX' },
+        { key: 'con', label: 'CON' },
+        { key: 'int', label: 'INT' },
+        { key: 'wis', label: 'WIS' },
+        { key: 'cha', label: 'CHA' },
+    ];
 
-  return (
-    <div className="card-parchment border border-white/15 rounded-lg p-4 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm uppercase tracking-widest text-white font-bold">
-          Wards
-        </h3>
-        <Shield className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
-      </div>
-      
-      <div className="grid grid-cols-3 gap-2">
-        {Object.entries(savingThrows).map(([stat, val]) => (
-            <div key={stat} className="flex flex-col items-center bg-white/5 rounded p-2 border border-white/10">
-                <span className="text-[10px] uppercase text-muted tracking-wider">{stat}</span>
-                <span className={`font-display text-lg ${val >= 0 ? 'text-white' : 'text-red-400'}`}>
-                    {val >= 0 ? '+' : ''}{val}
-                </span>
+    return (
+        <div className="card-parchment p-4 mb-4">
+            <div className="flex items-center gap-2 mb-4">
+                <Shield size={18} className="text-white" />
+                <h3 className="font-display text-sm text-parchment tracking-wider">SAVING THROWS</h3>
             </div>
-        ))}
-      </div>
-    </div>
-  );
+
+            <div className="grid grid-cols-2 gap-3">
+                {saves.map(({ key, label }) => {
+                    const isProficient = savingThrowProficiencies.includes(key);
+                    const abilityMod = abilities[key]?.mod || 0;
+                    const total = abilityMod + (isProficient ? profBonus : 0);
+
+                    return (
+                        <div
+                            key={key}
+                            className={`p-3 rounded-lg border transition-all ${
+                                isProficient
+                                    ? 'bg-white/5 border-white/20'
+                                    : 'bg-card-elevated/60 border-white/10'
+                            }`}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div
+                                        className={`w-2 h-2 rounded-full ${
+                                            isProficient
+                                                ? 'bg-white shadow-[0_0_6px_rgba(255,255,255,0.4)]'
+                                                : 'bg-white/20'
+                                        }`}
+                                    />
+                                    <span
+                                        className={`text-xs uppercase tracking-wider ${
+                                            isProficient ? 'text-parchment-light font-display' : 'text-muted'
+                                        }`}
+                                    >
+                                        {label}
+                                    </span>
+                                </div>
+                                <span
+                                    className={`font-display text-sm ${
+                                        isProficient ? 'text-white' : 'text-muted'
+                                    }`}
+                                >
+                                    {total >= 0 ? '+' : ''}{total}
+                                </span>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            <div className="mt-3 pt-3 border-t border-white/10">
+                <p className="text-[10px] text-muted opacity-60">
+                    Proficient saves shown with • indicator
+                </p>
+            </div>
+        </div>
+    );
 }

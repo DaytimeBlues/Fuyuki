@@ -39,23 +39,23 @@ export interface Minion {
     notes: string;
 }
 
+export interface HitDice {
+    current: number;  // Available to spend
+    max: number;      // Equal to character level
+    size: number;     // Die size (6 for d6, 8 for d8, etc.)
+}
+
 export interface CharacterData {
     hp: { current: number; max: number; temp: number };
+    hitDice: HitDice;
     baseAC: number;
     mageArmour: boolean;
     shield: boolean;
     dc: number;
     profBonus: number;
-    initiative: number;
-    hitDice: { current: number; max: number; dieType: number };
-    savingThrows: {
-        str: number;
-        dex: number;
-        con: number;
-        int: number;
-        wis: number;
-        cha: number;
-    };
+    level: number;
+    hitDice: { total: number; used: number; dieType: number };
+    savingThrowProficiencies: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha')[];
     deathSaves: { successes: number; failures: number };
     abilities: {
         str: Ability;

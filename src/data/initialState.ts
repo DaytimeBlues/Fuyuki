@@ -2,21 +2,15 @@ import type { CharacterData } from '../types';
 
 export const initialCharacterData: CharacterData = {
     hp: { current: 35, max: 35, temp: 0 },
+    hitDice: { current: 5, max: 5, size: 6 }, // Wizard level 5, d6 hit die
     baseAC: 13,
     mageArmour: false,
     shield: false,
     dc: 14,
     profBonus: 3,
-    initiative: 2,
-    hitDice: { current: 5, max: 5, dieType: 6 },
-    savingThrows: {
-        str: -1,
-        dex: 2,
-        con: 2,
-        int: 8,
-        wis: 5,
-        cha: 0
-    },
+    level: 6,
+    hitDice: { total: 6, used: 0, dieType: 6 },
+    savingThrowProficiencies: ['int', 'wis'],
     deathSaves: { successes: 0, failures: 0 },
     abilities: {
         str: { score: 8, mod: -1 },

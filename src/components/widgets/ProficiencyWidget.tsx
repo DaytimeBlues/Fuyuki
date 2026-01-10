@@ -1,27 +1,34 @@
 import { Award } from 'lucide-react';
-import type { CharacterData } from '../../types';
 
 interface ProficiencyWidgetProps {
-  data: CharacterData;
+    profBonus: number;
+    level: number;
 }
 
-export function ProficiencyWidget({ data }: ProficiencyWidgetProps) {
-  const { profBonus } = data;
+export function ProficiencyWidget({ profBonus, level }: ProficiencyWidgetProps) {
+    return (
+        <div className="card-parchment p-4 mb-4">
+            <div className="flex items-center gap-2 mb-4">
+                <Award size={18} className="text-white" />
+                <h3 className="font-display text-sm text-parchment tracking-wider">PROFICIENCY BONUS</h3>
+            </div>
 
-  return (
-    <div className="card-parchment border border-white/15 rounded-lg p-4 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm uppercase tracking-widest text-white font-bold">
-          Mastery
-        </h3>
-        <Award className="w-5 h-5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" />
-      </div>
-      
-      <div className="flex items-center justify-center">
-        <span className="text-3xl font-display text-white">
-            +{profBonus}
-        </span>
-      </div>
-    </div>
-  );
+            <div className="flex items-center justify-center">
+                {/* Circular Display */}
+                <div className="stat-circle">
+                    <div className="text-center">
+                        <span className="font-display text-3xl text-parchment-light">
+                            +{profBonus}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Level Info */}
+            <div className="mt-4 pt-3 border-t border-white/10 text-center">
+                <span className="text-xs text-muted">Character Level</span>
+                <div className="font-display text-lg text-parchment-light mt-1">{level}</div>
+            </div>
+        </div>
+    );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HealthWidget } from './components/widgets/HealthWidget';
@@ -10,6 +10,10 @@ import { AttunementWidget } from './components/widgets/AttunementWidget';
 import { InventoryWidget } from './components/widgets/InventoryWidget';
 import { WildShapeWidget } from './components/widgets/WildShapeWidget';
 import { MulticlassSpellSlotsWidget } from './components/widgets/MulticlassSpellSlotsWidget';
+import { HitDiceWidget } from './components/widgets/HitDiceWidget';
+import { InitiativeWidget } from './components/widgets/InitiativeWidget';
+import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
+import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
 import { SpellsView } from './components/views/SpellsView';
 import { CharacterView } from './components/views/CharacterView';
 import { CombatView } from './components/views/CombatView';
@@ -19,11 +23,35 @@ import { BiographyView } from './components/views/BiographyView';
 import { initialCharacterData } from './data/initialState';
 import type { CharacterData, Minion } from './types';
 
+const STORAGE_KEY = 'aramancia-character-state';
+const MINIONS_KEY = 'aramancia-minions';
+
 function App() {
   const [activeTab, setActiveTab] = useState('home');
-  const [data, setData] = useState<CharacterData>(initialCharacterData);
-  const [minions, setMinions] = useState<Minion[]>([]);
+  const [data, setData] = useState<CharacterData>(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : initialCharacterData;
+  });
+  const [minions, setMinions] = useState<Minion[]>(() => {
+    const saved = localStorage.getItem(MINIONS_KEY);
+    return saved ? JSON.parse(saved) : [];
+  });
   const [toast, setToast] = useState<string | null>(null);
+
+  // Persist state to localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }, [data]);
+
+  useEffect(() => {
+    localStorage.setItem(MINIONS_KEY, JSON.stringify(minions));
+  }, [minions]);
+
+  // Toast notification - declared early so other callbacks can use it
+  const showToast = useCallback((message: string) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 2000);
+  }, []);
 
   const updateHealth = (newCurrent: number) => {
     const delta = newCurrent - data.hp.current;
@@ -33,45 +61,63 @@ function App() {
       const damage = Math.abs(delta);
       const tempAbsorbed = Math.min(data.hp.temp, damage);
       const remainingDamage = damage - tempAbsorbed;
+      const newHP = Math.max(0, data.hp.current - remainingDamage);
 
       setData(prev => ({
         ...prev,
         hp: {
           ...prev.hp,
           temp: prev.hp.temp - tempAbsorbed,
-          current: Math.max(0, prev.hp.current - remainingDamage)
-        }
+          current: newHP
+        },
+        // RAW: Concentration ends when incapacitated (0 HP)
+        concentration: newHP === 0 ? null : prev.concentration
       }));
 
-      // CON save for concentration when taking damage (RAW: DC = max(10, damage/2))
-      if (data.concentration && remainingDamage > 0) {
+      // CON save for concentration when taking damage
+      // RAW: DC = max(10, damage/2) - using total damage taken (common ruling)
+      if (data.concentration && remainingDamage > 0 && newHP > 0) {
         const conSaveDC = Math.max(10, Math.floor(damage / 2));
         showToast(`CON Save DC ${conSaveDC} to maintain ${data.concentration}`);
       }
+
+      // Notify if concentration lost due to dropping to 0 HP
+      if (data.concentration && newHP === 0) {
+        showToast(`Concentration on ${data.concentration} lost - Incapacitated!`);
+      }
     } else {
       // Healing - only affects current HP, not THP
+      // RAW: Reset death saves when healed from 0 HP
+      const wasAtZero = data.hp.current === 0;
       setData(prev => ({
         ...prev,
-        hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) }
+        hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) },
+        deathSaves: wasAtZero && newCurrent > 0 
+          ? { successes: 0, failures: 0 } 
+          : prev.deathSaves
       }));
+
+      if (wasAtZero && newCurrent > 0) {
+        showToast("Stabilized! Death saves reset.");
+      }
     }
   };
 
-  const updateTempHP = (newTemp: number) => {
+  const updateTempHP = useCallback((newTemp: number) => {
     setData(prev => ({
       ...prev,
       hp: { ...prev.hp, temp: Math.max(0, newTemp) }
     }));
-  };
+  }, []);
 
-  const updateAC = (key: 'mageArmour' | 'shield') => {
+  const updateAC = useCallback((key: 'mageArmour' | 'shield') => {
     setData(prev => ({
       ...prev,
       [key]: !prev[key]
     }));
-  };
+  }, []);
 
-  const updateSpellSlot = (level: number, used: number) => {
+  const updateSpellSlot = useCallback((level: number, used: number) => {
     setData(prev => ({
       ...prev,
       slots: {
@@ -79,14 +125,14 @@ function App() {
         [level]: { ...prev.slots[level], used }
       }
     }));
-  };
+  }, []);
 
-  const updateDeathSaves = (type: 'successes' | 'failures', value: number) => {
+  const updateDeathSaves = useCallback((type: 'successes' | 'failures', value: number) => {
     setData(prev => ({
       ...prev,
       deathSaves: { ...prev.deathSaves, [type]: value }
     }));
-  };
+  }, []);
 
   const addMinion = (type: 'Skeleton' | 'Zombie') => {
     const stats = data.defaultMinion[type];
@@ -102,46 +148,62 @@ function App() {
     showToast(`Raised ${type}`);
   };
 
-  const updateMinion = (id: string, hp: number) => {
+  const updateMinion = useCallback((id: string, hp: number) => {
     setMinions(prev => prev.map(m => {
       if (m.id === id) {
         return { ...m, hp: { ...m.hp, current: Math.max(0, hp) } };
       }
       return m;
     }));
-  };
+  }, []);
 
-  const removeMinion = (id: string) => {
+  const removeMinion = useCallback((id: string) => {
     setMinions(prev => prev.filter(m => m.id !== id));
     showToast("Minion Destroyed");
-  };
+  }, [showToast]);
 
-  const clearMinions = () => {
+  const clearMinions = useCallback(() => {
     setMinions([]);
     showToast("All Minions Released");
-  };
+  }, [showToast]);
 
-  const showToast = (message: string) => {
-    setToast(message);
-    setTimeout(() => setToast(null), 2000);
-  };
-
-  const handleShortRest = () => {
-    // Logic for short rest (could be expanded)
-    showToast("Short Rest Taken");
-  };
-
-  const handleLongRest = () => {
+  const handleSpendHitDie = useCallback((healed: number, diceSpent: number) => {
     setData(prev => ({
       ...prev,
-      hp: { ...prev.hp, current: prev.hp.max, temp: 0 },
-      slots: Object.fromEntries(Object.entries(prev.slots).map(([k, v]) => [k, { ...v, used: 0 }])),
-      mageArmour: false,
-      shield: false,
-      deathSaves: { successes: 0, failures: 0 }
+      hp: { ...prev.hp, current: Math.min(prev.hp.max, prev.hp.current + healed) },
+      hitDice: { ...prev.hitDice, current: Math.max(0, prev.hitDice.current - diceSpent) }
     }));
+    if (healed > 0) {
+      showToast(`Healed ${healed} HP`);
+    }
+  }, [showToast]);
+
+  const handleLongRest = useCallback(() => {
+    setData(prev => {
+      // RAW: Recover half of max hit dice (minimum 1) on long rest
+      const hitDiceRecovered = Math.max(1, Math.ceil(prev.hitDice.max / 2));
+      const newHitDice = Math.min(prev.hitDice.max, prev.hitDice.current + hitDiceRecovered);
+
+      return {
+        ...prev,
+        hp: { ...prev.hp, current: prev.hp.max, temp: 0 },
+        hitDice: { ...prev.hitDice, current: newHitDice },
+        slots: Object.fromEntries(Object.entries(prev.slots).map(([k, v]) => [k, { ...v, used: 0 }])),
+        mageArmour: false,
+        shield: false,
+        concentration: null,
+        deathSaves: { successes: 0, failures: 0 }
+      };
+    });
     showToast("Long Rest Completed");
     setActiveTab('home');
+  }, [showToast]);
+
+  const updateHitDice = (used: number) => {
+    setData(prev => ({
+      ...prev,
+      hitDice: { ...prev.hitDice, used: Math.max(0, Math.min(prev.hitDice.total, used)) }
+    }));
   };
 
   return (
@@ -172,6 +234,7 @@ function App() {
             <SpellSlotsWidget
               slots={data.slots}
               onChange={updateSpellSlot}
+              spellSaveDC={data.dc}
             />
           </div>
 
@@ -290,9 +353,36 @@ function App() {
       {activeTab === 'settings' && (
         <div className="animate-fade-in">
           <ErrorBoundary>
+            <InitiativeWidget
+              dexMod={data.abilities.dex.mod}
+              profBonus={data.profBonus}
+            />
+            <ProficiencyWidget
+              profBonus={data.profBonus}
+              level={data.level}
+            />
+            <SavingThrowsWidget
+              abilities={data.abilities}
+              profBonus={data.profBonus}
+              savingThrowProficiencies={data.savingThrowProficiencies}
+            />
+            <HitDiceWidget
+              total={data.hitDice.total}
+              used={data.hitDice.used}
+              dieType={data.hitDice.dieType}
+              conMod={data.abilities.con.mod}
+              onChange={updateHitDice}
+            />
             <CharacterView data={data} />
             <div className="mt-8 border-t border-gray-800 pt-8">
-              <RestView onShortRest={handleShortRest} onLongRest={handleLongRest} />
+              <RestView
+                hitDice={data.hitDice}
+                conMod={data.abilities.con.mod}
+                currentHP={data.hp.current}
+                maxHP={data.hp.max}
+                onSpendHitDie={handleSpendHitDie}
+                onLongRest={handleLongRest}
+              />
             </div>
             <div className="mt-8 border-t border-gray-800 pt-8">
               <MulticlassSpellSlotsWidget

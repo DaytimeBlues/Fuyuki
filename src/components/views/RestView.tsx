@@ -1,11 +1,69 @@
-import { Tent, Moon, Sun, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { Tent, Moon, Sun, Sparkles, ChevronRight, X } from 'lucide-react';
+import { HitDiceWidget } from '../widgets/HitDiceWidget';
+import type { HitDice } from '../../types';
 
 interface RestViewProps {
-    onShortRest: () => void;
+    hitDice: HitDice;
+    conMod: number;
+    currentHP: number;
+    maxHP: number;
+    onSpendHitDie: (healed: number, diceSpent: number) => void;
     onLongRest: () => void;
 }
 
-export function RestView({ onShortRest, onLongRest }: RestViewProps) {
+export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onLongRest }: RestViewProps) {
+    const [showShortRest, setShowShortRest] = useState(false);
+
+    if (showShortRest) {
+        return (
+            <div className="pb-20">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <Sun size={24} className="text-white" />
+                        <h2 className="font-display text-xl text-parchment-light tracking-wider">Short Rest</h2>
+                    </div>
+                    <button
+                        onClick={() => setShowShortRest(false)}
+                        className="p-2 text-muted hover:text-white transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
+
+                {/* HP Status */}
+                <div className="card-parchment p-4 mb-4">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted">Current HP</span>
+                        <span className="font-display text-xl text-white">
+                            {currentHP} <span className="text-muted">/ {maxHP}</span>
+                        </span>
+                    </div>
+                    <div className="h-2 bg-card-elevated rounded-full overflow-hidden mt-2 border border-white/10">
+                        <div
+                            className="h-full bg-white transition-all duration-300"
+                            style={{ width: `${(currentHP / maxHP) * 100}%` }}
+                        />
+                    </div>
+                </div>
+
+                {/* Hit Dice Widget */}
+                <HitDiceWidget
+                    hitDice={hitDice}
+                    conMod={conMod}
+                    currentHP={currentHP}
+                    maxHP={maxHP}
+                    onSpend={onSpendHitDie}
+                />
+
+                <p className="text-xs text-muted text-center mt-4 opacity-60">
+                    Spend hit dice to recover HP during a short rest (1 hour)
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="pb-20 flex flex-col items-center justify-center h-full min-h-[60vh]">
             <div className="text-center mb-10">
@@ -22,26 +80,29 @@ export function RestView({ onShortRest, onLongRest }: RestViewProps) {
             <div className="w-full space-y-4">
                 {/* Short Rest */}
                 <button
-                    onClick={onShortRest}
+                    onClick={() => setShowShortRest(true)}
                     className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                 >
                     <div className="flex items-center gap-4 relative z-10">
                         <div className="p-3 bg-card-elevated rounded-full border border-white/10 group-hover:border-white/30 transition-colors">
                             <Sun size={24} className="text-parchment group-hover:text-white transition-colors" />
                         </div>
-                        <div>
+                        <div className="flex-1">
                             <h3 className="font-display text-lg text-parchment-light group-hover:text-white transition-colors tracking-wider">
                                 Short Rest
                             </h3>
-                            <p className="text-xs text-muted">Use Hit Dice to heal</p>
+                            <p className="text-xs text-muted">
+                                Spend Hit Dice to heal • {hitDice.current}/{hitDice.max} available
+                            </p>
                         </div>
+                        <ChevronRight size={20} className="text-muted group-hover:text-white transition-colors" />
                     </div>
                 </button>
 
                 {/* Long Rest */}
                 <button
                     onClick={() => {
-                        if (confirm("Take a Long Rest? This will reset HP, Spell Slots, and Hit Dice.")) {
+                        if (confirm("Take a Long Rest? This will reset HP, Spell Slots, and recover Hit Dice.")) {
                             onLongRest();
                         }
                     }}
@@ -51,12 +112,13 @@ export function RestView({ onShortRest, onLongRest }: RestViewProps) {
                         <div className="p-3 bg-card-elevated rounded-full border border-white/10 group-hover:border-white/30 group-hover:bg-white/10 transition-colors">
                             <Moon size={24} className="text-parchment group-hover:text-white transition-colors" />
                         </div>
-                        <div>
+                        <div className="flex-1">
                             <h3 className="font-display text-lg text-parchment-light group-hover:text-white transition-colors tracking-wider">
                                 Long Rest
                             </h3>
-                            <p className="text-xs text-muted">Reset HP, Slots & Abilities</p>
+                            <p className="text-xs text-muted">Full HP, all Spell Slots, ½ Hit Dice</p>
                         </div>
+                        <ChevronRight size={20} className="text-muted group-hover:text-white transition-colors" />
                     </div>
                 </button>
             </div>
