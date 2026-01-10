@@ -23,7 +23,7 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
             <BackgroundVideo />
 
             <div className="min-h-screen w-full relative z-10 bg-transparent text-text overflow-x-hidden">
-                {/* Gradient Overlays - above video */}
+                {/* Gradient Overlays - above background */}
                 <div className="fixed inset-0 z-5 pointer-events-none">
                     <div className="absolute inset-0 bg-gradient-to-b from-white/3 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-bg-dark via-bg-dark/80 to-transparent" />
