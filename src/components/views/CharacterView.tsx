@@ -1,6 +1,5 @@
 import type { CharacterData } from '../../types';
 import { Brain, Target } from 'lucide-react';
-import { HitDiceWidget } from '../widgets/HitDiceWidget';
 import { InitiativeWidget } from '../widgets/InitiativeWidget';
 import { ProficiencyWidget } from '../widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from '../widgets/SavingThrowsWidget';
@@ -16,16 +15,22 @@ export function CharacterView({ data }: CharacterViewProps) {
         <div className="pb-20">
             {/* Core Stats Grid */}
             <div className="grid grid-cols-2 gap-3 mb-6">
-                <InitiativeWidget data={data} />
-                <ProficiencyWidget data={data} />
+                <InitiativeWidget
+                    dexMod={data.abilities.dex.mod}
+                    profBonus={data.profBonus}
+                />
+                <ProficiencyWidget
+                    profBonus={data.profBonus}
+                    level={data.level}
+                />
             </div>
 
             <div className="mb-6">
-                <HitDiceWidget data={data} />
-            </div>
-
-            <div className="mb-6">
-                <SavingThrowsWidget data={data} />
+                <SavingThrowsWidget
+                    abilities={data.abilities}
+                    profBonus={data.profBonus}
+                    savingThrowProficiencies={data.savingThrowProficiencies}
+                />
             </div>
 
             {/* Abilities Grid */}

@@ -15,7 +15,6 @@ import { InitiativeWidget } from './components/widgets/InitiativeWidget';
 import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
 import { SpellsView } from './components/views/SpellsView';
-import { CharacterView } from './components/views/CharacterView';
 import { CombatView } from './components/views/CombatView';
 import { RestView } from './components/views/RestView';
 import { GrimoireView } from './components/views/GrimoireView';
@@ -92,8 +91,8 @@ function App() {
       setData(prev => ({
         ...prev,
         hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) },
-        deathSaves: wasAtZero && newCurrent > 0 
-          ? { successes: 0, failures: 0 } 
+        deathSaves: wasAtZero && newCurrent > 0
+          ? { successes: 0, failures: 0 }
           : prev.deathSaves
       }));
 
@@ -199,12 +198,6 @@ function App() {
     setActiveTab('home');
   }, [showToast]);
 
-  const updateHitDice = (used: number) => {
-    setData(prev => ({
-      ...prev,
-      hitDice: { ...prev.hitDice, used: Math.max(0, Math.min(prev.hitDice.total, used)) }
-    }));
-  };
 
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab}>
@@ -367,13 +360,12 @@ function App() {
               savingThrowProficiencies={data.savingThrowProficiencies}
             />
             <HitDiceWidget
-              total={data.hitDice.total}
-              used={data.hitDice.used}
-              dieType={data.hitDice.dieType}
+              hitDice={data.hitDice}
               conMod={data.abilities.con.mod}
-              onChange={updateHitDice}
+              currentHP={data.hp.current}
+              maxHP={data.hp.max}
+              onSpend={handleSpendHitDie}
             />
-            <CharacterView data={data} />
             <div className="mt-8 border-t border-gray-800 pt-8">
               <RestView
                 hitDice={data.hitDice}

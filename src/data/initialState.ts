@@ -2,14 +2,13 @@ import type { CharacterData } from '../types';
 
 export const initialCharacterData: CharacterData = {
     hp: { current: 35, max: 35, temp: 0 },
-    hitDice: { current: 5, max: 5, size: 6 }, // Wizard level 5, d6 hit die
+    hitDice: { current: 6, max: 6, size: 6 }, // Level 6 wizard, d6 hit die
     baseAC: 13,
     mageArmour: false,
     shield: false,
     dc: 14,
     profBonus: 3,
     level: 6,
-    hitDice: { total: 6, used: 0, dieType: 6 },
     savingThrowProficiencies: ['int', 'wis'],
     deathSaves: { successes: 0, failures: 0 },
     abilities: {

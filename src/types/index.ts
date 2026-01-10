@@ -54,7 +54,6 @@ export interface CharacterData {
     dc: number;
     profBonus: number;
     level: number;
-    hitDice: { total: number; used: number; dieType: number };
     savingThrowProficiencies: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha')[];
     deathSaves: { successes: number; failures: number };
     abilities: {
