@@ -10,6 +10,10 @@ import { AttunementWidget } from './components/widgets/AttunementWidget';
 import { InventoryWidget } from './components/widgets/InventoryWidget';
 import { WildShapeWidget } from './components/widgets/WildShapeWidget';
 import { MulticlassSpellSlotsWidget } from './components/widgets/MulticlassSpellSlotsWidget';
+import { HitDiceWidget } from './components/widgets/HitDiceWidget';
+import { InitiativeWidget } from './components/widgets/InitiativeWidget';
+import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
+import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
 import { SpellsView } from './components/views/SpellsView';
 import { CharacterView } from './components/views/CharacterView';
 import { CombatView } from './components/views/CombatView';
@@ -195,6 +199,13 @@ function App() {
     setActiveTab('home');
   }, [showToast]);
 
+  const updateHitDice = (used: number) => {
+    setData(prev => ({
+      ...prev,
+      hitDice: { ...prev.hitDice, used: Math.max(0, Math.min(prev.hitDice.total, used)) }
+    }));
+  };
+
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab}>
       {activeTab === 'home' && (
@@ -342,6 +353,26 @@ function App() {
       {activeTab === 'settings' && (
         <div className="animate-fade-in">
           <ErrorBoundary>
+            <InitiativeWidget
+              dexMod={data.abilities.dex.mod}
+              profBonus={data.profBonus}
+            />
+            <ProficiencyWidget
+              profBonus={data.profBonus}
+              level={data.level}
+            />
+            <SavingThrowsWidget
+              abilities={data.abilities}
+              profBonus={data.profBonus}
+              savingThrowProficiencies={data.savingThrowProficiencies}
+            />
+            <HitDiceWidget
+              total={data.hitDice.total}
+              used={data.hitDice.used}
+              dieType={data.hitDice.dieType}
+              conMod={data.abilities.con.mod}
+              onChange={updateHitDice}
+            />
             <CharacterView data={data} />
             <div className="mt-8 border-t border-gray-800 pt-8">
               <RestView
