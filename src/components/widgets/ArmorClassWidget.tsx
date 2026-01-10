@@ -38,7 +38,7 @@ export function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onTogg
                             <span className="text-sm text-parchment group-hover:text-white transition-colors">
                                 Mage Armour
                             </span>
-                            <span className="text-xs text-muted">(+2)</span>
+                            <span className="text-xs text-muted">(13+DEX)</span>
                         </div>
                         <div
                             className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${mageArmour

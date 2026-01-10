@@ -1,67 +1,97 @@
-import { Dices } from 'lucide-react';
+import { Dices, Heart } from 'lucide-react';
+import { useState } from 'react';
+import type { HitDice } from '../../types';
 
 interface HitDiceWidgetProps {
-    total: number;
-    used: number;
-    dieType: number;
+    hitDice: HitDice;
     conMod: number;
-    onChange: (used: number) => void;
+    currentHP: number;
+    maxHP: number;
+    onSpend: (healed: number, diceSpent: number) => void;
 }
 
-export function HitDiceWidget({ total, used, dieType, conMod, onChange }: HitDiceWidgetProps) {
-    const remaining = total - used;
+export function HitDiceWidget({ hitDice, conMod, currentHP, maxHP, onSpend }: HitDiceWidgetProps) {
+    const [lastRoll, setLastRoll] = useState<{ roll: number; total: number } | null>(null);
+    const canSpend = hitDice.current > 0 && currentHP < maxHP;
+
+    const rollHitDie = () => {
+        if (!canSpend) return;
+
+        // Roll the hit die
+        const roll = Math.floor(Math.random() * hitDice.size) + 1;
+        // RAW: Healing = roll + CON mod (minimum 0 per die, but total can't go below 0)
+        const healing = Math.max(0, roll + conMod);
+        // Cap healing at missing HP
+        const actualHealing = Math.min(healing, maxHP - currentHP);
+
+        setLastRoll({ roll, total: healing });
+        onSpend(actualHealing, 1);
+
+        // Clear the roll display after 3 seconds
+        setTimeout(() => setLastRoll(null), 3000);
+    };
 
     return (
-        <div className="card-parchment p-4 mb-4">
+        <div className="card-parchment p-4">
+            <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                    <Dices size={18} className="text-white" />
+                    <h3 className="font-display text-sm text-parchment tracking-wider">Hit Dice</h3>
+                </div>
+                <span className={`text-xs ${hitDice.current === 0 ? 'text-red-400' : 'text-muted'}`}>
+                    {hitDice.current}/{hitDice.max} d{hitDice.size}
+                </span>
+            </div>
+
+            {/* Visual Hit Dice */}
             <div className="flex items-center gap-2 mb-4">
-                <Dices size={18} className="text-white" />
-                <h3 className="font-display text-sm text-parchment tracking-wider">HIT DICE</h3>
+                {Array.from({ length: hitDice.max }).map((_, i) => {
+                    const isAvailable = i < hitDice.current;
+                    return (
+                        <div
+                            key={i}
+                            className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center text-xs font-display transition-all ${
+                                isAvailable
+                                    ? 'bg-white/10 border-white/30 text-white'
+                                    : 'bg-transparent border-white/10 text-muted'
+                            }`}
+                        >
+                            d{hitDice.size}
+                        </div>
+                    );
+                })}
             </div>
 
-            <div className="flex items-center gap-6">
-                {/* Circular Display */}
-                <div className="stat-circle">
-                    <div className="text-center">
-                        <span className="font-display text-2xl text-parchment-light">{remaining}</span>
-                        <span className="text-muted text-sm">/{total}</span>
+            {/* Roll Result */}
+            {lastRoll && (
+                <div className="bg-white/10 border border-white/20 rounded-lg p-3 mb-3 animate-scale-in">
+                    <div className="flex items-center justify-center gap-3">
+                        <span className="text-muted text-sm">Rolled</span>
+                        <span className="font-display text-2xl text-white">{lastRoll.roll}</span>
+                        <span className="text-muted text-sm">+ {conMod} CON =</span>
+                        <div className="flex items-center gap-1">
+                            <Heart size={16} className="text-white" />
+                            <span className="font-display text-2xl text-white">{lastRoll.total}</span>
+                        </div>
                     </div>
                 </div>
+            )}
 
-                {/* Dice Info and Controls */}
-                <div className="flex-1">
-                    {/* Die Type Display */}
-                    <div className="mb-3 text-center">
-                        <span className="text-xs text-muted">Die Type</span>
-                        <div className="font-display text-lg text-parchment-light">d{dieType}</div>
-                        <span className="text-[10px] text-muted">+{conMod} CON</span>
-                    </div>
+            {/* Spend Button */}
+            <button
+                onClick={rollHitDie}
+                disabled={!canSpend}
+                className={`w-full btn-fantasy py-3 flex items-center justify-center gap-2 ${
+                    !canSpend ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+            >
+                <Dices size={16} />
+                {currentHP >= maxHP ? 'HP Full' : hitDice.current === 0 ? 'No Hit Dice' : 'Spend Hit Die'}
+            </button>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => onChange(Math.min(total, used + 1))}
-                            disabled={used >= total}
-                            className="btn-fantasy flex-1 text-xs py-2 disabled:opacity-30 disabled:cursor-not-allowed"
-                        >
-                            Use
-                        </button>
-                        <button
-                            onClick={() => onChange(Math.max(0, used - 1))}
-                            disabled={used === 0}
-                            className="btn-fantasy flex-1 text-xs py-2 disabled:opacity-30 disabled:cursor-not-allowed"
-                        >
-                            Restore
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Info Footer */}
-            <div className="mt-3 pt-3 border-t border-white/10">
-                <p className="text-[10px] text-muted opacity-60">
-                    Roll during short rest • Regain all on long rest
-                </p>
-            </div>
+            <p className="text-[10px] text-muted mt-2 text-center opacity-60">
+                Roll d{hitDice.size} + {conMod} CON mod to heal
+            </p>
         </div>
     );
 }
