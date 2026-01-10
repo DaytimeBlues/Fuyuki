@@ -12,8 +12,8 @@ interface HealthWidgetProps {
 export function HealthWidget({ current, max, temp, onChange, onTempChange }: HealthWidgetProps) {
     const [tempInput, setTempInput] = useState('');
     const percentage = Math.min(100, Math.max(0, (current / max) * 100));
-    const isLow = percentage <= 25;
     const isCritical = current === 0;
+    const isLow = current <= 10 && current > 0; // Red at 10 HP or below
 
     // RAW: THP doesn't stack - new THP replaces old (player chooses larger)
     const handleAddTemp = () => {
