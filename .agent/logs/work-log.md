@@ -4,6 +4,22 @@ Chronological history of development sessions. Updated via `/cleanup` command.
 
 ---
 
+## 2026-01-09 [Aramancia] - Short Rest & Performance Optimization
+- Implemented Short Rest with Hit Dice spending (full RAW compliance)
+- Created HitDiceWidget component with roll animation
+- Updated RestView with Short Rest UI flow
+- Long Rest now recovers half hit dice (min 1, rounded up)
+- Selective useCallback merge from copilot branch (safe handlers only)
+
+**Key Decisions:**
+- Hit dice: d6 for Wizard, roll + CON mod healing
+- Did NOT wrap updateHealth/addMinion (complex toast dependencies)
+- showToast declared early so other callbacks can depend on it
+
+→ Next: Implement Massive Damage rule or Nat 1/20 death saves
+
+---
+
 ## 2026-01-09 [Aramancia] - Critical Fixes & Code Review
 - Completed full code and logic review of entire codebase
 - Fixed 5 critical issues directly to master
