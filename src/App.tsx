@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HealthWidget } from './components/widgets/HealthWidget';
@@ -42,6 +42,12 @@ function App() {
   useEffect(() => {
     localStorage.setItem(MINIONS_KEY, JSON.stringify(minions));
   }, [minions]);
+
+  // Toast notification - declared early so other callbacks can use it
+  const showToast = useCallback((message: string) => {
+    setToast(message);
+    setTimeout(() => setToast(null), 2000);
+  }, []);
 
   const updateHealth = (newCurrent: number) => {
     const delta = newCurrent - data.hp.current;
@@ -93,21 +99,21 @@ function App() {
     }
   };
 
-  const updateTempHP = (newTemp: number) => {
+  const updateTempHP = useCallback((newTemp: number) => {
     setData(prev => ({
       ...prev,
       hp: { ...prev.hp, temp: Math.max(0, newTemp) }
     }));
-  };
+  }, []);
 
-  const updateAC = (key: 'mageArmour' | 'shield') => {
+  const updateAC = useCallback((key: 'mageArmour' | 'shield') => {
     setData(prev => ({
       ...prev,
       [key]: !prev[key]
     }));
-  };
+  }, []);
 
-  const updateSpellSlot = (level: number, used: number) => {
+  const updateSpellSlot = useCallback((level: number, used: number) => {
     setData(prev => ({
       ...prev,
       slots: {
@@ -115,14 +121,14 @@ function App() {
         [level]: { ...prev.slots[level], used }
       }
     }));
-  };
+  }, []);
 
-  const updateDeathSaves = (type: 'successes' | 'failures', value: number) => {
+  const updateDeathSaves = useCallback((type: 'successes' | 'failures', value: number) => {
     setData(prev => ({
       ...prev,
       deathSaves: { ...prev.deathSaves, [type]: value }
     }));
-  };
+  }, []);
 
   const addMinion = (type: 'Skeleton' | 'Zombie') => {
     const stats = data.defaultMinion[type];
@@ -138,31 +144,26 @@ function App() {
     showToast(`Raised ${type}`);
   };
 
-  const updateMinion = (id: string, hp: number) => {
+  const updateMinion = useCallback((id: string, hp: number) => {
     setMinions(prev => prev.map(m => {
       if (m.id === id) {
         return { ...m, hp: { ...m.hp, current: Math.max(0, hp) } };
       }
       return m;
     }));
-  };
+  }, []);
 
-  const removeMinion = (id: string) => {
+  const removeMinion = useCallback((id: string) => {
     setMinions(prev => prev.filter(m => m.id !== id));
     showToast("Minion Destroyed");
-  };
+  }, [showToast]);
 
-  const clearMinions = () => {
+  const clearMinions = useCallback(() => {
     setMinions([]);
     showToast("All Minions Released");
-  };
+  }, [showToast]);
 
-  const showToast = (message: string) => {
-    setToast(message);
-    setTimeout(() => setToast(null), 2000);
-  };
-
-  const handleSpendHitDie = (healed: number, diceSpent: number) => {
+  const handleSpendHitDie = useCallback((healed: number, diceSpent: number) => {
     setData(prev => ({
       ...prev,
       hp: { ...prev.hp, current: Math.min(prev.hp.max, prev.hp.current + healed) },
@@ -171,9 +172,9 @@ function App() {
     if (healed > 0) {
       showToast(`Healed ${healed} HP`);
     }
-  };
+  }, [showToast]);
 
-  const handleLongRest = () => {
+  const handleLongRest = useCallback(() => {
     setData(prev => {
       // RAW: Recover half of max hit dice (minimum 1) on long rest
       const hitDiceRecovered = Math.max(1, Math.ceil(prev.hitDice.max / 2));
@@ -192,7 +193,7 @@ function App() {
     });
     showToast("Long Rest Completed");
     setActiveTab('home');
-  };
+  }, [showToast]);
 
   return (
     <AppShell activeTab={activeTab} onTabChange={setActiveTab}>
