@@ -17,11 +17,20 @@ export interface Spell {
     range: string;
     duration: string;
     components: string;
-    attack: string;
+    effect: string;
+    rolls: string;
     damage: string;
+    damageType: string;
+    decisionTree: SpellDecision[];
+    concentration?: boolean;
     desc: string;
     incantation?: string;
     pronunciation?: string;
+}
+
+export interface SpellDecision {
+    level: number;
+    summary: string;
 }
 
 export interface MinionStats {
@@ -75,12 +84,6 @@ export interface CharacterData {
     concentration: string | null; // Currently concentrating on this spell
     attunement: string[]; // Max 3 attuned magic items
     inventory: string[]; // General inventory items
-    transformed: { // Wild Shape / Polymorph state
-        active: boolean;
-        creatureName: string;
-        hp: { current: number; max: number };
-        ac: number;
-    } | null;
 }
 
 export interface Session {

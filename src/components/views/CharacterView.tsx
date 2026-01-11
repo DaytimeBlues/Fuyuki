@@ -1,4 +1,4 @@
-import type { CharacterData } from '../../types';
+import type { CharacterData, Skill } from '../../types';
 import { Brain, Target } from 'lucide-react';
 import { InitiativeWidget } from '../widgets/InitiativeWidget';
 import { ProficiencyWidget } from '../widgets/ProficiencyWidget';
@@ -10,6 +10,14 @@ interface CharacterViewProps {
 
 export function CharacterView({ data }: CharacterViewProps) {
     if (!data) return null;
+
+    const abilityOrder: Array<keyof CharacterData['abilities']> = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+    const skillsByAbility = Object.values(data.skills || {}).reduce<Record<string, Record<string, Skill>>>((acc, skill) => {
+        const list = acc[skill.attr] || {};
+        list[skill.name] = skill;
+        acc[skill.attr] = list;
+        return acc;
+    }, {});
 
     return (
         <div className="pb-20">
@@ -67,26 +75,46 @@ export function CharacterView({ data }: CharacterViewProps) {
                     </span>
                 </div>
 
-                <div className="divide-y divide-white/5 relative z-10 max-h-[400px] overflow-y-auto">
-                    {Object.entries(data.skills || {}).map(([key, skill]) => {
-                        if (!skill) return null;
-                        const abilityMod = data.abilityMods?.[skill.attr] || 0;
-                        const totalMod = abilityMod + (skill.prof ? data.profBonus : 0);
+                <div className="divide-y divide-white/5 relative z-10 max-h-[420px] overflow-y-auto">
+                    {abilityOrder.map((ability) => {
+                        const skillsForAbility = Object.values(skillsByAbility[ability] || {}).sort((a, b) =>
+                            a.name.localeCompare(b.name)
+                        );
+                        if (!skillsForAbility.length) return null;
+                        const abilityMod = data.abilityMods?.[ability] || 0;
 
                         return (
-                            <div key={key} className={`flex justify-between items-center p-3 ${skill.prof ? 'bg-white/5' : ''}`}>
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-2 h-2 rounded-full ${skill.prof ? 'bg-white shadow-[0_0_6px_rgba(255,255,255,0.4)]' : 'bg-white/20'}`} />
-                                    <span className={`text-sm ${skill.prof ? 'text-parchment-light font-display' : 'text-muted'}`}>
-                                        {skill.name}
-                                    </span>
-                                    <span className="text-[9px] text-muted/50 uppercase tracking-wider">
-                                        {skill.attr}
+                            <div key={ability} className="p-3">
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-[10px] uppercase tracking-wider text-muted">{ability.toUpperCase()}</span>
+                                        <span className="text-sm font-display text-parchment-light">
+                                            {abilityMod >= 0 ? '+' : ''}{abilityMod}
+                                        </span>
+                                    </div>
+                                    <span className="text-[10px] text-muted/70">
+                                        {data.abilities[ability]}
                                     </span>
                                 </div>
-                                <span className={`font-display text-sm ${skill.prof ? 'text-white' : 'text-muted'}`}>
-                                    {totalMod >= 0 ? '+' : ''}{totalMod}
-                                </span>
+
+                                <div className="space-y-2">
+                                    {skillsForAbility.map((skill) => {
+                                        const totalMod = abilityMod + (skill.prof ? data.profBonus : 0);
+                                        return (
+                                            <div key={skill.name} className={`flex justify-between items-center p-2 rounded ${skill.prof ? 'bg-white/5' : ''}`}>
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`w-2 h-2 rounded-full ${skill.prof ? 'bg-white shadow-[0_0_6px_rgba(255,255,255,0.4)]' : 'bg-white/20'}`} />
+                                                    <span className={`text-sm ${skill.prof ? 'text-parchment-light font-display' : 'text-muted'}`}>
+                                                        {skill.name}
+                                                    </span>
+                                                </div>
+                                                <span className={`font-display text-sm ${skill.prof ? 'text-white' : 'text-muted'}`}>
+                                                    {totalMod >= 0 ? '+' : ''}{totalMod}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         );
                     })}

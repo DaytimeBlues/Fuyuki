@@ -8,7 +8,6 @@ import { DeathSavesWidget } from './components/widgets/DeathSavesWidget';
 import { ConcentrationWidget } from './components/widgets/ConcentrationWidget';
 import { AttunementWidget } from './components/widgets/AttunementWidget';
 import { InventoryWidget } from './components/widgets/InventoryWidget';
-import { WildShapeWidget } from './components/widgets/WildShapeWidget';
 import { MulticlassSpellSlotsWidget } from './components/widgets/MulticlassSpellSlotsWidget';
 import { HitDiceWidget } from './components/widgets/HitDiceWidget';
 import { InitiativeWidget } from './components/widgets/InitiativeWidget';
@@ -22,10 +21,12 @@ import { GrimoireView } from './components/views/GrimoireView';
 import { BiographyView } from './components/views/BiographyView';
 import { SessionPicker } from './components/SessionPicker';
 import { initialCharacterData } from './data/initialState';
+import { spells } from './data/spells';
 import { getActiveSession, updateActiveSession } from './utils/sessionStorage';
 import {
   recalculateDerivedCharacterData,
 } from './utils/srdRules';
+import { getRequiredLevelForSpell } from './utils/spellRules';
 import type { CharacterData, Minion, Session } from './types';
 
 function App() {
@@ -268,6 +269,10 @@ function App() {
           <div className="animate-slide-up stagger-4">
             <ConcentrationWidget
               spell={data.concentration}
+              suggestions={spells
+                .filter(spell => spell.concentration)
+                .filter(spell => getRequiredLevelForSpell(spell.lvl) <= data.level)
+                .map(spell => spell.name)}
               onClear={() => setData(prev => ({ ...prev, concentration: null }))}
               onSet={(spell) => setData(prev => ({ ...prev, concentration: spell }))}
             />
@@ -283,7 +288,15 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'spells' && <div className="animate-fade-in"><SpellsView /></div>}
+      {activeTab === 'spells' && (
+        <div className="animate-fade-in">
+          <SpellsView
+            level={data.level}
+            concentration={data.concentration}
+            onSetConcentration={(spell) => setData(prev => ({ ...prev, concentration: spell }))}
+          />
+        </div>
+      )}
 
       {activeTab === 'combat' && (
         <div className="animate-fade-in">
@@ -293,56 +306,6 @@ function App() {
             onUpdateMinion={updateMinion}
             onRemoveMinion={removeMinion}
             onClearMinions={clearMinions}
-          />
-          <WildShapeWidget
-            transformed={data.transformed}
-            originalHP={data.hp.current}
-            onTransform={(creature) => setData(prev => ({
-              ...prev,
-              transformed: {
-                active: true,
-                creatureName: creature.name,
-                hp: { current: creature.hp, max: creature.hp },
-                ac: creature.ac
-              }
-            }))}
-            onDamage={(damage) => {
-              if (!data.transformed) return { revert: false, carryoverDamage: 0 };
-              const newHP = data.transformed.hp.current - damage;
-              if (newHP <= 0) {
-                const carryover = Math.abs(newHP);
-                setData(prev => ({ ...prev, transformed: null }));
-                if (carryover > 0) {
-                  updateHealth(data.hp.current - carryover);
-                  showToast(`Reverted! ${carryover} damage carried over`);
-                } else {
-                  showToast('Wild Shape ended');
-                }
-                return { revert: true, carryoverDamage: carryover };
-              }
-              setData(prev => ({
-                ...prev,
-                transformed: prev.transformed ? {
-                  ...prev.transformed,
-                  hp: { ...prev.transformed.hp, current: newHP }
-                } : null
-              }));
-              return { revert: false, carryoverDamage: 0 };
-            }}
-            onRevert={() => {
-              setData(prev => ({ ...prev, transformed: null }));
-              showToast('Wild Shape ended');
-            }}
-            onHeal={(amount) => setData(prev => ({
-              ...prev,
-              transformed: prev.transformed ? {
-                ...prev.transformed,
-                hp: {
-                  ...prev.transformed.hp,
-                  current: Math.min(prev.transformed.hp.max, prev.transformed.hp.current + amount)
-                }
-              } : null
-            }))}
           />
         </div>
       )}

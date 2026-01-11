@@ -59,5 +59,4 @@ export const initialCharacterData: CharacterData = {
     concentration: null,
     attunement: [],
     inventory: ["Component Pouch", "Arcane Focus", "Scholar's Pack"],
-    transformed: null
 };

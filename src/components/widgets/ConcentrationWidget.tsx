@@ -2,6 +2,7 @@ import { Eye, X } from 'lucide-react';
 
 interface ConcentrationWidgetProps {
     spell: string | null;
+    suggestions?: string[];
     onClear: () => void;
     onSet: (spell: string) => void;
 }
@@ -12,7 +13,7 @@ const CONCENTRATION_SPELLS = [
     'Invisibility', 'Hold Person', 'Animate Dead', 'Spirit Guardians'
 ];
 
-export function ConcentrationWidget({ spell, onClear, onSet }: ConcentrationWidgetProps) {
+export function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS, onClear, onSet }: ConcentrationWidgetProps) {
     return (
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
@@ -44,7 +45,7 @@ export function ConcentrationWidget({ spell, onClear, onSet }: ConcentrationWidg
                 <div className="space-y-2">
                     <p className="text-xs text-muted">Not concentrating on any spell</p>
                     <div className="flex flex-wrap gap-1">
-                        {CONCENTRATION_SPELLS.slice(0, 4).map(s => (
+                        {suggestions.slice(0, 4).map(s => (
                             <button
                                 key={s}
                                 onClick={() => onSet(s)}
