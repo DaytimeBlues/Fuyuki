@@ -380,20 +380,7 @@ function App() {
       {activeTab === 'settings' && (
         <div className="animate-fade-in">
           <ErrorBoundary>
-            <div className="card-parchment p-4 mb-4">
-              <h3 className="font-display text-sm text-parchment tracking-wider mb-2">
-                BACKGROUND PROMPT
-              </h3>
-              <p className="text-xs text-muted mb-3">
-                Use this prompt in ChatGPT to generate a new simple, elegant background:
-              </p>
-              <div className="rounded-md border border-white/10 bg-black/40 p-3 text-xs text-parchment leading-relaxed">
-                Create a minimalist, elegant fantasy UI background. Use a deep charcoal to midnight
-                gradient, add a soft radial glow in one corner, and include a very subtle vignette.
-                Keep textures nearly invisible, avoid busy patterns, and ensure the overall look is
-                calm, modern, and readable for overlayed text.
-              </div>
-            </div>
+
             <CharacterEditor
               data={data}
               onLevelChange={handleLevelChange}
