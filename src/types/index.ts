@@ -45,6 +45,36 @@ export interface HitDice {
     size: number;     // Die size (6 for d6, 8 for d8, etc.)
 }
 
+export type CombatLogType =
+    | 'roll'
+    | 'damageTaken'
+    | 'heal'
+    | 'resourceUse'
+    | 'conditionAdd'
+    | 'conditionRemove'
+    | 'concentrationStart'
+    | 'concentrationEnd'
+    | 'note';
+
+export interface CombatLogEntry {
+    id: string;
+    timestamp: string;
+    type: CombatLogType;
+    title: string;
+    detail?: string;
+}
+
+export interface CombatState {
+    inCombat: boolean;
+    round: number;
+    myTurn: boolean;
+    reactionAvailable: boolean;
+    bonusActionAvailable: boolean;
+    conditions: string[];
+    stable: boolean;
+    log: CombatLogEntry[];
+}
+
 export interface CharacterData {
     hp: { current: number; max: number; temp: number };
     hitDice: HitDice;
@@ -75,6 +105,7 @@ export interface CharacterData {
     concentration: string | null; // Currently concentrating on this spell
     attunement: string[]; // Max 3 attuned magic items
     inventory: string[]; // General inventory items
+    combat: CombatState;
     transformed: { // Wild Shape / Polymorph state
         active: boolean;
         creatureName: string;

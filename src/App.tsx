@@ -26,7 +26,7 @@ import { getActiveSession, updateActiveSession } from './utils/sessionStorage';
 import {
   recalculateDerivedCharacterData,
 } from './utils/srdRules';
-import type { CharacterData, Minion, Session } from './types';
+import type { CharacterData, CombatLogEntry, Minion, Session } from './types';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -35,7 +35,15 @@ function App() {
   });
   const [data, setData] = useState<CharacterData>(() => {
     const session = getActiveSession();
-    return session ? session.characterData : initialCharacterData;
+    if (!session) return initialCharacterData;
+    return {
+      ...initialCharacterData,
+      ...session.characterData,
+      combat: {
+        ...initialCharacterData.combat,
+        ...session.characterData.combat
+      }
+    };
   });
   const [minions, setMinions] = useState<Minion[]>(() => {
     const session = getActiveSession();
@@ -49,7 +57,14 @@ function App() {
   }, [data, minions]);
 
   const handleSessionSelected = (session: Session) => {
-    setData(session.characterData);
+    setData({
+      ...initialCharacterData,
+      ...session.characterData,
+      combat: {
+        ...initialCharacterData.combat,
+        ...session.characterData.combat
+      }
+    });
     setMinions(session.minions);
     setShowSessionPicker(false);
   };
@@ -78,7 +93,11 @@ function App() {
           current: newHP
         },
         // RAW: Concentration ends when incapacitated (0 HP)
-        concentration: newHP === 0 ? null : prev.concentration
+        concentration: newHP === 0 ? null : prev.concentration,
+        combat: {
+          ...prev.combat,
+          stable: newHP === 0 ? false : prev.combat.stable
+        }
       }));
 
       // CON save for concentration when taking damage
@@ -101,7 +120,10 @@ function App() {
         hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) },
         deathSaves: wasAtZero && newCurrent > 0
           ? { successes: 0, failures: 0 }
-          : prev.deathSaves
+          : prev.deathSaves,
+        combat: wasAtZero && newCurrent > 0
+          ? { ...prev.combat, stable: false }
+          : prev.combat
       }));
 
       if (wasAtZero && newCurrent > 0) {
@@ -134,45 +156,34 @@ function App() {
     }));
   }, []);
 
+  const updateCombatState = useCallback((updater: (prev: CharacterData['combat']) => CharacterData['combat']) => {
+    setData(prev => ({
+      ...prev,
+      combat: updater(prev.combat)
+    }));
+  }, []);
+
+  const addCombatLog = useCallback((entry: Omit<CombatLogEntry, 'id' | 'timestamp'>) => {
+    const newEntry: CombatLogEntry = {
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+      ...entry
+    };
+    setData(prev => ({
+      ...prev,
+      combat: {
+        ...prev.combat,
+        log: [newEntry, ...prev.combat.log].slice(0, 50)
+      }
+    }));
+  }, []);
+
   const updateDeathSaves = useCallback((type: 'successes' | 'failures', value: number) => {
     setData(prev => ({
       ...prev,
       deathSaves: { ...prev.deathSaves, [type]: value }
     }));
   }, []);
-
-  const addMinion = (type: 'Skeleton' | 'Zombie') => {
-    const stats = data.defaultMinion[type];
-    const newMinion: Minion = {
-      id: crypto.randomUUID(),
-      type,
-      name: `${type} ${minions.filter(m => m.type === type).length + 1}`,
-      hp: { current: stats.hp, max: stats.hp },
-      ac: stats.ac,
-      notes: stats.notes
-    };
-    setMinions(prev => [...prev, newMinion]);
-    showToast(`Raised ${type}`);
-  };
-
-  const updateMinion = useCallback((id: string, hp: number) => {
-    setMinions(prev => prev.map(m => {
-      if (m.id === id) {
-        return { ...m, hp: { ...m.hp, current: Math.max(0, hp) } };
-      }
-      return m;
-    }));
-  }, []);
-
-  const removeMinion = useCallback((id: string) => {
-    setMinions(prev => prev.filter(m => m.id !== id));
-    showToast("Minion Destroyed");
-  }, [showToast]);
-
-  const clearMinions = useCallback(() => {
-    setMinions([]);
-    showToast("All Minions Released");
-  }, [showToast]);
 
   const handleSpendHitDie = useCallback((healed: number, diceSpent: number) => {
     setData(prev => ({
@@ -199,7 +210,17 @@ function App() {
         mageArmour: false,
         shield: false,
         concentration: null,
-        deathSaves: { successes: 0, failures: 0 }
+        deathSaves: { successes: 0, failures: 0 },
+        combat: {
+          ...prev.combat,
+          inCombat: false,
+          round: 1,
+          myTurn: false,
+          reactionAvailable: true,
+          bonusActionAvailable: true,
+          conditions: [],
+          stable: false
+        }
       };
     });
     showToast("Long Rest Completed");
@@ -288,11 +309,14 @@ function App() {
       {activeTab === 'combat' && (
         <div className="animate-fade-in">
           <CombatView
-            minions={minions}
-            onAddMinion={addMinion}
-            onUpdateMinion={updateMinion}
-            onRemoveMinion={removeMinion}
-            onClearMinions={clearMinions}
+            data={data}
+            onUpdateHealth={updateHealth}
+            onUpdateTempHP={updateTempHP}
+            onUpdateDeathSaves={updateDeathSaves}
+            onUpdateSpellSlot={updateSpellSlot}
+            onUpdateConcentration={(spell) => setData(prev => ({ ...prev, concentration: spell }))}
+            onUpdateCombat={updateCombatState}
+            onAddLog={addCombatLog}
           />
           <WildShapeWidget
             transformed={data.transformed}

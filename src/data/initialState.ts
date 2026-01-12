@@ -59,5 +59,15 @@ export const initialCharacterData: CharacterData = {
     concentration: null,
     attunement: [],
     inventory: ["Component Pouch", "Arcane Focus", "Scholar's Pack"],
+    combat: {
+        inCombat: false,
+        round: 1,
+        myTurn: false,
+        reactionAvailable: true,
+        bonusActionAvailable: true,
+        conditions: [],
+        stable: false,
+        log: []
+    },
     transformed: null
 };
