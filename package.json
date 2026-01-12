@@ -17,10 +17,12 @@
     "@capacitor/cli": "^8.0.0",
     "@capacitor/core": "^8.0.0",
     "@reduxjs/toolkit": "^2.11.2",
+    "@types/uuid": "^10.0.0",
     "lucide-react": "^0.555.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-redux": "^9.2.0",
+    "uuid": "^13.0.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

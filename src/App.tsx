@@ -14,7 +14,7 @@ import { InitiativeWidget } from './components/widgets/InitiativeWidget';
 import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
 import { CharacterEditor } from './components/widgets/CharacterEditor';
-import { SpellsView } from './components/views/SpellsView';
+import SpellsView from './components/views/SpellsView';
 import { CombatView } from './components/views/CombatView';
 import { RestView } from './components/views/RestView';
 import { GrimoireView } from './components/views/GrimoireView';
@@ -290,11 +290,7 @@ function App() {
 
       {activeTab === 'spells' && (
         <div className="animate-fade-in">
-          <SpellsView
-            level={data.level}
-            concentration={data.concentration}
-            onSetConcentration={(spell) => setData(prev => ({ ...prev, concentration: spell }))}
-          />
+          <SpellsView />
         </div>
       )}
 
