@@ -185,6 +185,39 @@ function App() {
     }));
   }, []);
 
+  const addMinion = (type: 'Skeleton' | 'Zombie') => {
+    const stats = data.defaultMinion[type];
+    const newMinion: Minion = {
+      id: crypto.randomUUID(),
+      type,
+      name: `${type} ${minions.filter(m => m.type === type).length + 1}`,
+      hp: { current: stats.hp, max: stats.hp },
+      ac: stats.ac,
+      notes: stats.notes
+    };
+    setMinions(prev => [...prev, newMinion]);
+    showToast(`Raised ${type}`);
+  };
+
+  const updateMinion = useCallback((id: string, hp: number) => {
+    setMinions(prev => prev.map(m => {
+      if (m.id === id) {
+        return { ...m, hp: { ...m.hp, current: Math.max(0, hp) } };
+      }
+      return m;
+    }));
+  }, []);
+
+  const removeMinion = useCallback((id: string) => {
+    setMinions(prev => prev.filter(m => m.id !== id));
+    showToast("Minion Destroyed");
+  }, [showToast]);
+
+  const clearMinions = useCallback(() => {
+    setMinions([]);
+    showToast("All Minions Released");
+  }, [showToast]);
+
   const handleSpendHitDie = useCallback((healed: number, diceSpent: number) => {
     setData(prev => ({
       ...prev,
@@ -219,7 +252,8 @@ function App() {
           reactionAvailable: true,
           bonusActionAvailable: true,
           conditions: [],
-          stable: false
+          stable: false,
+          undeadCommand: null
         }
       };
     });
@@ -310,6 +344,7 @@ function App() {
         <div className="animate-fade-in">
           <CombatView
             data={data}
+            minions={minions}
             onUpdateHealth={updateHealth}
             onUpdateTempHP={updateTempHP}
             onUpdateDeathSaves={updateDeathSaves}
@@ -317,6 +352,10 @@ function App() {
             onUpdateConcentration={(spell) => setData(prev => ({ ...prev, concentration: spell }))}
             onUpdateCombat={updateCombatState}
             onAddLog={addCombatLog}
+            onAddMinion={addMinion}
+            onUpdateMinion={updateMinion}
+            onRemoveMinion={removeMinion}
+            onClearMinions={clearMinions}
           />
           <WildShapeWidget
             transformed={data.transformed}

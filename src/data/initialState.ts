@@ -67,6 +67,7 @@ export const initialCharacterData: CharacterData = {
         bonusActionAvailable: true,
         conditions: [],
         stable: false,
+        undeadCommand: null,
         log: []
     },
     transformed: null

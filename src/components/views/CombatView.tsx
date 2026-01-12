@@ -1,11 +1,15 @@
 import { useMemo, useState } from 'react';
-import { Bolt, HeartPulse, ShieldAlert, Swords, Timer, Zap } from 'lucide-react';
-import type { CharacterData, CombatLogEntry } from '../../types';
+import { Bone, Bolt, HeartPulse, Info, ShieldAlert, Skull, Swords, Timer, Users, Zap } from 'lucide-react';
+import type { CharacterData, CombatLogEntry, Minion } from '../../types';
+import { MinionDrawer } from '../minions/MinionDrawer';
+import { undeadStats } from '../../data/undeadStats';
+import type { UndeadStatBlock } from '../../data/undeadStats';
 import { ConcentrationWidget } from '../widgets/ConcentrationWidget';
 import { DeathSavesWidget } from '../widgets/DeathSavesWidget';
 
 interface CombatViewProps {
     data: CharacterData;
+    minions: Minion[];
     onUpdateHealth: (newCurrent: number) => void;
     onUpdateTempHP: (newTemp: number) => void;
     onUpdateDeathSaves: (type: 'successes' | 'failures', value: number) => void;
@@ -13,6 +17,10 @@ interface CombatViewProps {
     onUpdateConcentration: (spell: string | null) => void;
     onUpdateCombat: (updater: (prev: CharacterData['combat']) => CharacterData['combat']) => void;
     onAddLog: (entry: Omit<CombatLogEntry, 'id' | 'timestamp'>) => void;
+    onAddMinion: (type: 'Skeleton' | 'Zombie') => void;
+    onUpdateMinion: (id: string, hp: number) => void;
+    onRemoveMinion: (id: string) => void;
+    onClearMinions: () => void;
 }
 
 const QUICK_CONDITIONS = [
@@ -28,25 +36,39 @@ const QUICK_CONDITIONS = [
 
 export function CombatView({
     data,
+    minions,
     onUpdateHealth,
     onUpdateTempHP,
     onUpdateDeathSaves,
     onUpdateSpellSlot,
     onUpdateConcentration,
     onUpdateCombat,
-    onAddLog
+    onAddLog,
+    onAddMinion,
+    onUpdateMinion,
+    onRemoveMinion,
+    onClearMinions
 }: CombatViewProps) {
     const [damageInput, setDamageInput] = useState('');
     const [healInput, setHealInput] = useState('');
     const [tempInput, setTempInput] = useState('');
     const [conditionInput, setConditionInput] = useState('');
     const [noteInput, setNoteInput] = useState('');
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [selectedStatBlock, setSelectedStatBlock] = useState<UndeadStatBlock | null>(null);
 
     const logEntries = data.combat.log;
     const slots = useMemo(() => Object.entries(data.slots).map(([level, info]) => ({
         level: Number(level),
         ...info
     })), [data.slots]);
+    const skeletonCount = minions.filter(m => m.type === 'Skeleton').length;
+    const zombieCount = minions.filter(m => m.type === 'Zombie').length;
+
+    const openStats = (name: string) => {
+        const stats = undeadStats.find(s => s.name.includes(name));
+        if (stats) setSelectedStatBlock(stats);
+    };
 
     const appendLog = (entry: Omit<CombatLogEntry, 'id' | 'timestamp'>) => {
         onAddLog(entry);
@@ -130,6 +152,18 @@ export function CombatView({
         if (!trimmed) return;
         appendLog({ type: 'note', title: trimmed });
         setNoteInput('');
+    };
+
+    const handleUndeadCommand = (mode: 'commanded' | 'defend') => {
+        onUpdateCombat(prev => ({
+            ...prev,
+            undeadCommand: mode,
+            bonusActionAvailable: mode === 'commanded' ? false : prev.bonusActionAvailable
+        }));
+        appendLog({
+            type: 'resourceUse',
+            title: mode === 'commanded' ? 'Commanded undead (bonus action)' : 'No command issued'
+        });
     };
 
     return (
@@ -236,6 +270,30 @@ export function CombatView({
 
             <div className="card-parchment p-4 space-y-3">
                 <div className="flex items-center gap-2">
+                    <Bone size={18} className="text-white" />
+                    <h3 className="font-display text-sm text-parchment tracking-wider">Animate Dead</h3>
+                </div>
+                <div className="text-xs text-muted leading-relaxed">
+                    Issue a bonus action command to direct your undead on their next turn. If you give no command, they only defend themselves.
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        className={`px-3 py-1 rounded-md text-[10px] uppercase tracking-wider border ${data.combat.undeadCommand === 'commanded' ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40' : 'bg-white/5 text-muted border-white/10'}`}
+                        onClick={() => handleUndeadCommand('commanded')}
+                    >
+                        Command Undead
+                    </button>
+                    <button
+                        className={`px-3 py-1 rounded-md text-[10px] uppercase tracking-wider border ${data.combat.undeadCommand === 'defend' ? 'bg-amber-500/20 text-amber-200 border-amber-400/40' : 'bg-white/5 text-muted border-white/10'}`}
+                        onClick={() => handleUndeadCommand('defend')}
+                    >
+                        No Command
+                    </button>
+                </div>
+            </div>
+
+            <div className="card-parchment p-4 space-y-3">
+                <div className="flex items-center gap-2">
                     <ShieldAlert size={18} className="text-white" />
                     <h3 className="font-display text-sm text-parchment tracking-wider">Conditions</h3>
                 </div>
@@ -336,6 +394,50 @@ export function CombatView({
                 </div>
             </div>
 
+            <div className="card-parchment p-4 mb-4">
+                <div className="flex justify-between items-center mb-4 relative z-10">
+                    <div className="flex items-center gap-2">
+                        <Users size={18} className="text-white" />
+                        <h3 className="font-display text-sm text-parchment tracking-wider">Undead Horde</h3>
+                    </div>
+                    <span className="text-xs text-white font-display">{minions.length} Active</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-4 relative z-10">
+                    <div
+                        className="bg-card-elevated/80 p-4 rounded-lg border border-white/10 text-center relative group cursor-pointer hover:border-white/30 transition-all"
+                        onClick={() => openStats('Skeleton')}
+                    >
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Info size={12} className="text-white" />
+                        </div>
+                        <Skull size={24} className="text-parchment mx-auto mb-2 group-hover:text-white transition-colors" />
+                        <div className="text-2xl font-display text-parchment-light mb-1">{skeletonCount}</div>
+                        <div className="text-[10px] text-muted uppercase tracking-wider">Skeletons</div>
+                    </div>
+
+                    <div
+                        className="bg-card-elevated/80 p-4 rounded-lg border border-white/10 text-center relative group cursor-pointer hover:border-white/30 transition-all"
+                        onClick={() => openStats('Zombie')}
+                    >
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Info size={12} className="text-white" />
+                        </div>
+                        <ShieldAlert size={24} className="text-parchment mx-auto mb-2 group-hover:text-white transition-colors" />
+                        <div className="text-2xl font-display text-parchment-light mb-1">{zombieCount}</div>
+                        <div className="text-[10px] text-muted uppercase tracking-wider">Zombies</div>
+                    </div>
+                </div>
+
+                <button
+                    onClick={() => setIsDrawerOpen(true)}
+                    className="w-full btn-primary flex items-center justify-center gap-2 relative z-10"
+                >
+                    <Skull size={16} />
+                    Manage Horde
+                </button>
+            </div>
+
             {data.hp.current === 0 && (
                 <div className="card-parchment p-4 space-y-3">
                     <div className="flex items-center justify-between">
@@ -389,6 +491,103 @@ export function CombatView({
                     ))}
                 </div>
             </div>
+
+            <MinionDrawer
+                isOpen={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                minions={minions}
+                onAddMinion={onAddMinion}
+                onUpdateMinion={onUpdateMinion}
+                onRemoveMinion={onRemoveMinion}
+                onClearMinions={onClearMinions}
+            />
+
+            {selectedStatBlock && (
+                <div
+                    className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+                    onClick={() => setSelectedStatBlock(null)}
+                >
+                    <div
+                        className="card-parchment w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl shadow-white/5 animate-scale-in"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="flex justify-between items-start p-4 border-b border-white/10 shrink-0">
+                            <div>
+                                <h2 className="text-xl font-display text-parchment-light">{selectedStatBlock.name}</h2>
+                                <p className="text-xs text-muted italic">{selectedStatBlock.type}</p>
+                            </div>
+                            <button
+                                onClick={() => setSelectedStatBlock(null)}
+                                className="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 transition-all shrink-0"
+                                aria-label="Close"
+                            >
+                                <span className="text-lg">×</span>
+                            </button>
+                        </div>
+
+                        <div className="p-4 overflow-y-auto flex-1">
+                            <div className="space-y-4 text-sm">
+                                <div className="grid grid-cols-3 gap-2 text-center bg-card-elevated/80 p-3 rounded-lg border border-white/10">
+                                    <div>
+                                        <div className="text-[10px] text-muted uppercase tracking-wider">AC</div>
+                                        <div className="font-display text-lg text-white">{selectedStatBlock.ac}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-[10px] text-muted uppercase tracking-wider">HP</div>
+                                        <div className="font-display text-lg text-white">{selectedStatBlock.hp}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-[10px] text-muted uppercase tracking-wider">Speed</div>
+                                        <div className="font-display text-lg text-parchment-light">{selectedStatBlock.speed}</div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-6 gap-1 text-center text-xs">
+                                    {Object.entries(selectedStatBlock.stats).map(([stat, val]) => (
+                                        <div key={stat} className="bg-card-elevated p-2 rounded border border-white/10">
+                                            <div className="text-[8px] text-muted uppercase">{stat}</div>
+                                            <div className="font-display text-parchment-light">{val}</div>
+                                            <div className="text-[8px] text-white">{val >= 10 ? '+' : ''}{Math.floor((val - 10) / 2)}</div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="space-y-2 text-xs text-parchment border-t border-white/10 pt-3">
+                                    {selectedStatBlock.damageImmunities && (
+                                        <p><span className="text-white font-display">Damage Immunities:</span> {selectedStatBlock.damageImmunities}</p>
+                                    )}
+                                    {selectedStatBlock.conditionImmunities && (
+                                        <p><span className="text-white font-display">Condition Immunities:</span> {selectedStatBlock.conditionImmunities}</p>
+                                    )}
+                                    <p><span className="text-white font-display">Senses:</span> {selectedStatBlock.senses}</p>
+                                    <p><span className="text-white font-display">Languages:</span> {selectedStatBlock.languages}</p>
+                                </div>
+
+                                {selectedStatBlock.traits && (
+                                    <div className="border-t border-white/10 pt-3">
+                                        {selectedStatBlock.traits.map(trait => (
+                                            <div key={trait.name} className="mb-2">
+                                                <span className="text-parchment-light font-display italic">{trait.name}.</span>{' '}
+                                                <span className="text-parchment">{trait.desc}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="border-t border-white/10 pt-3">
+                                    <h4 className="text-white font-display border-b border-white/10 pb-1 mb-2">Actions</h4>
+                                    {selectedStatBlock.actions.map(action => (
+                                        <div key={action.name} className="mb-2">
+                                            <span className="text-parchment-light font-display italic">{action.name}.</span>{' '}
+                                            <span className="text-parchment">{action.desc}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

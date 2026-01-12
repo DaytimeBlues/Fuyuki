@@ -72,6 +72,7 @@ export interface CombatState {
     bonusActionAvailable: boolean;
     conditions: string[];
     stable: boolean;
+    undeadCommand: 'commanded' | 'defend' | null;
     log: CombatLogEntry[];
 }
 
