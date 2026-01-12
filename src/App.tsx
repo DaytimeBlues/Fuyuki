@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppShell } from './components/layout/AppShell';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { HealthWidget } from './components/widgets/HealthWidget';
@@ -44,9 +44,28 @@ function App() {
   });
   const [toast, setToast] = useState<string | null>(null);
 
-  // Persist state to active session
+  // Debounce timer ref for localStorage writes
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Persist state to active session with debouncing (500ms delay)
+  // This prevents main thread blocking during rapid HP/stat updates
   useEffect(() => {
-    updateActiveSession(data, minions);
+    // Clear any pending save
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // Schedule debounced save
+    saveTimeoutRef.current = setTimeout(() => {
+      updateActiveSession(data, minions);
+    }, 500);
+
+    // Cleanup on unmount
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
   }, [data, minions]);
 
   const handleSessionSelected = (session: Session) => {
@@ -61,55 +80,58 @@ function App() {
     setTimeout(() => setToast(null), 2000);
   }, []);
 
-  const updateHealth = (newCurrent: number) => {
-    const delta = newCurrent - data.hp.current;
+  const updateHealth = useCallback((newCurrent: number) => {
+    setData(prev => {
+      const delta = newCurrent - prev.hp.current;
 
-    // If taking damage (negative delta), THP absorbs first per RAW
-    if (delta < 0) {
-      const damage = Math.abs(delta);
-      const tempAbsorbed = Math.min(data.hp.temp, damage);
-      const remainingDamage = damage - tempAbsorbed;
-      const newHP = Math.max(0, data.hp.current - remainingDamage);
+      // If taking damage (negative delta), THP absorbs first per RAW
+      if (delta < 0) {
+        const damage = Math.abs(delta);
+        const tempAbsorbed = Math.min(prev.hp.temp, damage);
+        const remainingDamage = damage - tempAbsorbed;
+        const newHP = Math.max(0, prev.hp.current - remainingDamage);
 
-      setData(prev => ({
-        ...prev,
-        hp: {
-          ...prev.hp,
-          temp: prev.hp.temp - tempAbsorbed,
-          current: newHP
-        },
-        // RAW: Concentration ends when incapacitated (0 HP)
-        concentration: newHP === 0 ? null : prev.concentration
-      }));
+        // CON save for concentration when taking damage
+        // RAW: DC = max(10, damage/2) - using total damage taken (common ruling)
+        if (prev.concentration && remainingDamage > 0 && newHP > 0) {
+          const conSaveDC = Math.max(10, Math.floor(damage / 2));
+          setTimeout(() => showToast(`CON Save DC ${conSaveDC} to maintain ${prev.concentration}`), 0);
+        }
 
-      // CON save for concentration when taking damage
-      // RAW: DC = max(10, damage/2) - using total damage taken (common ruling)
-      if (data.concentration && remainingDamage > 0 && newHP > 0) {
-        const conSaveDC = Math.max(10, Math.floor(damage / 2));
-        showToast(`CON Save DC ${conSaveDC} to maintain ${data.concentration}`);
+        // Notify if concentration lost due to dropping to 0 HP
+        if (prev.concentration && newHP === 0) {
+          setTimeout(() => showToast(`Concentration on ${prev.concentration} lost - Incapacitated!`), 0);
+        }
+
+        return {
+          ...prev,
+          hp: {
+            ...prev.hp,
+            temp: prev.hp.temp - tempAbsorbed,
+            current: newHP
+          },
+          // RAW: Concentration ends when incapacitated (0 HP)
+          concentration: newHP === 0 ? null : prev.concentration
+        };
+      } else {
+        // Healing - only affects current HP, not THP
+        // RAW: Reset death saves when healed from 0 HP
+        const wasAtZero = prev.hp.current === 0;
+        
+        if (wasAtZero && newCurrent > 0) {
+          setTimeout(() => showToast("Stabilized! Death saves reset."), 0);
+        }
+
+        return {
+          ...prev,
+          hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) },
+          deathSaves: wasAtZero && newCurrent > 0
+            ? { successes: 0, failures: 0 }
+            : prev.deathSaves
+        };
       }
-
-      // Notify if concentration lost due to dropping to 0 HP
-      if (data.concentration && newHP === 0) {
-        showToast(`Concentration on ${data.concentration} lost - Incapacitated!`);
-      }
-    } else {
-      // Healing - only affects current HP, not THP
-      // RAW: Reset death saves when healed from 0 HP
-      const wasAtZero = data.hp.current === 0;
-      setData(prev => ({
-        ...prev,
-        hp: { ...prev.hp, current: Math.min(prev.hp.max, Math.max(0, newCurrent)) },
-        deathSaves: wasAtZero && newCurrent > 0
-          ? { successes: 0, failures: 0 }
-          : prev.deathSaves
-      }));
-
-      if (wasAtZero && newCurrent > 0) {
-        showToast("Stabilized! Death saves reset.");
-      }
-    }
-  };
+    });
+  }, [showToast]);
 
   const updateTempHP = useCallback((newTemp: number) => {
     setData(prev => ({
