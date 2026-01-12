@@ -79,7 +79,7 @@ export const useSpellCast = () => {
      * Mark the resolution as complete (after user confirms Hit/Miss or Pass/Fail).
      * Moves to 'apply_effects' state.
      */
-    const resolveSpell = useCallback((_outcome: { hit?: boolean; saved?: boolean }) => {
+    const resolveSpell = useCallback(() => {
         dispatch(castingResolved());
     }, [dispatch]);
 

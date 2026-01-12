@@ -87,7 +87,7 @@ export const SpellSchema = z.object({
         description: z.string(),
         // Can link to a monster ID from a compendium or have custom stats here
         monsterId: z.string().optional(),
-        customStats: z.record(z.unknown()).optional(),
+        customStats: z.record(z.string(), z.unknown()).optional(),
     })).optional(),
 
     // For spells that can be cast as a reaction with specific triggers
