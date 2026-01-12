@@ -13,6 +13,8 @@ interface CombatViewProps {
     onClearMinions: () => void;
 }
 
+import { MathStrip } from '../features/combat/MathStrip';
+
 export function CombatView({
     minions,
     onAddMinion,
@@ -34,6 +36,11 @@ export function CombatView({
 
     return (
         <div className="pb-20">
+            {/* Combat Stats Strip */}
+            <div className="mb-4 shadow-lg sticky top-0 z-20">
+                <MathStrip />
+            </div>
+
             {/* Undead Manager Card */}
             <div className="card-parchment p-4 mb-4">
                 <div className="flex justify-between items-center mb-4 relative z-10">

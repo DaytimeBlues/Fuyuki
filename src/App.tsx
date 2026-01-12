@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppShell } from './components/layout/AppShell';
-import { ErrorBoundary } from './components/ErrorBoundary';
+
 import { HealthWidget } from './components/widgets/HealthWidget';
 import { ArmorClassWidget } from './components/widgets/ArmorClassWidget';
 import { SpellSlotsWidget } from './components/widgets/SpellSlotsWidget';
@@ -16,6 +16,7 @@ import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
 import { CharacterEditor } from './components/widgets/CharacterEditor';
 import SpellsView from './components/views/SpellsView';
 import { CombatView } from './components/views/CombatView';
+import { CombatOverlay } from './components/views/CombatOverlay';
 import { RestView } from './components/views/RestView';
 import { GrimoireView } from './components/views/GrimoireView';
 import { BiographyView } from './components/views/BiographyView';
@@ -54,7 +55,7 @@ function App() {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
-    
+
     // Schedule debounced save
     saveTimeoutRef.current = setTimeout(() => {
       updateActiveSession(data, minions);
@@ -117,7 +118,7 @@ function App() {
         // Healing - only affects current HP, not THP
         // RAW: Reset death saves when healed from 0 HP
         const wasAtZero = prev.hp.current === 0;
-        
+
         if (wasAtZero && newCurrent > 0) {
           setTimeout(() => showToast("Stabilized! Death saves reset."), 0);
         }
@@ -358,69 +359,82 @@ function App() {
         </div>
       )}
 
+
+
+
+
       {activeTab === 'settings' && (
         <div className="animate-fade-in">
-          <ErrorBoundary>
-
-            <CharacterEditor
-              data={data}
-              onLevelChange={handleLevelChange}
-              onAbilityChange={handleAbilityChange}
-            />
-            <InitiativeWidget
-              dexMod={data.abilityMods.dex}
-              profBonus={data.profBonus}
-            />
-            <ProficiencyWidget
-              profBonus={data.profBonus}
-              level={data.level}
-            />
-            <SavingThrowsWidget
-              abilityMods={data.abilityMods}
-              profBonus={data.profBonus}
-              savingThrowProficiencies={data.savingThrowProficiencies}
-            />
-            <HitDiceWidget
+          {/* ... existing settings content ... */}
+          {/* (omitted for brevity in replacement, will rely on context matching) */}
+          <CharacterEditor
+            data={data}
+            onLevelChange={handleLevelChange}
+            onAbilityChange={handleAbilityChange}
+          />
+          {/* ... other widgets ... */}
+          <InitiativeWidget
+            dexMod={data.abilityMods.dex}
+            profBonus={data.profBonus}
+          />
+          <ProficiencyWidget
+            profBonus={data.profBonus}
+            level={data.level}
+          />
+          <SavingThrowsWidget
+            abilityMods={data.abilityMods}
+            profBonus={data.profBonus}
+            savingThrowProficiencies={data.savingThrowProficiencies}
+          />
+          <HitDiceWidget
+            hitDice={data.hitDice}
+            conMod={data.abilityMods.con}
+            currentHP={data.hp.current}
+            maxHP={data.hp.max}
+            onSpend={handleSpendHitDie}
+          />
+          <div className="mt-8 border-t border-gray-800 pt-8">
+            <RestView
               hitDice={data.hitDice}
               conMod={data.abilityMods.con}
               currentHP={data.hp.current}
               maxHP={data.hp.max}
-              onSpend={handleSpendHitDie}
+              onSpendHitDie={handleSpendHitDie}
+              onLongRest={handleLongRest}
             />
-            <div className="mt-8 border-t border-gray-800 pt-8">
-              <RestView
-                hitDice={data.hitDice}
-                conMod={data.abilityMods.con}
-                currentHP={data.hp.current}
-                maxHP={data.hp.max}
-                onSpendHitDie={handleSpendHitDie}
-                onLongRest={handleLongRest}
-              />
-            </div>
-            <div className="mt-8 border-t border-gray-800 pt-8">
-              <MulticlassSpellSlotsWidget
-                onSlotsCalculated={(newSlots) => {
-                  setData(prev => ({ ...prev, slots: newSlots }));
-                  showToast('Spell slots updated!');
-                }}
-              />
-            </div>
-          </ErrorBoundary>
+          </div>
+          <div className="mt-8 border-t border-gray-800 pt-8">
+            <MulticlassSpellSlotsWidget
+              onSlotsCalculated={(newSlots) => {
+                setData(prev => ({ ...prev, slots: newSlots }));
+                showToast('Spell slots updated!');
+              }}
+            />
+          </div>
+
         </div>
-      )}
+      )
+      }
+
+      {/* Combat Overlay System */}
+      <CombatOverlay />
 
       {/* Toast */}
-      {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
-          {toast}
-        </div>
-      )}
+      {
+        toast && (
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
+            {toast}
+          </div>
+        )
+      }
 
       {/* Session Picker Modal */}
-      {showSessionPicker && (
-        <SessionPicker onSessionSelected={handleSessionSelected} />
-      )}
-    </AppShell>
+      {
+        showSessionPicker && (
+          <SessionPicker onSessionSelected={handleSessionSelected} />
+        )
+      }
+    </AppShell >
   );
 }
 

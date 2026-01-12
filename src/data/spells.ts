@@ -308,5 +308,193 @@ export const spells: Spell[] = [
         desc: "Call forth an undead spirit (Ghostly, Putrid, or Skeletal). The spirit obeys your verbal commands. GHOSTLY: Fly 40ft, Frightening Presence. PUTRID: Poison Aura. SKELETAL: Ranged attacks 150ft.",
         incantation: "Spiritus Invoco",
         pronunciation: "SPEE-ree-toos in-VOH-koh"
+    },
+    {
+        name: "Web",
+        lvl: 2,
+        school: "CONJ",
+        castTime: "1 Action",
+        range: "60 ft",
+        duration: "1 hr (Conc.)",
+        components: "V, S, M",
+        effect: "Create a 20ft cube of sticky webbing.",
+        rolls: "DEX save vs DC",
+        damage: "Restrained",
+        damageType: "Condition",
+        decisionTree: [
+            { level: 3, summary: "Control space and restrain enemies." },
+            { level: 5, summary: "Create choke points in narrow hallways." }
+        ],
+        concentration: true,
+        desc: "You conjure a mass of thick, sticky web. The webs fill a 20-foot cube. difficult terrain. Creatures starting their turn in the webs or entering them must make a Dexterity save or be restrained.",
+        incantation: "Tela Aranea",
+        pronunciation: "TEH-lah ah-RAH-neh-ah"
+    },
+    {
+        name: "Misty Step",
+        lvl: 2,
+        school: "CONJ",
+        castTime: "Bonus Action",
+        range: "Self",
+        duration: "Instantaneous",
+        components: "V",
+        effect: "Teleport 30ft to an unoccupied space you can see.",
+        rolls: "None",
+        damage: "—",
+        damageType: "Utility",
+        decisionTree: [
+            { level: 3, summary: "Escape grapples or close distance." },
+            { level: 5, summary: "Reposition for better spell angles." }
+        ],
+        desc: "Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.",
+        incantation: "Vapor Transitus",
+        pronunciation: "VAH-por tran-SEE-toos"
+    },
+    {
+        name: "Invisibility",
+        lvl: 2,
+        school: "ILLU",
+        castTime: "1 Action",
+        range: "Touch",
+        duration: "1 hr (Conc.)",
+        components: "V, S, M",
+        effect: "Creature touched becomes invisible.",
+        rolls: "None",
+        damage: "—",
+        damageType: "Utility",
+        decisionTree: [
+            { level: 3, summary: "Scouting or defensive escape." },
+            { level: 5, summary: "Upcast to target 2 creatures." }
+        ],
+        concentration: true,
+        desc: "A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is invisible as long as it is on the target's person. The spell ends for a target that attacks or casts a spell.",
+        incantation: "Evanesco",
+        pronunciation: "eh-vah-NES-koh"
+    },
+    {
+        name: "Fly",
+        lvl: 3,
+        school: "TRANS",
+        castTime: "1 Action",
+        range: "Touch",
+        duration: "10 min (Conc.)",
+        components: "V, S, M",
+        effect: "Target gains a flying speed of 60 feet.",
+        rolls: "None",
+        damage: "—",
+        damageType: "Utility",
+        decisionTree: [
+            { level: 5, summary: "Bypass terrain and melee enemies." },
+            { level: 7, summary: "Upcast to target 2 creatures." }
+        ],
+        concentration: true,
+        desc: "You touch a willing creature. The target gains a flying speed of 60 feet for the duration. When the spell ends, the target falls if it is still aloft, unless it can stop the fall.",
+        incantation: "Volatus",
+        pronunciation: "voh-LAH-toos"
+    },
+    {
+        name: "Haste",
+        lvl: 3,
+        school: "TRANS",
+        castTime: "1 Action",
+        range: "30 ft",
+        duration: "1 min (Conc.)",
+        components: "V, S, M",
+        effect: "Double speed, +2 AC, extra action.",
+        rolls: "None",
+        damage: "Buff",
+        damageType: "Utility",
+        decisionTree: [
+            { level: 5, summary: "Supercharge a martial ally (Minion/Party)." },
+            { level: 9, summary: "Vital for chasing down fleeting enemies." }
+        ],
+        concentration: true,
+        desc: "Choose a willing creature within range. Speed is doubled, gains +2 bonus to AC, advantage on DEX saves, and an additional action on each of its turns (Attack, Dash, Disengage, Hide, or Use Object). When the spell ends, the target can't move or take actions until after its next turn.",
+        incantation: "Celeritas",
+        pronunciation: "seh-LEH-ree-tas"
+    },
+    {
+        name: "Hypnotic Pattern",
+        lvl: 3,
+        school: "ILLU",
+        castTime: "1 Action",
+        range: "120 ft",
+        duration: "1 min (Conc.)",
+        components: "S, M",
+        effect: "Charming lights incapacitate creatures in a 30ft cube.",
+        rolls: "WIS save vs DC",
+        damage: "Incapacitated",
+        damageType: "Condition",
+        decisionTree: [
+            { level: 5, summary: "Mass crowd control for groups." },
+            { level: 9, summary: "Shutdown entire enemy encounters." }
+        ],
+        concentration: true,
+        desc: "You create a twisting pattern of colors that weaves through the air inside a 30-foot cube within range. Creatures in the area must make a Wisdom saving throw. On a failed save, the creature is charmed for the duration. While charmed, the creature is incapacitated and has a speed of 0.",
+        incantation: "Hypnosis",
+        pronunciation: "hip-NOH-sis"
+    },
+    {
+        name: "Slow",
+        lvl: 3,
+        school: "TRANS",
+        castTime: "1 Action",
+        range: "120 ft",
+        duration: "1 min (Conc.)",
+        components: "V, S, M",
+        effect: "Slows up to 6 creatures (half speed, -2 AC, no reactions).",
+        rolls: "WIS save vs DC",
+        damage: "Debuff",
+        damageType: "Condition",
+        decisionTree: [
+            { level: 5, summary: "Debuff multiple enemies, ruin caster turns." },
+            { level: 9, summary: "Selective targeting avoids friendly fire." }
+        ],
+        concentration: true,
+        desc: "You alter time around up to six creatures of your choice in a 40-foot cube. Targets must make a Wisdom saving throw. On a failed save: Speed is halved, -2 to AC and DEX saves, and it can't use reactions. On its turn, it can use either an action or a bonus action, not both.",
+        incantation: "Tardus Tempus",
+        pronunciation: "TAR-doos TEM-poos"
+    },
+    {
+        name: "Polymorph",
+        lvl: 4,
+        school: "TRANS",
+        castTime: "1 Action",
+        range: "60 ft",
+        duration: "1 hr (Conc.)",
+        components: "V, S, M",
+        effect: "Transform a creature into a beast.",
+        rolls: "WIS save vs DC",
+        damage: "Transformation",
+        damageType: "Utility",
+        decisionTree: [
+            { level: 7, summary: "Turn ally into distinct beast (Giant Ape/T-Rex)." },
+            { level: 9, summary: "Remove enemy from fight by turning into snail." }
+        ],
+        concentration: true,
+        desc: "You transform a creature that you can see within range into a new form. An unwilling creature must make a Wisdom saving throw to avoid the effect. The new form can be any beast whose challenge rating is equal to or less than the target's.",
+        incantation: "Mutatio Formae",
+        pronunciation: "moo-TAH-tee-oh FOR-may"
+    },
+    {
+        name: "Banishment",
+        lvl: 4,
+        school: "ABJ",
+        castTime: "1 Action",
+        range: "60 ft",
+        duration: "1 min (Conc.)",
+        components: "V, S, M",
+        effect: "Banish a creature to another plane of existence.",
+        rolls: "CHA save vs DC",
+        damage: "Removal",
+        damageType: "Utility",
+        decisionTree: [
+            { level: 7, summary: "Remove key threat from combat instantly." },
+            { level: 9, summary: "Upcast to banish 2 creatures." }
+        ],
+        concentration: true,
+        desc: "You attempt to send one creature that you can see within range to another plane of existence. The target must succeed on a Charisma saving throw or be banished. If the target is native to the plane of existence you're on, you banish the target to a harmless demiplane.",
+        incantation: "Exsilium",
+        pronunciation: "ex-SIL-ee-oom"
     }
 ];
