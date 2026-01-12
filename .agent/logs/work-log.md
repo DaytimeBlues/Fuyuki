@@ -4,6 +4,27 @@ Chronological history of development sessions. Updated via `/cleanup` command.
 
 ---
 
+## 2026-01-12 [Aramancia] - V3 Architecture Merge & Deployment
+- Reviewed and rated 5 open PRs (see `review_report.md`)
+- Merged **PR #15** (Android stability fixes)
+- Merged **PR #18** (V3 Redux Architecture)
+- Removed fire background from `AppShell.tsx` for performance
+- Verified V3 Rules Engine (Concentration, HP, THP)
+- Deployed to Firebase Hosting
+
+**Test Results:**
+- 73/73 tests passing
+- Build: Clean
+- Lint: Clean
+
+**Issues:**
+- Git push blocked by remote (shallow update not allowed)
+- Workaround: Firebase deployed locally, git changes committed but not pushed
+
+→ Next: Resolve git push issue or create fresh clone; close superseded PRs (#17, #19)
+
+---
+
 ## 2026-01-09 [Aramancia] - Short Rest & Performance Optimization
 - Implemented Short Rest with Hit Dice spending (full RAW compliance)
 - Created HitDiceWidget component with roll animation
