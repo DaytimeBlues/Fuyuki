@@ -1,4 +1,6 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { AppDispatch, RootState } from '../index';
+import { slotExpended } from './spellbookSlice';
 
 // Minion type for Animate Dead / Summon Undead creatures
 export interface Minion {
@@ -264,6 +266,25 @@ export const {
     castingCompleted,
     castingCancelled,
 } = combatSlice.actions;
+
+/**
+ * Complete the cast and spend a slot if needed.
+ *
+ * Notes:
+ * - `castingCompleted` is a pure reducer; this thunk performs the cross-slice side effect.
+ * - This is intentionally conservative: it only spends when `slotLevel > 0`.
+ */
+export const castingCompletedWithSlot = () => (dispatch: AppDispatch, getState: () => RootState) => {
+    const state = getState();
+    const slotLevel = state.combat.casting.slotLevel ?? 0;
+
+    // Cantrips (0) and unknown values do not expend slots.
+    if (slotLevel > 0) {
+        dispatch(slotExpended({ level: slotLevel }));
+    }
+
+    dispatch(castingCompleted());
+};
 
 // Selectors
 export const minionSelectors = minionAdapter.getSelectors();

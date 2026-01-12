@@ -48,6 +48,15 @@ export interface Minion {
     notes: string;
 }
 
+export interface InventoryItem {
+    name: string;
+    /**
+     * Optional list of spells that can be cast via this item (e.g., wand/staff).
+     * These are spell *names* that should match entries in `src/data/spells.ts`.
+     */
+    spells?: string[];
+}
+
 // Re-export Schema types
 export { SpellSchema } from '../schemas/spellSchema';
 export type { SpellV3 } from '../schemas/spellSchema';
@@ -87,7 +96,7 @@ export interface CharacterData {
     };
     concentration: string | null; // Currently concentrating on this spell
     attunement: string[]; // Max 3 attuned magic items
-    inventory: string[]; // General inventory items
+    inventory: InventoryItem[]; // General inventory items (supports spellcasting items)
 }
 
 export interface Session {

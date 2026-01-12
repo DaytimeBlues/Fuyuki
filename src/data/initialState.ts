@@ -60,5 +60,9 @@ export const initialCharacterData: CharacterData = {
     },
     concentration: null,
     attunement: [],
-    inventory: ["Component Pouch", "Arcane Focus", "Scholar's Pack"],
+    inventory: [
+        { name: "Component Pouch" },
+        { name: "Arcane Focus" },
+        { name: "Scholar's Pack" }
+    ],
 };

@@ -29,15 +29,43 @@ import {
 } from './utils/srdRules';
 import { getRequiredLevelForSpell } from './utils/spellRules';
 import type { CharacterData, Minion, Session } from './types';
+import type { InventoryItem } from './types';
+import { useAppDispatch } from './store/hooks';
+import { castingStarted, slotConfirmed } from './store/slices/combatSlice';
 
 function App() {
+  const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState('home');
   const [showSessionPicker, setShowSessionPicker] = useState<boolean>(() => {
     return !getActiveSession();
   });
+  const normalizeInventory = useCallback((inv: unknown): InventoryItem[] => {
+    if (!Array.isArray(inv)) return [];
+    return inv
+      .map((entry): InventoryItem | null => {
+        if (typeof entry === 'string') return { name: entry };
+        if (entry && typeof entry === 'object' && typeof (entry as any).name === 'string') {
+          const maybe = entry as any;
+          return {
+            name: maybe.name,
+            spells: Array.isArray(maybe.spells) ? maybe.spells.filter((s: unknown) => typeof s === 'string') : undefined,
+          };
+        }
+        return null;
+      })
+      .filter((x): x is InventoryItem => Boolean(x));
+  }, []);
+
+  const normalizeCharacterData = useCallback((d: CharacterData): CharacterData => {
+    return {
+      ...d,
+      inventory: normalizeInventory((d as any).inventory),
+    };
+  }, [normalizeInventory]);
+
   const [data, setData] = useState<CharacterData>(() => {
     const session = getActiveSession();
-    return session ? session.characterData : initialCharacterData;
+    return session ? normalizeCharacterData(session.characterData) : normalizeCharacterData(initialCharacterData);
   });
   const [minions, setMinions] = useState<Minion[]>(() => {
     const session = getActiveSession();
@@ -70,7 +98,7 @@ function App() {
   }, [data, minions]);
 
   const handleSessionSelected = (session: Session) => {
-    setData(session.characterData);
+    setData(normalizeCharacterData(session.characterData));
     setMinions(session.minions);
     setShowSessionPicker(false);
   };
@@ -197,6 +225,23 @@ function App() {
     setMinions([]);
     showToast("All Minions Released");
   }, [showToast]);
+
+  const handleCastFromInventory = useCallback((spellName: string) => {
+    const spell = spells.find(s => s.name === spellName) ||
+      spells.find(s => s.name.toLowerCase() === spellName.toLowerCase());
+    if (!spell) {
+      showToast(`Unknown spell: ${spellName}`);
+      return;
+    }
+
+    const rollsLower = (spell.rolls ?? '').toLowerCase();
+    const resolutionMode: 'attack' | 'save' | 'automatic' =
+      rollsLower.includes('attack') ? 'attack' : rollsLower.includes('save') ? 'save' : 'automatic';
+
+    dispatch(castingStarted({ spellId: spell.name }));
+    dispatch(slotConfirmed({ slotLevel: spell.lvl, resolutionMode }));
+    setActiveTab('combat');
+  }, [dispatch, showToast]);
 
   const handleSpendHitDie = useCallback((healed: number, diceSpent: number) => {
     setData(prev => ({
@@ -355,6 +400,7 @@ function App() {
               ...prev,
               inventory: (prev.inventory || []).filter((_, i) => i !== index)
             }))}
+            onCastSpell={handleCastFromInventory}
           />
         </div>
       )}
