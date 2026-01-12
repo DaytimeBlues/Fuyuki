@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { castingCompleted, castingCancelled } from '../../store/slices/combatSlice';
+import { castingCancelled, castingCompletedWithSlot } from '../../store/slices/combatSlice';
 import { ResolutionPanel } from '../features/combat/ResolutionPanel';
 import { spells } from '../../data/spells';
 
@@ -16,25 +16,50 @@ export const CombatOverlay: React.FC = () => {
 
     if (!spell) return null;
 
-    // Convert legacy Spell to SpellV3 shape if needed (for safety)
-    // The ResolutionPanel expects SpellV3. Our data/spells.ts is close but might need adapter.
-    // For now assuming direct compatibility or close enough.
-    // We add dummy V3 fields if missing.
+    // Adapter: legacy Spell -> enough of SpellV3 for ResolutionPanel.
+    const rollsLower = (spell.rolls ?? '').toLowerCase();
+    const requiresAttackRoll = rollsLower.includes('attack');
+    const requiresSavingThrow = rollsLower.includes('save');
+
+    const saveAbility = (() => {
+        const r = spell.rolls ?? '';
+        if (r.includes('STR')) return 'Strength';
+        if (r.includes('DEX')) return 'Dexterity';
+        if (r.includes('CON')) return 'Constitution';
+        if (r.includes('INT')) return 'Intelligence';
+        if (r.includes('WIS')) return 'Wisdom';
+        if (r.includes('CHA')) return 'Charisma';
+        return 'Dexterity';
+    })();
+
+    const firstDiceMatch = (spell.damage ?? '').match(/(\d+)\s*d\s*(\d+)/i);
+    const damage =
+        firstDiceMatch && Number(firstDiceMatch[1]) > 0 && Number(firstDiceMatch[2]) > 0
+            ? [{
+                count: Number(firstDiceMatch[1]),
+                sides: Number(firstDiceMatch[2]),
+                type: (spell.damageType || 'force').toLowerCase(),
+                // Many wizard damage spells scale by +1 die per slot level.
+                scaling: { type: 'per_slot_level', diceIncreasePerLevel: 1 }
+            }]
+            : undefined;
+
     const spellV3: any = {
-        ...spell,
         id: spell.name,
-        requiresAttackRoll: spell.rolls.includes('Attack'),
-        requiresSavingThrow: spell.rolls.includes('save'),
-        damage: [{
-            count: parseInt(spell.damage.split('d')[0]) || 0,
-            sides: parseInt(spell.damage.split('d')[1]?.split(' ')[0]) || 0,
-            type: spell.damageType,
-            scaling: { type: 'per_slot_level', diceIncreasePerLevel: 1 } // Basic inference
-        }],
-        savingThrowDetails: {
-            ability: spell.rolls.includes('DEX') ? 'dex' : spell.rolls.includes('WIS') ? 'wis' : 'con',
-            onSuccess: 'none'
-        }
+        name: spell.name,
+        level: spell.lvl,
+        requiresAttackRoll,
+        requiresSavingThrow,
+        damage,
+        savingThrowDetails: requiresSavingThrow ? {
+            ability: saveAbility,
+            onSuccess: damage ? 'half' : 'special',
+            onFail: damage ? 'full' : 'special',
+        } : undefined,
+        // Extra fields used by the legacy UI plan
+        desc: spell.desc,
+        decisionTree: spell.decisionTree,
+        higherLevelDescription: undefined,
     };
 
     return (
@@ -45,19 +70,19 @@ export const CombatOverlay: React.FC = () => {
                     slotLevel={casting.slotLevel || spell.lvl}
                     onHit={() => {
                         // Logic to apply damage to target minion would go here
-                        dispatch(castingCompleted());
+                        dispatch(castingCompletedWithSlot());
                     }}
                     onMiss={() => {
-                        dispatch(castingCompleted());
+                        dispatch(castingCompletedWithSlot());
                     }}
                     onPass={() => {
-                        dispatch(castingCompleted());
+                        dispatch(castingCompletedWithSlot());
                     }}
                     onFail={() => {
-                        dispatch(castingCompleted());
+                        dispatch(castingCompletedWithSlot());
                     }}
                     onApply={() => {
-                        dispatch(castingCompleted());
+                        dispatch(castingCompletedWithSlot());
                     }}
                     onCancel={() => {
                         dispatch(castingCancelled());
