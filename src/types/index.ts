@@ -48,6 +48,10 @@ export interface Minion {
     notes: string;
 }
 
+// Re-export Schema types
+export { SpellSchema } from '../schemas/spellSchema';
+export type { SpellV3 } from '../schemas/spellSchema';
+
 export interface HitDice {
     current: number;  // Available to spend
     max: number;      // Equal to character level
