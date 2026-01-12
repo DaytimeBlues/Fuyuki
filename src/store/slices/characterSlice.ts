@@ -28,15 +28,15 @@ export interface CharacterState {
 
 const initialState: CharacterState = {
     name: "Aramancia",
-    level: 10,
+    level: 5,
     class: "Wizard (Necromancer)",
-    proficiencyBonus: 4,
+    proficiencyBonus: 3,
     abilities: {
         strength: 8,
         dexterity: 14,
-        constitution: 12,
-        intelligence: 20,
-        wisdom: 16,
+        constitution: 14,
+        intelligence: 18,
+        wisdom: 14,
         charisma: 10,
     },
     skills: {
@@ -47,8 +47,8 @@ const initialState: CharacterState = {
         // Add defaults for others as needed
     },
     armorClass: 12,
-    hitPoints: 85,
-    maxHitPoints: 85,
+    hitPoints: 35,
+    maxHitPoints: 35,
     speed: 30,
     features: ["Empowered Evocation", "Undead Thralls"],
     feats: ["War Caster"],

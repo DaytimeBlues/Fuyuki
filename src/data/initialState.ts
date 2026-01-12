@@ -1,36 +1,36 @@
 import type { CharacterData } from '../types';
 
 export const initialCharacterData: CharacterData = {
-    hp: { current: 85, max: 85, temp: 0 },
-    hitDice: { current: 10, max: 10, size: 6 }, // Level 10 wizard
-    baseAC: 12,
+    hp: { current: 35, max: 35, temp: 0 },
+    hitDice: { current: 5, max: 5, size: 6 }, // Level 5 wizard
+    baseAC: 12, // 10 + 2 DEX
     mageArmour: false,
     shield: false,
-    dc: 17, // 8 + 5 (INT) + 4 (Prof)
-    profBonus: 4,
-    level: 10,
+    dc: 15, // 8 + 4 (INT 18) + 3 (Prof) - adjusted to match probable stats
+    profBonus: 3,
+    level: 5,
     savingThrowProficiencies: ['int', 'wis'],
     deathSaves: { successes: 0, failures: 0 },
     abilities: {
         str: 8,
         dex: 14,
         con: 14,
-        int: 20,
-        wis: 16,
+        int: 18, // Level 4 ASI -> 18? Or maybe just 18.
+        wis: 14,
         cha: 10
     },
     abilityMods: {
         str: -1,
         dex: 2,
         con: 2,
-        int: 5,
-        wis: 3,
+        int: 4,
+        wis: 2,
         cha: 0
     },
     skills: {
         acrobatics: { name: 'Acrobatics', attr: 'dex', prof: false },
         animalHandling: { name: 'Animal Handling', attr: 'wis', prof: false },
-        arcana: { name: 'Arcana', attr: 'int', prof: true }, // Expertise handled in logic or manual bonus
+        arcana: { name: 'Arcana', attr: 'int', prof: true },
         athletics: { name: 'Athletics', attr: 'str', prof: false },
         deception: { name: 'Deception', attr: 'cha', prof: false },
         history: { name: 'History', attr: 'int', prof: true },
@@ -50,9 +50,9 @@ export const initialCharacterData: CharacterData = {
     slots: {
         1: { used: 0, max: 4 },
         2: { used: 0, max: 3 },
-        3: { used: 0, max: 3 },
-        4: { used: 0, max: 3 },
-        5: { used: 0, max: 2 }
+        3: { used: 0, max: 2 },
+        4: { used: 0, max: 0 },
+        5: { used: 0, max: 0 }
     },
     defaultMinion: {
         Skeleton: { hp: 13, ac: 13, notes: "Shortbow (1d6+2), Shortsword (1d6+2)" },
