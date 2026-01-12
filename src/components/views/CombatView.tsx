@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MinionDrawer } from '../minions/MinionDrawer';
+import { MinionTurnCard } from '../combat/MinionTurnCard';
 import type { Minion } from '../../types';
 import { undeadStats } from '../../data/undeadStats';
 import type { UndeadStatBlock } from '../../data/undeadStats';
@@ -23,6 +24,20 @@ export function CombatView({
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedStatBlock, setSelectedStatBlock] = useState<UndeadStatBlock | null>(null);
     const [showSummons, setShowSummons] = useState(false);
+    
+    // State for resolution (simulated here since I don't have the full overlay connected yet)
+    // In a real app, onRollFormula would trigger the dice roller modal/overlay
+    const handleRollFormula = (label: string, formula: string) => {
+        // This is where you'd dispatch to your dice roller
+        console.log(`Rolling ${label}: ${formula}`);
+        // For now, we can alert or log, or if there's a global dice context, use that.
+        // Since the prompt asks for the fix to MinionTurnCard primarily, 
+        // I will assume the parent container or a Context handles the actual UI for the roll result.
+        // But to make it "clicky", let's just log it.
+        // Or if there is a `window.postMessage` or similar for the wrapper? 
+        // Actually, let's just leave it as a callback that would be wired up.
+        alert(`Dice Roller Mock:\nLabel: ${label}\nFormula: ${formula}`);
+    };
 
     const openStats = (name: string) => {
         const stats = undeadStats.find(s => s.name.includes(name));
@@ -80,6 +95,20 @@ export function CombatView({
                     Manage Horde
                 </button>
             </div>
+
+            {/* Minion Turn Cards - Show active minions here for combat */}
+            {minions.length > 0 && (
+                <div className="mb-6 space-y-4">
+                    <h3 className="font-display text-sm text-parchment-light opacity-80 pl-1">Minion Actions</h3>
+                    {minions.map(minion => (
+                        <MinionTurnCard 
+                            key={minion.id} 
+                            minion={minion} 
+                            onRollFormula={handleRollFormula}
+                        />
+                    ))}
+                </div>
+            )}
 
             {/* Summon Undead Reference - Collapsible */}
             <div className="card-parchment p-4">
