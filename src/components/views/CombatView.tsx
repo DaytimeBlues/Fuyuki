@@ -4,6 +4,26 @@ import type { Minion } from '../../types';
 import { undeadStats } from '../../data/undeadStats';
 import type { UndeadStatBlock } from '../../data/undeadStats';
 import { Skull, Shield, Sword, Info, X, Users, Ghost, Biohazard, Bone, ChevronDown, ChevronUp } from 'lucide-react';
+import { rollDiceFormula } from '../../utils/dice';
+
+function extractToHit(desc: string): number | null {
+    const m = desc.match(/\+\s*(\d+)\s*to hit/i);
+    if (!m) return null;
+    const n = Number.parseInt(m[1], 10);
+    return Number.isFinite(n) ? n : null;
+}
+
+function extractDamageFormula(desc: string): string | null {
+    // Common 5e formatting: "Hit: 5 (1d6 + 2) piercing damage."
+    const paren = desc.match(/Hit:\s*[^()]*\(([^)]+)\)/i);
+    if (paren?.[1]) return paren[1].replace(/\s+/g, '');
+
+    // Fallback: "Hit: 2d4 + 3 necrotic damage." (no parentheses)
+    const inline = desc.match(/Hit:\s*([0-9]+d[0-9]+(?:\s*[+-]\s*\d+)*)/i);
+    if (inline?.[1]) return inline[1].replace(/\s+/g, '');
+
+    return null;
+}
 
 interface CombatViewProps {
     minions: Minion[];
@@ -23,6 +43,7 @@ export function CombatView({
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedStatBlock, setSelectedStatBlock] = useState<UndeadStatBlock | null>(null);
     const [showSummons, setShowSummons] = useState(false);
+    const [lastRoll, setLastRoll] = useState<{ label: string; detail: string } | null>(null);
 
     const openStats = (name: string) => {
         const stats = undeadStats.find(s => s.name.includes(name));
@@ -183,6 +204,14 @@ export function CombatView({
                         {/* Scrollable Content */}
                         <div className="p-4 overflow-y-auto flex-1">
                             <div className="space-y-4 text-sm">
+                                {/* Roll Result */}
+                                {lastRoll && (
+                                    <div className="bg-white/10 border border-white/20 rounded-lg p-3 animate-scale-in">
+                                        <div className="text-[10px] text-muted uppercase tracking-wider mb-1">{lastRoll.label}</div>
+                                        <div className="font-display text-parchment-light">{lastRoll.detail}</div>
+                                    </div>
+                                )}
+
                                 {/* AC / HP / Speed */}
                                 <div className="grid grid-cols-3 gap-2 text-center bg-card-elevated/80 p-3 rounded-lg border border-white/10">
                                     <div>
@@ -241,6 +270,42 @@ export function CombatView({
                                         <div key={action.name} className="mb-2">
                                             <span className="text-parchment-light font-display italic">{action.name}.</span>{' '}
                                             <span className="text-parchment">{action.desc}</span>
+
+                                            {(() => {
+                                                const toHit = extractToHit(action.desc);
+                                                const damageFormula = extractDamageFormula(action.desc);
+                                                if (toHit == null && !damageFormula) return null;
+
+                                                return (
+                                                    <div className="mt-2 flex flex-wrap gap-2">
+                                                        {toHit != null && (
+                                                            <button
+                                                                className="rounded-xl px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/10 hover:border-white/30 transition-all"
+                                                                onClick={() => {
+                                                                    const r = rollDiceFormula(`1d20+${toHit}`);
+                                                                    setLastRoll({ label: `${selectedStatBlock.name}: ${action.name} attack`, detail: r.detail });
+                                                                    setTimeout(() => setLastRoll(null), 3000);
+                                                                }}
+                                                            >
+                                                                Attack d20 + {toHit}
+                                                            </button>
+                                                        )}
+
+                                                        {damageFormula && (
+                                                            <button
+                                                                className="rounded-xl px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/10 hover:border-white/30 transition-all"
+                                                                onClick={() => {
+                                                                    const r = rollDiceFormula(damageFormula);
+                                                                    setLastRoll({ label: `${selectedStatBlock.name}: ${action.name} damage (${damageFormula})`, detail: r.detail });
+                                                                    setTimeout(() => setLastRoll(null), 3000);
+                                                                }}
+                                                            >
+                                                                Damage ({damageFormula})
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })()}
                                         </div>
                                     ))}
                                 </div>
