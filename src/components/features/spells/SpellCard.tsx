@@ -29,26 +29,26 @@ export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAv
 
     return (
         <div className={`
-      relative p-4 rounded-lg border transition-all duration-200 group
+      relative p-5 rounded-xl border transition-all duration-300 group flex flex-col h-full
       ${isPrepared
-                ? 'bg-stone-900 border-stone-600 shadow-lg shadow-black/50'
-                : 'bg-stone-950 border-stone-800 opacity-80 hover:opacity-100 hover:border-stone-700'
+                ? 'bg-stone-900/90 border-stone-600 shadow-xl shadow-black/60 ring-1 ring-stone-600/30'
+                : 'bg-stone-950/80 border-stone-800 opacity-90 hover:opacity-100 hover:border-stone-600'
             }
     `}>
             {/* Header */}
-            <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded bg-stone-950 border border-stone-800">
+            <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-start gap-3 min-w-0">
+                    <div className="p-2 rounded-lg bg-stone-950 border border-stone-800 shadow-inner shrink-0 mt-0.5">
                         <SchoolIcon school={spell.school} />
                     </div>
-                    <div>
-                        <h3 className={`font-cinzel text-lg leading-none ${isPrepared ? 'text-stone-100' : 'text-stone-400'}`}>
+                    <div className="min-w-0">
+                        <h3 className={`font-cinzel text-lg font-bold truncate ${isPrepared ? 'text-stone-100' : 'text-stone-400'}`}>
                             {spell.name}
                         </h3>
-                        <div className="flex items-center gap-2 text-xs text-stone-500 mt-1">
-                            <span>{spell.school}</span>
-                            <span>•</span>
-                            <span>Level {spell.level}</span>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500 mt-1.5 font-medium">
+                            <span className="bg-stone-900 px-1.5 py-0.5 rounded border border-stone-800/50">{spell.school}</span>
+                            <span className="text-stone-700">•</span>
+                            <span className="bg-stone-900 px-1.5 py-0.5 rounded border border-stone-800/50">Lvl {spell.level}</span>
                         </div>
                     </div>
                 </div>
@@ -57,10 +57,10 @@ export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAv
                 <button
                     onClick={onPrepare}
                     className={`
-            p-1.5 rounded-full transition-colors
+            p-2 rounded-lg transition-all duration-200 shrink-0 border
             ${isPrepared
-                            ? 'text-yellow-500 bg-yellow-500/10 hover:bg-yellow-500/20'
-                            : 'text-stone-600 hover:text-stone-400 hover:bg-stone-800'
+                            ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20 shadow-lg shadow-yellow-500/5'
+                            : 'text-stone-600 bg-stone-900/50 border-stone-800 hover:text-stone-400 hover:border-stone-700'
                         }
           `}
                     title={isPrepared ? "Unprepare" : "Prepare"}
@@ -70,44 +70,46 @@ export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAv
             </div>
 
             {/* Tags */}
-            <div className="flex flex-wrap gap-1 mb-3">
+            <div className="flex flex-wrap gap-1.5 mb-4">
                 {isRitual && (
-                    <span className="px-1.5 py-0.5 text-[10px] uppercase tracking-wider rounded bg-stone-800 text-stone-400 border border-stone-700">
+                    <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded bg-amber-950/20 text-amber-500 border border-amber-900/30">
                         Ritual
                     </span>
                 )}
                 {isConcentration && (
-                    <span className="px-1.5 py-0.5 text-[10px] uppercase tracking-wider rounded bg-indigo-950/30 text-indigo-400 border border-indigo-900/30">
+                    <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded bg-indigo-950/20 text-indigo-400 border border-indigo-900/30">
                         Concentration
                     </span>
                 )}
-                <span className="px-1.5 py-0.5 text-[10px] uppercase tracking-wider rounded bg-stone-900 text-stone-500 border border-stone-800">
+                <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded bg-stone-900 text-stone-500 border border-stone-800">
                     {spell.castingTime}
                 </span>
             </div>
 
             {/* Description Snippet */}
-            <p className="text-sm text-stone-400 line-clamp-2 mb-4 font-serif leading-relaxed">
-                {spell.description}
-            </p>
+            <div className="flex-grow">
+                <p className="text-sm text-stone-400 line-clamp-3 font-serif leading-relaxed italic">
+                    {spell.description}
+                </p>
+            </div>
 
             {/* Actions */}
             {isPrepared && (
-                <div className="pt-3 mt-3 border-t border-stone-800 flex justify-end">
+                <div className="pt-4 mt-4 border-t border-stone-800/50 flex justify-end">
                     <button
                         onClick={onCast}
-                        disabled={!slotsAvailable && !isRitual} // Allow casting if ritual (assuming out of combat/resource logic elsewhere) or slots avail
+                        disabled={!slotsAvailable && !isRitual}
                         className={`
-                    px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded
-                    transition-all duration-200 flex items-center gap-2
+                    px-5 py-2 text-[10px] font-black uppercase tracking-[0.2em] rounded-md
+                    transition-all duration-300 flex items-center gap-2 group/btn
                     ${slotsAvailable
-                                ? 'bg-red-900/50 text-red-200 hover:bg-red-800/50 border border-red-900'
-                                : 'bg-stone-900 text-stone-600 cursor-not-allowed border border-stone-800'
+                                ? 'bg-red-950/40 text-red-400 hover:bg-red-900/60 border border-red-900/50 hover:border-red-500/50 shadow-lg shadow-red-900/10'
+                                : 'bg-stone-900/50 text-stone-600 cursor-not-allowed border border-stone-800'
                             }
                 `}
                     >
-                        <Zap className="w-3 h-3" />
-                        Cast
+                        <Zap className={`w-3.5 h-3.5 transition-transform duration-300 ${slotsAvailable ? 'group-hover/btn:scale-125 group-hover/btn:rotate-12' : ''}`} />
+                        Cast Spell
                     </button>
                 </div>
             )}

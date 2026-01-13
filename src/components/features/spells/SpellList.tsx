@@ -67,8 +67,8 @@ export const SpellList: React.FC = () => {
                     <button
                         onClick={() => setShowPreparedOnly(!showPreparedOnly)}
                         className={`px-3 py-1 text-xs rounded border transition-colors ${showPreparedOnly
-                                ? 'bg-yellow-900/20 text-yellow-500 border-yellow-900/50'
-                                : 'bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700'
+                            ? 'bg-yellow-900/20 text-yellow-500 border-yellow-900/50'
+                            : 'bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700'
                             }`}
                     >
                         Prepared Only
@@ -90,8 +90,8 @@ export const SpellList: React.FC = () => {
                             key={level}
                             onClick={() => setFilterLevel(level)}
                             className={`px-2 py-1 text-xs rounded transition-colors whitespace-nowrap ${filterLevel === level
-                                    ? 'bg-stone-800 text-white'
-                                    : 'text-stone-500 hover:text-stone-300'
+                                ? 'bg-stone-800 text-white'
+                                : 'text-stone-500 hover:text-stone-300'
                                 }`}
                         >
                             {level === 0 ? 'Cantrip' : `Lvl ${level}`}
@@ -104,15 +104,15 @@ export const SpellList: React.FC = () => {
             <div className="space-y-8 pb-20">
                 {Object.entries(groupedSpells).sort(([a], [b]) => Number(a) - Number(b)).map(([level, spells]) => (
                     <div key={level} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <h3 className="text-stone-500 font-cinzel border-b border-stone-800 pb-2 mb-4 flex justify-between items-end">
+                        <h3 className="text-stone-500 font-cinzel border-b border-stone-800 pb-2 mb-6 flex justify-between items-end max-w-7xl mx-auto">
                             <span>{Number(level) === 0 ? 'Cantrips' : `Level ${level} Spells`}</span>
                             {Number(level) > 0 && (
-                                <span className="text-xs font-sans text-stone-600">
+                                <span className="text-xs font-sans text-stone-600 font-bold tracking-widest uppercase">
                                     {availableSlots[Number(level)] || 0} Slots Available
                                 </span>
                             )}
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 max-w-7xl mx-auto">
                             {spells.map(spell => (
                                 <SpellCard
                                     key={spell.id}
