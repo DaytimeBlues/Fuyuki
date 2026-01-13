@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MinionDrawer } from '../minions/MinionDrawer';
+import { MathStrip } from '../features/combat/MathStrip';
 import { undeadStats } from '../../data/undeadStats';
 import type { UndeadStatBlock } from '../../data/undeadStats';
 import { Skull, Shield, Sword, Info, X, Users, Ghost, Biohazard, Bone, ChevronDown, ChevronUp } from 'lucide-react';
