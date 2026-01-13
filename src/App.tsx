@@ -320,7 +320,7 @@ function App() {
           </div>
           <div className="mt-8 border-t border-gray-800 pt-8">
             <MulticlassSpellSlotsWidget
-              onSlotsCalculated={(_newSlots) => {
+              onSlotsCalculated={() => {
                 dispatch(allSlotsRestored());
                 dispatch(toastShown('Spell slots updated!'));
               }}
