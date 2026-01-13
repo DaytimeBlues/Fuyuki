@@ -17,14 +17,14 @@ export function generateSessionId(): string {
 /**
  * Migrates session data from older versions to the current schema.
  */
-function migrateSession(session: any): Session {
+function migrateSession(session: unknown): Session {
     // If no version or version < 2.0
     const version = parseFloat(session.version || '1.0');
 
     if (version < 2.0) {
         // Migration to 2.0: Ensure minions have speed
         if (Array.isArray(session.minions)) {
-            session.minions = session.minions.map((m: any) => ({
+            session.minions = session.minions.map((m: unknown) => ({
                 ...m,
                 speed: m.speed ?? 30, // Default speed if missing
                 type: m.type ? m.type.toLowerCase() : 'skeleton' // Normalizing type to lowercase
