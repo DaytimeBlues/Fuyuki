@@ -66,3 +66,33 @@ Prompt: "Enter negative HP, 999999 gold, emoji strings. Crash the app."
 ### Newbie
 Focus: UX clarity, tooltip quality, error messages
 Prompt: "Click random buttons. Report confusing UI or missing guidance."
+
+---
+
+## The Preflight Protocol ("Trust No One")
+
+### Critical Protocols
+
+1. **NO UNIT TESTS**: Do not generate unit tests. Only generate and run End-to-End (E2E) tests that verify actual app behavior (DB writes, UI renders).
+
+2. **VERIFY VIA LOGS**: Before confirming a task is done, read the application logs. If there are no logs, add them.
+
+3. **PREFLIGHT MANDATORY**: Do not submit code for review until `./preflight.sh` passes and all errors are fixed.
+
+4. **VISUALIZE FIRST**: For major features, generate a Mermaid.js flowchart of data flow first. Find logic gaps before writing code.
+
+5. **DOCS IN CODE**: Add JSDoc/Comments directly to functions explaining WHY, not just WHAT.
+
+### Execution Loop
+
+Before claiming ANY task is "complete":
+
+1. Run `./preflight.sh` in the terminal
+2. Analyze the output. If it fails, fix the code and rerun
+3. Only when the script outputs `[PASS]` may you present the solution
+
+### Task Assignment Format
+
+When assigning a task, use this structure:
+
+> "Implement [Feature Name]. Update the architecture diagram to show how it fits. Create a new E2E test file `e2e/[feature].spec.ts` that verifies the success state. Implement the code, add logging, and run `./preflight.sh`. Do not ask for feedback until the preflight passes."
