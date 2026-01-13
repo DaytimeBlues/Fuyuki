@@ -187,14 +187,15 @@ export const MinionList: React.FC = () => {
 
             {/* Minion Cards */}
             {minions.length > 0 ? (
-                <div className="space-y-2">
+                <div className="space-y-2" role="list">
                     {minions.map(minion => (
-                        <MinionCard
-                            key={minion.id}
-                            minion={minion}
-                            isExpanded={expandedMinionId === minion.id}
-                            onToggleExpand={() => toggleExpand(minion.id)}
-                        />
+                        <div key={minion.id} role="listitem">
+                            <MinionCard
+                                minion={minion}
+                                isExpanded={expandedMinionId === minion.id}
+                                onToggleExpand={() => toggleExpand(minion.id)}
+                            />
+                        </div>
                     ))}
                 </div>
             ) : (
