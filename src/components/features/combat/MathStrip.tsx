@@ -52,8 +52,8 @@ const StatBlock: React.FC<StatBlockProps> = ({ icon, label, value, formula, colo
 export const MathStrip: React.FC = () => {
     const spellAttackBonus = useAppSelector(selectSpellAttackBonus);
     const spellSaveDC = useAppSelector(selectSpellSaveDC);
-    const intMod = useAppSelector(state => selectAbilityModifier(state, 'intelligence'));
-    const profBonus = useAppSelector(state => state.character.proficiencyBonus);
+    const intMod = useAppSelector(state => selectAbilityModifier(state, 'int'));
+    const profBonus = useAppSelector(state => state.character.profBonus);
 
     return (
         <div className="bg-stone-950/80 backdrop-blur-md border-b border-stone-800 p-3">

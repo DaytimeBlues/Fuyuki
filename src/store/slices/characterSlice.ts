@@ -1,120 +1,322 @@
+/**
+ * characterSlice.ts
+ * 
+ * WHY: This is the SINGLE SOURCE OF TRUTH for all character data.
+ * All widgets read state via selectors and dispatch actions to mutate.
+ * This eliminates the dual-state problem of local useState + Redux.
+ * 
+ * Persistence is handled by the persistenceMiddleware which saves
+ * to sessionStorage on every action.
+ */
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import type { CharacterData, AbilityKey, InventoryItem, Minion } from '../../types';
+import { initialCharacterData } from '../../data/initialState';
+import { getActiveSession } from '../../utils/sessionStorage';
+import { recalculateDerivedCharacterData } from '../../utils/srdRules';
 
-// import { RootState } from '../index'; // Circular dependency removal
-
-export type AbilityName = 'strength' | 'dexterity' | 'constitution' | 'intelligence' | 'wisdom' | 'charisma';
-
-export interface Skill {
-    ability: AbilityName;
-    proficient: boolean;
-    expert: boolean;
+// --- STATE INTERFACE ---
+// Extends CharacterData with session-level data (minions)
+export interface CharacterState extends CharacterData {
+    minions: Minion[];
+    // Toast message (ephemeral UI state, OK to keep here for simplicity)
+    toast: string | null;
 }
 
-export interface CharacterState {
-    name: string;
-    level: number;
-    class: string;
-    proficiencyBonus: number;
-    abilities: Record<AbilityName, number>;
-    skills: Record<string, Skill>;
-    armorClass: number;
-    hitPoints: number;
-    maxHitPoints: number;
-    speed: number;
-    features: string[];
-    feats: string[];
-    attunedItems: string[];
+// --- INITIAL STATE ---
+// Hydrate from sessionStorage if available, otherwise use defaults
+function getInitialState(): CharacterState {
+    const session = getActiveSession();
+    if (session) {
+        return {
+            ...session.characterData,
+            minions: session.minions || [],
+            toast: null,
+        };
+    }
+    return {
+        ...initialCharacterData,
+        minions: [],
+        toast: null,
+    };
 }
 
-const initialState: CharacterState = {
-    name: "Aramancia",
-    level: 5,
-    class: "Wizard (Necromancer)",
-    proficiencyBonus: 3,
-    abilities: {
-        strength: 8,
-        dexterity: 14,
-        constitution: 14,
-        intelligence: 18,
-        wisdom: 14,
-        charisma: 10,
-    },
-    skills: {
-        arcana: { ability: 'intelligence', proficient: true, expert: true },
-        history: { ability: 'intelligence', proficient: true, expert: false },
-        investigation: { ability: 'intelligence', proficient: true, expert: false },
-        religion: { ability: 'intelligence', proficient: true, expert: false },
-        // Add defaults for others as needed
-    },
-    armorClass: 12,
-    hitPoints: 35,
-    maxHitPoints: 35,
-    speed: 30,
-    features: ["Empowered Evocation", "Undead Thralls"],
-    feats: ["War Caster"],
-    attunedItems: [],
-};
+const initialState: CharacterState = getInitialState();
 
+// --- SLICE DEFINITION ---
 export const characterSlice = createSlice({
     name: 'character',
     initialState,
     reducers: {
-        abilityScoreChanged: (state, action: PayloadAction<{ ability: AbilityName, newScore: number }>) => {
-            state.abilities[action.payload.ability] = action.payload.newScore;
+        /**
+         * Hydrate state from sessionStorage (called on app mount or session switch)
+         */
+        hydrate: (state, action: PayloadAction<{ characterData: CharacterData; minions: Minion[] }>) => {
+            Object.assign(state, action.payload.characterData);
+            state.minions = action.payload.minions;
         },
-        levelUp: (state, action: PayloadAction<{ newLevel: number }>) => {
-            state.level = action.payload.newLevel;
-            state.proficiencyBonus = Math.floor((action.payload.newLevel / 4) + 2);
-        },
+
+        // --- HP ACTIONS ---
+        /**
+         * Update current HP. Handles THP absorption and concentration checks per RAW.
+         */
         hpChanged: (state, action: PayloadAction<number>) => {
-            state.hitPoints = Math.min(Math.max(0, action.payload), state.maxHitPoints);
-        }
+            const delta = action.payload - state.hp.current;
+
+            if (delta < 0) {
+                // Taking damage: THP absorbs first (SRD 5.1)
+                const damage = Math.abs(delta);
+                const tempAbsorbed = Math.min(state.hp.temp, damage);
+                const remainingDamage = damage - tempAbsorbed;
+                const newHP = Math.max(0, state.hp.current - remainingDamage);
+
+                state.hp.temp -= tempAbsorbed;
+                state.hp.current = newHP;
+
+                // Concentration check toast
+                if (state.concentration && remainingDamage > 0 && newHP > 0) {
+                    const dc = Math.max(10, Math.floor(damage / 2));
+                    state.toast = `CON Save DC ${dc} to maintain ${state.concentration}`;
+                }
+
+                // Incapacitated: lose concentration
+                if (newHP === 0) {
+                    if (state.concentration) {
+                        state.toast = `Concentration on ${state.concentration} lost - Incapacitated!`;
+                    }
+                    state.concentration = null;
+                }
+            } else {
+                // Healing
+                const wasAtZero = state.hp.current === 0;
+                state.hp.current = Math.min(state.hp.max, Math.max(0, action.payload));
+
+                // Reset death saves when healed from 0
+                if (wasAtZero && state.hp.current > 0) {
+                    state.deathSaves = { successes: 0, failures: 0 };
+                    state.toast = "Stabilized! Death saves reset.";
+                }
+            }
+        },
+
+        tempHpSet: (state, action: PayloadAction<number>) => {
+            state.hp.temp = Math.max(0, action.payload);
+        },
+
+        // --- AC ACTIONS ---
+        mageArmourToggled: (state) => {
+            state.mageArmour = !state.mageArmour;
+        },
+        shieldToggled: (state) => {
+            state.shield = !state.shield;
+        },
+
+        // --- SPELL SLOT ACTIONS ---
+        slotUsed: (state, action: PayloadAction<{ level: number }>) => {
+            const { level } = action.payload;
+            if (state.slots[level] && state.slots[level].used < state.slots[level].max) {
+                state.slots[level].used += 1;
+            }
+        },
+        slotRestored: (state, action: PayloadAction<{ level: number }>) => {
+            const { level } = action.payload;
+            if (state.slots[level] && state.slots[level].used > 0) {
+                state.slots[level].used -= 1;
+            }
+        },
+        allSlotsRestored: (state) => {
+            Object.keys(state.slots).forEach(key => {
+                const level = Number(key);
+                state.slots[level].used = 0;
+            });
+        },
+
+        // --- CONCENTRATION ---
+        concentrationSet: (state, action: PayloadAction<string | null>) => {
+            state.concentration = action.payload;
+        },
+
+        // --- DEATH SAVES ---
+        deathSaveChanged: (state, action: PayloadAction<{ type: 'successes' | 'failures'; value: number }>) => {
+            state.deathSaves[action.payload.type] = action.payload.value;
+        },
+
+        // --- HIT DICE ---
+        hitDiceSpent: (state, action: PayloadAction<{ count: number; healed: number }>) => {
+            state.hitDice.current = Math.max(0, state.hitDice.current - action.payload.count);
+            state.hp.current = Math.min(state.hp.max, state.hp.current + action.payload.healed);
+            if (action.payload.healed > 0) {
+                state.toast = `Healed ${action.payload.healed} HP`;
+            }
+        },
+
+        // --- LONG REST ---
+        longRestCompleted: (state) => {
+            // HP to max, THP reset
+            state.hp.current = state.hp.max;
+            state.hp.temp = 0;
+
+            // Recover half hit dice (min 1)
+            const recovered = Math.max(1, Math.ceil(state.hitDice.max / 2));
+            state.hitDice.current = Math.min(state.hitDice.max, state.hitDice.current + recovered);
+
+            // All spell slots restored
+            Object.keys(state.slots).forEach(key => {
+                const level = Number(key);
+                state.slots[level].used = 0;
+            });
+
+            // Clear temp effects
+            state.mageArmour = false;
+            state.shield = false;
+            state.concentration = null;
+            state.deathSaves = { successes: 0, failures: 0 };
+
+            state.toast = "Long Rest Completed";
+        },
+
+        // --- LEVEL & ABILITIES ---
+        levelChanged: (state, action: PayloadAction<number>) => {
+            const updated = recalculateDerivedCharacterData({ ...state, level: action.payload });
+            Object.assign(state, updated);
+            state.toast = `Level changed to ${action.payload}`;
+        },
+        abilityScoreChanged: (state, action: PayloadAction<{ ability: AbilityKey; newScore: number }>) => {
+            state.abilities[action.payload.ability] = action.payload.newScore;
+            const updated = recalculateDerivedCharacterData(state);
+            Object.assign(state, updated);
+            state.toast = `${action.payload.ability.toUpperCase()} updated to ${action.payload.newScore}`;
+        },
+
+        // --- ATTUNEMENT ---
+        itemAttuned: (state, action: PayloadAction<string>) => {
+            if (state.attunement.length < 3) {
+                state.attunement.push(action.payload);
+            } else {
+                state.toast = 'Maximum 3 attuned items!';
+            }
+        },
+        itemUnattuned: (state, action: PayloadAction<number>) => {
+            state.attunement.splice(action.payload, 1);
+        },
+
+        // --- INVENTORY ---
+        inventoryItemAdded: (state, action: PayloadAction<InventoryItem>) => {
+            state.inventory.push(action.payload);
+        },
+        inventoryItemRemoved: (state, action: PayloadAction<number>) => {
+            state.inventory.splice(action.payload, 1);
+        },
+
+        // --- MINIONS ---
+        minionAdded: (state, action: PayloadAction<Minion>) => {
+            state.minions.push(action.payload);
+            state.toast = `Raised ${action.payload.type}`;
+        },
+        minionHpChanged: (state, action: PayloadAction<{ id: string; hp: number }>) => {
+            const minion = state.minions.find(m => m.id === action.payload.id);
+            if (minion) {
+                minion.hp.current = Math.max(0, action.payload.hp);
+            }
+        },
+        minionRemoved: (state, action: PayloadAction<string>) => {
+            state.minions = state.minions.filter(m => m.id !== action.payload);
+            state.toast = "Minion Destroyed";
+        },
+        allMinionsCleared: (state) => {
+            state.minions = [];
+            state.toast = "All Minions Released";
+        },
+
+        // --- TOAST ---
+        toastShown: (state, action: PayloadAction<string>) => {
+            state.toast = action.payload;
+        },
+        toastCleared: (state) => {
+            state.toast = null;
+        },
+
+        // --- PREPARED SPELLS ---
+        spellPrepared: (state, action: PayloadAction<string>) => {
+            if (!state.preparedSpells.includes(action.payload)) {
+                state.preparedSpells.push(action.payload);
+            }
+        },
+        spellUnprepared: (state, action: PayloadAction<string>) => {
+            state.preparedSpells = state.preparedSpells.filter(s => s !== action.payload);
+        },
     },
 });
 
-// --- Selectors ---
-
-// Local type to avoid circular dependency
+// --- SELECTORS ---
+// Local type to avoid circular dependency with RootState
 interface StateWithCharacter {
     character: CharacterState;
 }
 
 export const selectCharacter = (state: StateWithCharacter) => state.character;
+export const selectHp = (state: StateWithCharacter) => state.character.hp;
+export const selectSlots = (state: StateWithCharacter) => state.character.slots;
+export const selectConcentration = (state: StateWithCharacter) => state.character.concentration;
+export const selectMinions = (state: StateWithCharacter) => state.character.minions;
+export const selectToast = (state: StateWithCharacter) => state.character.toast;
 
 export const selectAbilityModifier = createSelector(
-    [selectCharacter, (_: StateWithCharacter, abilityName: AbilityName) => abilityName],
-    (character, abilityName) => Math.floor((character.abilities[abilityName] - 10) / 2)
+    [selectCharacter, (_: StateWithCharacter, ability: AbilityKey) => ability],
+    (character, ability) => character.abilityMods[ability]
 );
 
-export const selectSkillModifier = createSelector(
-    [
-        selectCharacter,
-        (_: StateWithCharacter, skillName: string) => skillName,
-        (state: StateWithCharacter, skillName: string) => {
-            const skill = state.character.skills[skillName];
-            return selectAbilityModifier(state, skill ? skill.ability : 'intelligence'); // Fallback
-        }
-    ],
-    (character, skillName, baseAbilityModifier) => {
-        const skill = character.skills[skillName];
-        if (!skill) return 0;
+export const selectSpellSaveDC = (state: StateWithCharacter) => state.character.dc;
+export const selectProfBonus = (state: StateWithCharacter) => state.character.profBonus;
 
-        let modifier = baseAbilityModifier;
-        if (skill.proficient) modifier += character.proficiencyBonus;
-        if (skill.expert) modifier += character.proficiencyBonus;
-        return modifier;
+/**
+ * Calculate current AC based on base AC, dex mod, mage armor, and shield spell.
+ */
+export const selectCurrentAC = createSelector(
+    [selectCharacter],
+    (character) => {
+        let ac = character.mageArmour ? 13 + character.abilityMods.dex : character.baseAC;
+        if (character.shield) ac += 5;
+        return ac;
     }
 );
 
-export const selectSpellSaveDC = createSelector(
-    [selectCharacter, (state: StateWithCharacter) => selectAbilityModifier(state, 'intelligence')],
-    (character, intModifier) => 8 + intModifier + character.proficiencyBonus
-);
-
+/**
+ * Calculate spell attack bonus (proficiency + INT mod)
+ * SRD 5.1: Wizard Spellcasting, p. 53
+ */
 export const selectSpellAttackBonus = createSelector(
-    [selectCharacter, (state: StateWithCharacter) => selectAbilityModifier(state, 'intelligence')],
-    (character, intModifier) => intModifier + character.proficiencyBonus
+    [selectCharacter],
+    (character) => character.profBonus + character.abilityMods.int
 );
 
-export const { abilityScoreChanged, levelUp, hpChanged } = characterSlice.actions;
+// --- EXPORT ACTIONS ---
+export const {
+    hydrate,
+    hpChanged,
+    tempHpSet,
+    mageArmourToggled,
+    shieldToggled,
+    slotUsed,
+    slotRestored,
+    allSlotsRestored,
+    concentrationSet,
+    deathSaveChanged,
+    hitDiceSpent,
+    longRestCompleted,
+    levelChanged,
+    abilityScoreChanged,
+    itemAttuned,
+    itemUnattuned,
+    inventoryItemAdded,
+    inventoryItemRemoved,
+    minionAdded,
+    minionHpChanged,
+    minionRemoved,
+    allMinionsCleared,
+    toastShown,
+    toastCleared,
+    spellPrepared,
+    spellUnprepared,
+} = characterSlice.actions;
+
 export default characterSlice.reducer;
