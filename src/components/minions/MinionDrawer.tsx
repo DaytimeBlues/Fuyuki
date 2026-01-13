@@ -1,25 +1,74 @@
-import { X, Trash2, Skull, Biohazard } from 'lucide-react';
+import { X, Trash2, Skull, Biohazard, Minus, Plus } from 'lucide-react';
 import type { Minion } from '../../types';
+import { useAppDispatch } from '../../store/hooks';
+import { minionAdded, minionRemoved, minionUpdated, allMinionsCleared } from '../../store/slices/combatSlice';
+import { undeadStats } from '../../data/undeadStats';
 
 interface MinionDrawerProps {
     isOpen: boolean;
     onClose: () => void;
     minions: Minion[];
-    onAddMinion: (type: 'Skeleton' | 'Zombie') => void;
-    onUpdateMinion: (id: string, hp: number) => void;
-    onRemoveMinion: (id: string) => void;
-    onClearMinions: () => void;
 }
 
 export function MinionDrawer({
     isOpen,
     onClose,
     minions,
-    onAddMinion,
-    onUpdateMinion,
-    onRemoveMinion,
-    onClearMinions
 }: MinionDrawerProps) {
+    const dispatch = useAppDispatch();
+
+    const handleAddMinion = (type: 'Skeleton' | 'Zombie') => {
+        const stats = undeadStats.find(s => s.name === type);
+        if (!stats) return;
+
+        const count = minions.filter(m => m.type === type.toLowerCase()).length + 1;
+
+        // Ensure type compatibility with minion slice
+        // Slice expects 'skeleton' | 'zombie' | 'undead_spirit'
+        const minionType = type.toLowerCase() as 'skeleton' | 'zombie';
+
+        // Helper to parse dice string like "1d6+2" or "1d6 + 2"
+        const parseDamage = (desc: string): string => {
+            return desc.match(/\d+d\d+(?:\s*[+-]\s*\d+)?/)?.[0] || "1d4";
+        };
+
+        const newMinion: Minion = {
+            id: crypto.randomUUID(),
+            name: `${type} ${count}`,
+            type: minionType,
+            hp: parseInt(stats.hp.split(' ')[0]) || 1, // Extract "13" from "13 (2d8+4)"
+            maxHp: parseInt(stats.hp.split(' ')[0]) || 1,
+            ac: parseInt(stats.ac.split(' ')[0]) || 10,
+            speed: parseInt(stats.speed.split(' ')[0]) || 30,
+            attacks: stats.actions.filter(a =>
+                ['Shortbow', 'Shortsword', 'Slam'].includes(a.name)
+            ).map(a => ({
+                name: a.name,
+                toHit: parseInt(a.desc.match(/\+(\d+)/)?.[1] || "0"),
+                damage: parseDamage(a.desc),
+                damageType: a.desc.includes('piercing') ? 'piercing' : 'bludgeoning'
+            })),
+            conditions: [],
+            controlExpiresRound: undefined,
+            // Store traits in notes if available, or just action summaries
+            notes: stats.traits ? stats.traits.map(t => t.name).join(', ') : ''
+        };
+
+        dispatch(minionAdded(newMinion));
+    };
+
+    const handleUpdateMinion = (id: string, hp: number) => {
+        dispatch(minionUpdated({ id, changes: { hp } }));
+    };
+
+    const handleRemoveMinion = (id: string) => {
+        dispatch(minionRemoved(id));
+    };
+
+    const handleClearMinions = () => {
+        dispatch(allMinionsCleared());
+    };
+
     return (
         <>
             {/* Backdrop */}
@@ -39,7 +88,7 @@ export function MinionDrawer({
                 <div className="p-4 border-b border-white/10 shrink-0">
                     {/* Drawer Handle */}
                     <div className="w-12 h-1 bg-white/30 rounded-full mx-auto mb-4" />
-                    
+
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <Skull size={20} className="text-white" />
@@ -51,14 +100,14 @@ export function MinionDrawer({
                         <div className="flex items-center gap-2">
                             {minions.length > 0 && (
                                 <button
-                                    onClick={onClearMinions}
+                                    onClick={handleClearMinions}
                                     className="text-xs text-red-400 hover:text-red-300 uppercase font-display tracking-wider px-3 py-1.5 border border-red-400/30 rounded-lg hover:bg-red-400/10 transition-all"
                                 >
                                     Release All
                                 </button>
                             )}
-                            <button 
-                                onClick={onClose} 
+                            <button
+                                onClick={onClose}
                                 className="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 transition-all"
                                 aria-label="Close drawer"
                             >
@@ -73,14 +122,14 @@ export function MinionDrawer({
                     {/* Quick Add Buttons */}
                     <div className="grid grid-cols-2 gap-3 mb-6">
                         <button
-                            onClick={() => onAddMinion('Skeleton')}
+                            onClick={() => handleAddMinion('Skeleton')}
                             className="flex items-center justify-center gap-2 bg-card-elevated/80 hover:bg-card-elevated border border-white/10 hover:border-white/30 p-3 rounded-xl transition-all group"
                         >
                             <Skull size={18} className="text-muted group-hover:text-white transition-colors" />
                             <span className="font-display text-sm text-parchment group-hover:text-parchment-light transition-colors">Raise Skeleton</span>
                         </button>
                         <button
-                            onClick={() => onAddMinion('Zombie')}
+                            onClick={() => handleAddMinion('Zombie')}
                             className="flex items-center justify-center gap-2 bg-card-elevated/80 hover:bg-card-elevated border border-white/10 hover:border-white/30 p-3 rounded-xl transition-all group"
                         >
                             <Biohazard size={18} className="text-muted group-hover:text-white transition-colors" />
@@ -97,7 +146,7 @@ export function MinionDrawer({
                             >
                                 <div>
                                     <div className="flex items-center gap-2">
-                                        {minion.type === 'Skeleton' ? (
+                                        {minion.type.toLowerCase() === 'skeleton' ? (
                                             <Skull size={14} className="text-white" />
                                         ) : (
                                             <Biohazard size={14} className="text-white" />
@@ -111,24 +160,24 @@ export function MinionDrawer({
                                 <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-1 bg-card/60 rounded-lg p-1 border border-white/10">
                                         <button
-                                            onClick={() => onUpdateMinion(minion.id, minion.hp.current - 1)}
+                                            onClick={() => handleUpdateMinion(minion.id, Math.max(0, minion.hp - 1))}
                                             className="w-7 h-7 flex items-center justify-center hover:bg-red-500/20 text-muted hover:text-red-400 rounded transition-colors"
                                         >
-                                            <MinusIcon size={14} />
+                                            <Minus size={14} />
                                         </button>
-                                        <span className={`font-display text-sm w-8 text-center ${minion.hp.current < minion.hp.max / 2 ? 'text-red-400' : 'text-parchment-light'}`}>
-                                            {minion.hp.current}
+                                        <span className={`font-display text-sm w-8 text-center ${minion.hp < minion.maxHp / 2 ? 'text-red-400' : 'text-parchment-light'}`}>
+                                            {minion.hp}
                                         </span>
                                         <button
-                                            onClick={() => onUpdateMinion(minion.id, minion.hp.current + 1)}
+                                            onClick={() => handleUpdateMinion(minion.id, Math.min(minion.maxHp, minion.hp + 1))}
                                             className="w-7 h-7 flex items-center justify-center hover:bg-white/20 text-muted hover:text-white rounded transition-colors"
                                         >
-                                            <PlusIcon size={14} />
+                                            <Plus size={14} />
                                         </button>
                                     </div>
 
                                     <button
-                                        onClick={() => onRemoveMinion(minion.id)}
+                                        onClick={() => handleRemoveMinion(minion.id)}
                                         className="p-2 hover:bg-red-500/10 text-muted hover:text-red-400 rounded-lg transition-colors"
                                     >
                                         <Trash2 size={18} />
@@ -149,23 +198,5 @@ export function MinionDrawer({
                 <div className="h-4 shrink-0" />
             </div >
         </>
-    );
-}
-
-// Helper icons
-function MinusIcon({ size }: { size: number }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-    );
-}
-
-function PlusIcon({ size }: { size: number }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
     );
 }

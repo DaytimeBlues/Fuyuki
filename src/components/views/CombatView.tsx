@@ -1,38 +1,27 @@
 import { useState } from 'react';
 import { MinionDrawer } from '../minions/MinionDrawer';
-import type { Minion } from '../../types';
 import { undeadStats } from '../../data/undeadStats';
 import type { UndeadStatBlock } from '../../data/undeadStats';
 import { Skull, Shield, Sword, Info, X, Users, Ghost, Biohazard, Bone, ChevronDown, ChevronUp } from 'lucide-react';
+import { useAppSelector } from '../../store/hooks';
+import { minionSelectors } from '../../store/slices/combatSlice';
 
-interface CombatViewProps {
-    minions: Minion[];
-    onAddMinion: (type: 'Skeleton' | 'Zombie') => void;
-    onUpdateMinion: (id: string, hp: number) => void;
-    onRemoveMinion: (id: string) => void;
-    onClearMinions: () => void;
-}
-
-import { MathStrip } from '../features/combat/MathStrip';
-
-export function CombatView({
-    minions,
-    onAddMinion,
-    onUpdateMinion,
-    onRemoveMinion,
-    onClearMinions
-}: CombatViewProps) {
+// No props needed now!
+export function CombatView() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedStatBlock, setSelectedStatBlock] = useState<UndeadStatBlock | null>(null);
     const [showSummons, setShowSummons] = useState(false);
+
+    // Select minions from Redux
+    const minions = useAppSelector(state => minionSelectors.selectAll(state.combat.minions));
 
     const openStats = (name: string) => {
         const stats = undeadStats.find(s => s.name.includes(name));
         if (stats) setSelectedStatBlock(stats);
     };
 
-    const skeletonCount = minions.filter(m => m.type === 'Skeleton').length;
-    const zombieCount = minions.filter(m => m.type === 'Zombie').length;
+    const skeletonCount = minions.filter(m => m.type === 'skeleton').length;
+    const zombieCount = minions.filter(m => m.type === 'zombie').length;
 
     return (
         <div className="pb-20">
@@ -156,10 +145,6 @@ export function CombatView({
                 isOpen={isDrawerOpen}
                 onClose={() => setIsDrawerOpen(false)}
                 minions={minions}
-                onAddMinion={onAddMinion}
-                onUpdateMinion={onUpdateMinion}
-                onRemoveMinion={onRemoveMinion}
-                onClearMinions={onClearMinions}
             />
 
             {/* Stat Block Modal */}
@@ -259,3 +244,4 @@ export function CombatView({
         </div>
     );
 }
+

@@ -8,10 +8,32 @@ const ACTIVE_SESSION_KEY = 'aramancia-active-session';
  * Schema version for localStorage data migrations.
  * Increment when CharacterData or Session structure changes.
  */
-export const SCHEMA_VERSION = '1.1';
+export const SCHEMA_VERSION = '2.0';
 
 export function generateSessionId(): string {
     return crypto.randomUUID();
+}
+
+/**
+ * Migrates session data from older versions to the current schema.
+ */
+function migrateSession(session: any): Session {
+    // If no version or version < 2.0
+    const version = parseFloat(session.version || '1.0');
+
+    if (version < 2.0) {
+        // Migration to 2.0: Ensure minions have speed
+        if (Array.isArray(session.minions)) {
+            session.minions = session.minions.map((m: any) => ({
+                ...m,
+                speed: m.speed ?? 30, // Default speed if missing
+                type: m.type ? m.type.toLowerCase() : 'skeleton' // Normalizing type to lowercase
+            }));
+        }
+        session.version = '2.0';
+    }
+
+    return session as Session;
 }
 
 /**
@@ -21,22 +43,22 @@ export function generateSessionId(): string {
 function validateSessionSchema(data: unknown): data is Session {
     if (!data || typeof data !== 'object') return false;
     const session = data as Record<string, unknown>;
-    
+
     // Required string fields
     if (typeof session.id !== 'string') return false;
     if (typeof session.sessionNumber !== 'number') return false;
     if (typeof session.date !== 'string') return false;
     if (typeof session.lastModified !== 'string') return false;
-    
+
     // characterData must be an object with required fields
     if (!session.characterData || typeof session.characterData !== 'object') return false;
     const charData = session.characterData as Record<string, unknown>;
     if (!charData.hp || typeof charData.hp !== 'object') return false;
     if (typeof charData.level !== 'number') return false;
-    
+
     // minions must be an array
     if (!Array.isArray(session.minions)) return false;
-    
+
     return true;
 }
 
@@ -46,14 +68,16 @@ function validateSessionSchema(data: unknown): data is Session {
  */
 function validateSessionsArray(data: unknown): Session[] {
     if (!Array.isArray(data)) return [];
-    
-    return data.filter((item): item is Session => {
-        const isValid = validateSessionSchema(item);
-        if (!isValid) {
-            console.warn('Skipping corrupted session entry:', item);
-        }
-        return isValid;
-    });
+
+    return data
+        .map(item => migrateSession(item)) // Migrate before validation
+        .filter((item): item is Session => {
+            const isValid = validateSessionSchema(item);
+            if (!isValid) {
+                console.warn('Skipping corrupted session entry:', item);
+            }
+            return isValid;
+        });
 }
 
 /**
@@ -64,7 +88,7 @@ export function getSessions(): Session[] {
     try {
         const saved = localStorage.getItem(SESSIONS_KEY);
         if (!saved) return [];
-        
+
         const parsed = JSON.parse(saved);
         return validateSessionsArray(parsed);
     } catch (error) {

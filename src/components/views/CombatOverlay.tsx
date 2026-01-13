@@ -3,6 +3,14 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { castingCancelled, castingCompletedWithSlot } from '../../store/slices/combatSlice';
 import { ResolutionPanel } from '../features/combat/ResolutionPanel';
 import { spells } from '../../data/spells';
+import { SpellV3 } from '../../schemas/spellSchema';
+
+// Define the shape expected by ResolutionPanel
+type SpellAdapter = SpellV3 & {
+    desc?: string;
+    decisionTree?: { level: number; summary: string }[];
+    higherLevelDescription?: string;
+};
 
 export const CombatOverlay: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -44,7 +52,7 @@ export const CombatOverlay: React.FC = () => {
             }]
             : undefined;
 
-    const spellV3: any = {
+    const spellV3: SpellAdapter = {
         id: spell.name,
         name: spell.name,
         level: spell.lvl,
