@@ -30,7 +30,7 @@ export const persistenceMiddleware: Middleware = (store) => (next) => (action) =
         const character: CharacterState = state.character;
 
         // Extract CharacterData (without minions and toast) for session storage
-        const { minions, toast, ...characterData } = character;
+        const { minions, ...characterData } = character;
 
         // Save to sessionStorage (debounced internally if needed, but let's keep it simple)
         // Using requestIdleCallback for better performance on rapid updates
