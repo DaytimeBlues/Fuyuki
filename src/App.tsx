@@ -20,6 +20,7 @@ import { CombatOverlay } from './components/views/CombatOverlay';
 import { RestView } from './components/views/RestView';
 import { GrimoireView } from './components/views/GrimoireView';
 import { BiographyView } from './components/views/BiographyView';
+import { StatsView } from './components/views/StatsView';
 import { SessionPicker } from './components/SessionPicker';
 import { initialCharacterData } from './data/initialState';
 import { spells } from './data/spells';
@@ -375,6 +376,17 @@ function App() {
       )}
 
       {activeTab === 'grimoire' && <div className="animate-fade-in"><GrimoireView /></div>}
+
+      {activeTab === 'abilities' && (
+        <div className="animate-fade-in">
+          <StatsView
+            abilities={data.abilities}
+            abilityMods={data.abilityMods}
+            skills={data.skills}
+            profBonus={data.profBonus}
+          />
+        </div>
+      )}
 
       {activeTab === 'bio' && (
         <div className="animate-fade-in">
