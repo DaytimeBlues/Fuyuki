@@ -65,4 +65,17 @@ export const initialCharacterData: CharacterData = {
         { name: "Arcane Focus" },
         { name: "Scholar's Pack" }
     ],
+    preparedSpells: [
+        "Fire Bolt",
+        "Chill Touch",
+        "Mage Hand",
+        "Magic Missile",
+        "Shield",
+        "Mage Armor",
+        "Detect Magic",
+        "Misty Step",
+        "Scorching Ray",
+        "Fireball",
+        "Summon Undead"
+    ],
 };

@@ -9,9 +9,9 @@ interface AppShellProps {
 
 const navItems = [
     { id: 'home', icon: Shield, label: 'Stats' },
-    { id: 'spells', icon: Wand2, label: 'Spells' },
+    { id: 'spells', icon: Wand2, label: 'Spellbook' },
     { id: 'combat', icon: Skull, label: 'Combat' },
-    { id: 'grimoire', icon: BookOpen, label: 'Grimoire' },
+    { id: 'grimoire', icon: BookOpen, label: 'Arcana' },
     { id: 'abilities', icon: Brain, label: 'Abilities' },
     { id: 'bio', icon: User, label: 'Bio' },
     { id: 'settings', icon: Settings, label: 'Settings' },
