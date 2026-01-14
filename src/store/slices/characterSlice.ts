@@ -129,6 +129,16 @@ export const characterSlice = createSlice({
                 state.slots[level].used = 0;
             });
         },
+        slotsUpdated: (state, action: PayloadAction<Record<number, { used: number; max: number }>>) => {
+            Object.entries(action.payload).forEach(([level, slotData]) => {
+                const slotLevel = Number(level);
+                const currentUsed = state.slots[slotLevel]?.used ?? 0;
+                state.slots[slotLevel] = {
+                    used: Math.min(currentUsed, slotData.max),
+                    max: slotData.max
+                };
+            });
+        },
 
         // --- CONCENTRATION ---
         concentrationSet: (state, action: PayloadAction<string | null>) => {
@@ -299,6 +309,7 @@ export const {
     slotUsed,
     slotRestored,
     allSlotsRestored,
+    slotsUpdated,
     concentrationSet,
     deathSaveChanged,
     hitDiceSpent,

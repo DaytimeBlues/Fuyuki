@@ -45,6 +45,7 @@ import {
   shieldToggled,
   slotUsed,
   slotRestored,
+  slotsUpdated,
   concentrationSet,
   deathSaveChanged,
   hitDiceSpent,
@@ -62,7 +63,6 @@ import {
   toastShown,
   toastCleared,
   hydrate,
-  allSlotsRestored,
 } from './store/slices/characterSlice';
 import { castingStarted, slotConfirmed } from './store/slices/combatSlice';
 
@@ -320,9 +320,9 @@ function App() {
           </div>
           <div className="mt-8 border-t border-gray-800 pt-8">
             <MulticlassSpellSlotsWidget
-              onSlotsCalculated={() => {
-                dispatch(allSlotsRestored());
-                dispatch(toastShown('Spell slots updated!'));
+              currentSlots={character.slots}
+              onSlotsCalculated={(newSlots) => {
+                dispatch(slotsUpdated(newSlots));
               }}
             />
           </div>
