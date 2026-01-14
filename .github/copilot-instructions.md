@@ -5,7 +5,7 @@ A D&D 5e character tracker Progressive Web App (PWA) built for tracking HP, AC, 
 
 **Tech Stack:** React 19, TypeScript, Vite 7, Tailwind CSS 4, Redux Toolkit, Vitest, Firebase Hosting, Capacitor (Android)  
 **Size:** ~335MB, 3200+ TypeScript/TSX files  
-**Node Version:** v20.19.6 (npm 10.8.2) - Note: Capacitor CLI requires Node 22+ but runs with warnings on Node 20
+**Node Version:** v20.19.6+ recommended (npm 10.8.2+) - Capacitor CLI requires Node 22+ but development works on Node 20 with warnings (verified Jan 2026)
 
 ## Build & Validation Commands
 
@@ -28,7 +28,7 @@ A D&D 5e character tracker Progressive Web App (PWA) built for tracking HP, AC, 
    ```bash
    npx tsc --noEmit
    ```
-   **KNOWN ISSUE:** Currently has 28 type errors related to Minion interface mismatches between `src/types/index.ts` and `src/store/slices/combatSlice.ts`. These are pre-existing and should not be introduced by new changes.
+   **KNOWN ISSUE (as of Jan 2026):** Currently has 28 type errors related to Minion interface mismatches between `src/types/index.ts` and `src/store/slices/combatSlice.ts`. When making changes, ensure you don't introduce NEW type errors beyond these existing 28. Count errors before and after your changes.
 
 4. **Tests** (~4-5 seconds):
    ```bash
@@ -46,7 +46,10 @@ A D&D 5e character tracker Progressive Web App (PWA) built for tracking HP, AC, 
    ```
    Runs TypeScript compilation (`tsc -b`) then Vite build. Output: `dist/` directory.
    
-   **KNOWN ISSUE:** Build currently fails with same 28 TypeScript errors. Do not attempt to build until type errors are resolved.
+   **KNOWN ISSUE (as of Jan 2026):** Build currently fails due to the 28 TypeScript errors. For non-Minion-related changes, you can verify your changes work by:
+   - Running dev server (`npm run dev`) and manually testing
+   - Running tests (`npm test`) to ensure no regressions
+   - Checking that `npx tsc --noEmit` shows the same error count as before your changes
 
 6. **Dev server** (development mode):
    ```bash
@@ -77,12 +80,16 @@ Automated validation script that runs TypeScript checks, logging verification, a
 1. Checkout code
 2. Setup Node.js 20 with npm cache
 3. `npm ci` - Clean dependency install
-4. `npm run lint` - ESLint validation
-5. `npm test -- --coverage` - Tests with coverage report
-6. `npm run build` - Production build
+4. `npm run lint` - ESLint validation (must pass)
+5. `npm test -- --coverage` - Tests with coverage report (56/60 pass expected)
+6. `npm run build` - Production build (currently fails)
 7. Upload `dist/` artifact (only on master branch merge)
 
-**IMPORTANT:** CI currently **will fail** on the build step due to pre-existing TypeScript errors. When making changes, ensure you don't introduce new type errors beyond the existing 28.
+**WORKAROUND (until Minion type issues resolved):** CI will fail on build step. To validate your changes:
+- Ensure linting passes (step 4)
+- Ensure no new test failures beyond the 4 known ones (step 5)
+- Verify TypeScript error count unchanged via `npx tsc --noEmit` locally
+- Manually test in dev mode with `npm run dev`
 
 ## Project Architecture
 
