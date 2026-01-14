@@ -8,14 +8,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AppShell } from './components/layout/AppShell';
 
-import { HealthWidget } from './components/widgets/HealthWidget';
-import { ArmorClassWidget } from './components/widgets/ArmorClassWidget';
-import { SpellSlotsWidget } from './components/widgets/SpellSlotsWidget';
+import { PactSlotsWidget } from './components/widgets/PactSlotsWidget';
+import { ArcanumWidget } from './components/widgets/ArcanumWidget';
 import { DeathSavesWidget } from './components/widgets/DeathSavesWidget';
 import { ConcentrationWidget } from './components/widgets/ConcentrationWidget';
 import { AttunementWidget } from './components/widgets/AttunementWidget';
 import { InventoryWidget } from './components/widgets/InventoryWidget';
-import { MulticlassSpellSlotsWidget } from './components/widgets/MulticlassSpellSlotsWidget';
 import { HitDiceWidget } from './components/widgets/HitDiceWidget';
 import { InitiativeWidget } from './components/widgets/InitiativeWidget';
 import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
@@ -41,11 +39,8 @@ import {
   selectToast,
   hpChanged,
   tempHpSet,
-  mageArmourToggled,
-  shieldToggled,
-  slotUsed,
-  slotRestored,
-  slotsUpdated,
+  pactSlotUsed,
+  pactSlotRestored,
   concentrationSet,
   deathSaveChanged,
   hitDiceSpent,
@@ -97,19 +92,10 @@ function App() {
     dispatch(tempHpSet(newTemp));
   }, [dispatch]);
 
-  const updateAC = useCallback((key: 'mageArmour' | 'shield') => {
-    if (key === 'mageArmour') dispatch(mageArmourToggled());
-    else dispatch(shieldToggled());
+  const updatePactSlot = useCallback((used: boolean) => {
+    if (used) dispatch(pactSlotUsed());
+    else dispatch(pactSlotRestored());
   }, [dispatch]);
-
-  const updateSpellSlot = useCallback((level: number, used: number) => {
-    const currentUsed = character.slots[level]?.used ?? 0;
-    if (used > currentUsed) {
-      dispatch(slotUsed({ level }));
-    } else if (used < currentUsed) {
-      dispatch(slotRestored({ level }));
-    }
-  }, [dispatch, character.slots]);
 
   const updateDeathSaves = useCallback((type: 'successes' | 'failures', value: number) => {
     dispatch(deathSaveChanged({ type, value }));
@@ -164,22 +150,12 @@ function App() {
             />
           </div>
 
-          <div className="animate-slide-up stagger-2">
-            <ArmorClassWidget
-              baseAC={character.baseAC}
-              dexMod={character.abilityMods.dex}
-              mageArmour={character.mageArmour}
-              hasShield={character.shield}
-              onToggle={updateAC}
-            />
+          <div className="animate-slide-up stagger-3">
+            <PactSlotsWidget />
           </div>
 
-          <div className="animate-slide-up stagger-3">
-            <SpellSlotsWidget
-              slots={character.slots}
-              onChange={updateSpellSlot}
-              spellSaveDC={character.dc}
-            />
+          <div className="animate-slide-up stagger-3.5">
+            <ArcanumWidget />
           </div>
 
           <div className="animate-slide-up stagger-4">
@@ -225,6 +201,7 @@ function App() {
             abilityMods={character.abilityMods}
             skills={character.skills}
             profBonus={character.profBonus}
+            level={character.level}
           />
         </div>
       )}
@@ -289,47 +266,41 @@ function App() {
               onLongRest={handleLongRest}
             />
           </div>
-          <div className="mt-8 border-t border-gray-800 pt-8">
-            <MulticlassSpellSlotsWidget
-              currentSlots={character.slots}
-              onSlotsCalculated={(newSlots) => {
-                dispatch(slotsUpdated(newSlots));
-              }}
             />
-          </div>
+        </div>
 
         </div>
-      )
-      }
+  )
+}
 
-      {/* Combat Overlay System */}
-      <CombatOverlay />
+{/* Combat Overlay System */ }
+<CombatOverlay />
 
-      {activeTab !== 'home' && activeTab !== 'settings' && (
-        <CombatHUD
-          baseAC={character.baseAC}
-          dexMod={character.abilityMods.dex}
-          mageArmour={character.mageArmour}
-          hasShield={character.shield}
-          concentrationSpell={character.concentration}
-        />
-      )}
+{
+  activeTab !== 'home' && activeTab !== 'settings' && (
+    <CombatHUD
+      baseAC={character.baseAC}
+      dexMod={character.abilityMods.dex}
+      concentrationSpell={character.concentration}
+    />
+  )
+}
 
-      {/* Toast */}
-      {
-        toast && (
-          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
-            {toast}
-          </div>
-        )
-      }
+{/* Toast */ }
+{
+  toast && (
+    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
+      {toast}
+    </div>
+  )
+}
 
-      {/* Session Picker Modal */}
-      {
-        showSessionPicker && (
-          <SessionPicker onSessionSelected={handleSessionSelected} />
-        )
-      }
+{/* Session Picker Modal */ }
+{
+  showSessionPicker && (
+    <SessionPicker onSessionSelected={handleSessionSelected} />
+  )
+}
     </AppShell >
   );
 }

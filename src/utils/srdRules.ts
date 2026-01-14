@@ -54,76 +54,42 @@ export const FULL_CASTER_SLOTS: Record<number, Record<number, number>> = {
 };
 
 /**
- * Get full caster spell slots for a given level
+ * Get pact slots for a given level
  * @param level Character level (1-20)
- * @returns Record of spell level to slot count
+ * @returns Pact slots info
  */
-export function getFullCasterSlots(level: number): Record<number, number> {
-    const clampedLevel = Math.max(1, Math.min(20, level));
-    return FULL_CASTER_SLOTS[clampedLevel] || {};
-}
-
-/**
- * Convert spell slots to CharacterData format with used tracking
- * @param level Character level
- * @param currentSlots Optional existing slots to preserve 'used' counts
- * @returns Spell slots in CharacterData format
- */
-export function getSpellSlotsWithUsed(
-    level: number,
-    currentSlots?: Record<number, { used: number; max: number }>
-): Record<number, { used: number; max: number }> {
-    const newSlots = getFullCasterSlots(level);
-    const result: Record<number, { used: number; max: number }> = {};
-
-    for (const [slotLevel, max] of Object.entries(newSlots)) {
-        const lvl = Number(slotLevel);
-        const currentUsed = currentSlots?.[lvl]?.used ?? 0;
-        // Cap used at new max (in case level decreased)
-        result[lvl] = { used: Math.min(currentUsed, max), max };
-    }
-
-    return result;
-}
+import { getPactSlotInfo } from './warlockRules';
 
 /**
  * Calculate maximum HP
  * SRD 5.1: First level = max hit die + CON mod, subsequent = avg (fixed) + CON mod
- * Fixed average per SRD/PHB: \( \lfloor \frac{\text{hitDie}}{2} \rfloor + 1 \)
  * @param level Character level
  * @param conScore Constitution score
- * @param hitDieSize Hit die size (6 for d6, 8 for d8, etc.)
+ * @param hitDieSize Hit die size (8 for warlock)
  * @returns Maximum HP
  */
 export function calculateMaxHP(level: number, conScore: number, hitDieSize: number): number {
     const clampedLevel = Math.max(1, Math.min(20, level));
     const conMod = getAbilityModifier(conScore);
-    
-    // First level: max hit die + CON mod (minimum 1 per level per RAW interpretation)
+
     const firstLevelHP = hitDieSize + conMod;
-    
+
     if (clampedLevel === 1) {
         return Math.max(1, firstLevelHP);
     }
 
-    // Subsequent levels: average (rounded down) + CON mod
-    // For d6: avg = 3.5 → 3 (rounded down) but typically we use 4 (rounded up, PHB variant)
-    // SRD 5.1 actually uses rolling, but fixed HP uses ceil: (hitDieSize / 2) + 1
     const avgHitDie = Math.floor(hitDieSize / 2) + 1;
     const subsequentLevels = clampedLevel - 1;
-    
+
     const totalHP = firstLevelHP + subsequentLevels * (avgHitDie + conMod);
-    
-    // RAW: You always gain at least 1 HP per level regardless of negative CON
+
     return Math.max(clampedLevel, totalHP);
 }
 
 /**
  * Calculate Spell Save DC
  * SRD 5.1: 8 + proficiency bonus + spellcasting ability modifier
- * @param profBonus Proficiency bonus
- * @param spellcastingMod Spellcasting ability modifier (INT for Wizard)
- * @returns Spell Save DC
+ * Warlock casting ability is CHA.
  */
 export function getSpellSaveDC(profBonus: number, spellcastingMod: number): number {
     return 8 + profBonus + spellcastingMod;
@@ -142,16 +108,21 @@ export function getAbilityMods(scores: AbilityScores): AbilityMods {
 
 /**
  * Recalculate common derived character fields from base values.
- * Keeps "used"/"current" values but caps them at new derived maximums.
- *
- * Note: Assumes a full-caster slot table (Wizard-style) and INT spellcasting.
  */
 export function recalculateDerivedCharacterData(prev: CharacterData): CharacterData {
     const level = clamp(prev.level, LEVEL_MIN, LEVEL_MAX);
     const abilityScores = prev.abilities;
     const abilityMods = getAbilityMods(abilityScores);
     const profBonus = getProficiencyBonus(level);
-    const slots = getSpellSlotsWithUsed(level, prev.slots);
+
+    // Pact slot recalculation
+    const pactSlotInfo = getPactSlotInfo(level);
+    const pactSlots = {
+        ...prev.pactSlots,
+        max: pactSlotInfo.count,
+        level: pactSlotInfo.level,
+        current: Math.min(prev.pactSlots.current, pactSlotInfo.count)
+    };
 
     const maxHP = calculateMaxHP(level, abilityScores.con, prev.hitDice.size);
     const currentHP = Math.min(prev.hp.current, maxHP);
@@ -159,7 +130,8 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
     const hitDiceMax = level;
     const hitDiceCurrent = Math.min(prev.hitDice.current, hitDiceMax);
 
-    const dc = getSpellSaveDC(profBonus, abilityMods.int);
+    // Warlock uses CHA for DC
+    const dc = getSpellSaveDC(profBonus, abilityMods.cha);
 
     return {
         ...prev,
@@ -170,7 +142,7 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
         dc,
         hp: { ...prev.hp, current: currentHP, max: maxHP },
         hitDice: { ...prev.hitDice, current: hitDiceCurrent, max: hitDiceMax },
-        slots,
+        pactSlots,
     };
 }
 

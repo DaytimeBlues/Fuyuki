@@ -15,27 +15,22 @@ import { getActiveSession } from '../../utils/sessionStorage';
 import { recalculateDerivedCharacterData } from '../../utils/srdRules';
 
 // --- STATE INTERFACE ---
-// Extends CharacterData with session-level data (minions)
 export interface CharacterState extends CharacterData {
-    minions: Minion[];
-    // Toast message (ephemeral UI state, OK to keep here for simplicity)
+    // Toast message (ephemeral UI state)
     toast: string | null;
 }
 
 // --- INITIAL STATE ---
-// Hydrate from sessionStorage if available, otherwise use defaults
 function getInitialState(): CharacterState {
     const session = getActiveSession();
     if (session) {
         return {
             ...session.characterData,
-            minions: session.minions || [],
             toast: null,
         };
     }
     return {
         ...initialCharacterData,
-        minions: [],
         toast: null,
     };
 }
@@ -47,23 +42,15 @@ export const characterSlice = createSlice({
     name: 'character',
     initialState,
     reducers: {
-        /**
-         * Hydrate state from sessionStorage (called on app mount or session switch)
-         */
-        hydrate: (state, action: PayloadAction<{ characterData: CharacterData; minions: Minion[] }>) => {
+        hydrate: (state, action: PayloadAction<{ characterData: CharacterData }>) => {
             Object.assign(state, action.payload.characterData);
-            state.minions = action.payload.minions;
         },
 
         // --- HP ACTIONS ---
-        /**
-         * Update current HP. Handles THP absorption and concentration checks per RAW.
-         */
         hpChanged: (state, action: PayloadAction<number>) => {
             const delta = action.payload - state.hp.current;
 
             if (delta < 0) {
-                // Taking damage: THP absorbs first (SRD 5.1)
                 const damage = Math.abs(delta);
                 const tempAbsorbed = Math.min(state.hp.temp, damage);
                 const remainingDamage = damage - tempAbsorbed;
@@ -72,13 +59,11 @@ export const characterSlice = createSlice({
                 state.hp.temp -= tempAbsorbed;
                 state.hp.current = newHP;
 
-                // Concentration check toast
                 if (state.concentration && remainingDamage > 0 && newHP > 0) {
                     const dc = Math.max(10, Math.floor(damage / 2));
                     state.toast = `CON Save DC ${dc} to maintain ${state.concentration}`;
                 }
 
-                // Incapacitated: lose concentration
                 if (newHP === 0) {
                     if (state.concentration) {
                         state.toast = `Concentration on ${state.concentration} lost - Incapacitated!`;
@@ -86,11 +71,9 @@ export const characterSlice = createSlice({
                     state.concentration = null;
                 }
             } else {
-                // Healing
                 const wasAtZero = state.hp.current === 0;
                 state.hp.current = Math.min(state.hp.max, Math.max(0, action.payload));
 
-                // Reset death saves when healed from 0
                 if (wasAtZero && state.hp.current > 0) {
                     state.deathSaves = { successes: 0, failures: 0 };
                     state.toast = "Stabilized! Death saves reset.";
@@ -102,42 +85,47 @@ export const characterSlice = createSlice({
             state.hp.temp = Math.max(0, action.payload);
         },
 
-        // --- AC ACTIONS ---
-        mageArmourToggled: (state) => {
-            state.mageArmour = !state.mageArmour;
+        // --- PACT MAGIC ACTIONS ---
+        pactSlotUsed: (state) => {
+            if (state.pactSlots.current > 0) {
+                state.pactSlots.current -= 1;
+            }
         },
-        shieldToggled: (state) => {
-            state.shield = !state.shield;
+        pactSlotRestored: (state) => {
+            if (state.pactSlots.current < state.pactSlots.max) {
+                state.pactSlots.current += 1;
+            }
+        },
+        pactSlotsRefilled: (state) => {
+            state.pactSlots.current = state.pactSlots.max;
         },
 
-        // --- SPELL SLOT ACTIONS ---
-        slotUsed: (state, action: PayloadAction<{ level: number }>) => {
-            const { level } = action.payload;
-            if (state.slots[level] && state.slots[level].used < state.slots[level].max) {
-                state.slots[level].used += 1;
+        // --- MYSTIC ARCANUM ---
+        arcanumUsed: (state, action: PayloadAction<number>) => {
+            const lvl = action.payload as 6 | 7 | 8 | 9;
+            if (state.arcanum[lvl]) {
+                state.arcanum[lvl]!.used = true;
             }
         },
-        slotRestored: (state, action: PayloadAction<{ level: number }>) => {
-            const { level } = action.payload;
-            if (state.slots[level] && state.slots[level].used > 0) {
-                state.slots[level].used -= 1;
+        arcanumRestored: (state, action: PayloadAction<number>) => {
+            const lvl = action.payload as 6 | 7 | 8 | 9;
+            if (state.arcanum[lvl]) {
+                state.arcanum[lvl]!.used = false;
             }
         },
-        allSlotsRestored: (state) => {
-            Object.keys(state.slots).forEach(key => {
-                const level = Number(key);
-                state.slots[level].used = 0;
-            });
+
+        // --- INVOCATIONS ---
+        invocationToggled: (state, action: PayloadAction<string>) => {
+            const invocation = state.invocations.find(i => i.id === action.payload);
+            if (invocation) {
+                invocation.active = !invocation.active;
+            }
         },
-        slotsUpdated: (state, action: PayloadAction<Record<number, { used: number; max: number }>>) => {
-            Object.entries(action.payload).forEach(([level, slotData]) => {
-                const slotLevel = Number(level);
-                const currentUsed = state.slots[slotLevel]?.used ?? 0;
-                state.slots[slotLevel] = {
-                    used: Math.min(currentUsed, slotData.max),
-                    max: slotData.max
-                };
-            });
+        invocationUseConsumed: (state, action: PayloadAction<string>) => {
+            const invocation = state.invocations.find(i => i.id === action.payload);
+            if (invocation && invocation.currentUses !== undefined && invocation.currentUses > 0) {
+                invocation.currentUses -= 1;
+            }
         },
 
         // --- CONCENTRATION ---
@@ -159,28 +147,34 @@ export const characterSlice = createSlice({
             }
         },
 
-        // --- LONG REST ---
+        // --- RESTS ---
+        shortRestCompleted: (state) => {
+            state.pactSlots.current = state.pactSlots.max;
+            state.toast = "Short Rest: Pact Slots Refilled";
+        },
         longRestCompleted: (state) => {
-            // HP to max, THP reset
             state.hp.current = state.hp.max;
             state.hp.temp = 0;
 
-            // Recover half hit dice (min 1)
             const recovered = Math.max(1, Math.ceil(state.hitDice.max / 2));
             state.hitDice.current = Math.min(state.hitDice.max, state.hitDice.current + recovered);
 
-            // All spell slots restored
-            Object.keys(state.slots).forEach(key => {
-                const level = Number(key);
-                state.slots[level].used = 0;
+            state.pactSlots.current = state.pactSlots.max;
+
+            // Restore Mystic Arcanum
+            Object.values(state.arcanum).forEach(slot => {
+                if (slot) slot.used = false;
             });
 
-            // Clear temp effects
-            state.mageArmour = false;
-            state.shield = false;
+            // Restore Limited Use Invocations
+            state.invocations.forEach(inv => {
+                if (inv.usesPerLongRest !== undefined) {
+                    inv.currentUses = inv.usesPerLongRest;
+                }
+            });
+
             state.concentration = null;
             state.deathSaves = { successes: 0, failures: 0 };
-
             state.toast = "Long Rest Completed";
         },
 
@@ -232,26 +226,6 @@ export const characterSlice = createSlice({
             }
         },
 
-        // --- MINIONS ---
-        minionAdded: (state, action: PayloadAction<Minion>) => {
-            state.minions.push(action.payload);
-            state.toast = `Raised ${action.payload.type}`;
-        },
-        minionHpChanged: (state, action: PayloadAction<{ id: string; hp: number }>) => {
-            const minion = state.minions.find(m => m.id === action.payload.id);
-            if (minion) {
-                minion.hp = Math.max(0, action.payload.hp);
-            }
-        },
-        minionRemoved: (state, action: PayloadAction<string>) => {
-            state.minions = state.minions.filter(m => m.id !== action.payload);
-            state.toast = "Minion Destroyed";
-        },
-        allMinionsCleared: (state) => {
-            state.minions = [];
-            state.toast = "All Minions Released";
-        },
-
         // --- TOAST ---
         toastShown: (state, action: PayloadAction<string>) => {
             state.toast = action.payload;
@@ -259,30 +233,20 @@ export const characterSlice = createSlice({
         toastCleared: (state) => {
             state.toast = null;
         },
-
-        // --- PREPARED SPELLS ---
-        spellPrepared: (state, action: PayloadAction<string>) => {
-            if (!state.preparedSpells.includes(action.payload)) {
-                state.preparedSpells.push(action.payload);
-            }
-        },
-        spellUnprepared: (state, action: PayloadAction<string>) => {
-            state.preparedSpells = state.preparedSpells.filter(s => s !== action.payload);
-        },
     },
 });
 
 // --- SELECTORS ---
-// Local type to avoid circular dependency with RootState
 interface StateWithCharacter {
     character: CharacterState;
 }
 
 export const selectCharacter = (state: StateWithCharacter) => state.character;
 export const selectHp = (state: StateWithCharacter) => state.character.hp;
-export const selectSlots = (state: StateWithCharacter) => state.character.slots;
+export const selectPactSlots = (state: StateWithCharacter) => state.character.pactSlots;
+export const selectArcanum = (state: StateWithCharacter) => state.character.arcanum;
+export const selectInvocations = (state: StateWithCharacter) => state.character.invocations;
 export const selectConcentration = (state: StateWithCharacter) => state.character.concentration;
-export const selectMinions = (state: StateWithCharacter) => state.character.minions;
 export const selectToast = (state: StateWithCharacter) => state.character.toast;
 
 export const selectAbilityModifier = createSelector(
@@ -294,24 +258,22 @@ export const selectSpellSaveDC = (state: StateWithCharacter) => state.character.
 export const selectProfBonus = (state: StateWithCharacter) => state.character.profBonus;
 
 /**
- * Calculate current AC based on base AC, dex mod, mage armor, and shield spell.
+ * Calculate current AC based on base AC and dex mod.
+ * Warlocks don't have built-in Mage Armor toggle like our previous Wizard version,
+ * but can have Armor of Shadows (at-will Mage Armor). 
+ * For now, we simplify to base AC + Dex mod.
  */
 export const selectCurrentAC = createSelector(
     [selectCharacter],
-    (character) => {
-        let ac = character.mageArmour ? 13 + character.abilityMods.dex : character.baseAC;
-        if (character.shield) ac += 5;
-        return ac;
-    }
+    (character) => character.baseAC + character.abilityMods.dex
 );
 
 /**
- * Calculate spell attack bonus (proficiency + INT mod)
- * SRD 5.1: Wizard Spellcasting, p. 53
+ * Warlock uses CHA for spell attack bonus.
  */
 export const selectSpellAttackBonus = createSelector(
     [selectCharacter],
-    (character) => character.profBonus + character.abilityMods.int
+    (character) => character.profBonus + character.abilityMods.cha
 );
 
 // --- EXPORT ACTIONS ---
@@ -319,15 +281,17 @@ export const {
     hydrate,
     hpChanged,
     tempHpSet,
-    mageArmourToggled,
-    shieldToggled,
-    slotUsed,
-    slotRestored,
-    allSlotsRestored,
-    slotsUpdated,
+    pactSlotUsed,
+    pactSlotRestored,
+    pactSlotsRefilled,
+    arcanumUsed,
+    arcanumRestored,
+    invocationToggled,
+    invocationUseConsumed,
     concentrationSet,
     deathSaveChanged,
     hitDiceSpent,
+    shortRestCompleted,
     longRestCompleted,
     levelChanged,
     abilityScoreChanged,
@@ -337,14 +301,8 @@ export const {
     inventoryItemRemoved,
     inventoryItemUpdated,
     itemChargeConsumed,
-    minionAdded,
-    minionHpChanged,
-    minionRemoved,
-    allMinionsCleared,
     toastShown,
     toastCleared,
-    spellPrepared,
-    spellUnprepared,
 } = characterSlice.actions;
 
 export default characterSlice.reducer;
