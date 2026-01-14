@@ -85,40 +85,104 @@ export type { SpellV3 } from '../schemas/spellSchema';
 export interface HitDice {
     current: number;  // Available to spend
     max: number;      // Equal to character level
-    size: number;     // Die size (6 for d6, 8 for d8, etc.)
+    size: number;     // Die size (8 for warlock d8)
 }
 
+// ===== WARLOCK-SPECIFIC TYPES =====
+
+/** Pact Magic slots - shared pool of 1-3 slots at a single level */
+export interface PactSlots {
+    current: number;  // Available slots
+    max: number;      // Total slots (1-3 based on level)
+    level: number;    // Current slot level (1-5)
+}
+
+/** Mystic Arcanum - one high-level spell per long rest */
+export interface ArcanumSlot {
+    spellName: string;
+    used: boolean;
+}
+
+/** Eldritch Invocation with toggle and limited use tracking */
+export interface Invocation {
+    id: string;
+    name: string;
+    description: string;
+    /** For at-will spells granted by invocation */
+    grantsSpell?: string;
+    atWill?: boolean;
+    /** For limited-use invocations */
+    usesPerLongRest?: number;
+    currentUses?: number;
+    /** Prerequisites display (not enforced) */
+    prerequisites?: string;
+    /** Toggle state for passive invocations */
+    active: boolean;
+}
+
+/** Pact Boon choice and associated tracking */
+export interface PactBoon {
+    type: 'chain' | 'blade' | 'tome' | null;
+    /** Chain pact familiar */
+    familiar?: {
+        name: string;
+        type: string;
+        hp: number;
+        maxHp: number;
+    };
+    /** Blade pact weapon */
+    pactWeapon?: {
+        name: string;
+        type: string;
+    };
+    /** Tome pact extra cantrips */
+    tomeCantrips?: string[];
+}
+
+/** Patron (subclass) info */
+export interface Patron {
+    name: string;
+    features: string[];
+}
+
+// ===== MAIN CHARACTER DATA =====
+
 export interface CharacterData {
+    // Core stats
     hp: { current: number; max: number; temp: number };
     hitDice: HitDice;
     baseAC: number;
-    mageArmour: boolean;
-    shield: boolean;
     dc: number;
     profBonus: number;
     level: number;
     savingThrowProficiencies: AbilityKey[];
     deathSaves: { successes: number; failures: number };
-    /**
-     * Base (editable) ability scores.
-     * Derived (calculated) modifiers are stored separately in `abilityMods`.
-     */
     abilities: AbilityScores;
-    /** Derived (calculated) ability modifiers */
     abilityMods: AbilityMods;
-    skills: {
-        [key: string]: Skill;
+    skills: { [key: string]: Skill };
+    concentration: string | null;
+    attunement: string[];
+    inventory: InventoryItem[];
+
+    // === WARLOCK-SPECIFIC ===
+    /** Pact Magic slots (1-3 at levels 1-5, short rest recharge) */
+    pactSlots: PactSlots;
+    /** Spells known (not prepared) */
+    spellsKnown: string[];
+    cantripsKnown: string[];
+    /** Mystic Arcanum (6th-9th level, 1/long rest each) */
+    arcanum: {
+        6?: ArcanumSlot;
+        7?: ArcanumSlot;
+        8?: ArcanumSlot;
+        9?: ArcanumSlot;
     };
-    slots: {
-        [level: number]: { used: number; max: number };
-    };
-    defaultMinion: {
-        [key: string]: MinionStats;
-    };
-    concentration: string | null; // Currently concentrating on this spell
-    attunement: string[]; // Max 3 attuned magic items
-    inventory: InventoryItem[]; // General inventory items (supports spellcasting items)
-    preparedSpells: string[]; // Spell names from SRD that are currently prepared
+    /** Eldritch Invocations */
+    invocations: Invocation[];
+    /** Pact Boon (level 3+) */
+    pactBoon: PactBoon;
+    /** Patron subclass */
+    patron: Patron;
 }
 
 export interface Session {
@@ -127,6 +191,6 @@ export interface Session {
     date: string;
     label?: string;
     characterData: CharacterData;
-    minions: Minion[];
     lastModified: string;
 }
+

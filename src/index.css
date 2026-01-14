@@ -1,33 +1,36 @@
 @import "tailwindcss";
 
-/* Gothic Fantasy Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+/* Kyoto Minimalist Fonts - Modern sans-serif with optional Japanese coverage */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @theme {
-  /* Monochrome Accent - Elegant White/Silver */
-  --color-accent: #FFFFFF;
-  --color-accent-glow: #E8E8E8;
-  --color-accent-dark: #A0A0A0;
+  /* Kyoto Accents - Temple Gold & Vermillion */
+  --color-accent: #c9a227;
+  --color-accent-glow: #d4b13a;
+  --color-accent-dark: #a68820;
+  --color-vermillion: #c53d3d;
+  --color-moss: #5c7c5c;
+  --color-indigo: #4a5568;
 
-  /* Background Colors - Deep Blacks */
-  --color-bg: #0a0a0a;
-  --color-bg-dark: #050505;
-  --color-card: #141414;
-  --color-card-elevated: #1c1c1c;
+  /* Background Colors - Void & Charcoal */
+  --color-bg: #0f0f10;
+  --color-bg-dark: #0a0a0b;
+  --color-card: #1a1a1c;
+  --color-card-elevated: #242428;
 
-  /* Parchment Colors - Elegant Grays */
-  --color-parchment: #C8C8C8;
-  --color-parchment-dark: #606060;
-  --color-parchment-light: #E8E8E8;
+  /* Parchment Colors - Warm Stone */
+  --color-parchment: #d4c4b0;
+  --color-parchment-dark: #8b7355;
+  --color-parchment-light: #f5f5f4;
 
-  /* Text Colors */
-  --color-text: #D0D0D0;
-  --color-text-bright: #FFFFFF;
-  --color-muted: #707070;
+  /* Text Colors - Warm Whites */
+  --color-text: #e5e5e4;
+  --color-text-bright: #f5f5f4;
+  --color-muted: #71717a;
 
-  /* Fonts */
-  --font-display: 'Cinzel', serif;
-  --font-body: 'Lora', serif;
+  /* Fonts - Modern sans-serif */
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
   --font-sans: 'Inter', sans-serif;
 }
 
@@ -50,8 +53,8 @@ h6 {
   @apply font-display tracking-wide;
 }
 
-.font-gothic {
-  font-family: 'Cinzel', serif;
+.font-kyoto {
+  font-family: 'Outfit', sans-serif;
 }
 
 /* Parchment Card Style - Monochrome */
@@ -517,17 +520,17 @@ h6 {
   animation: scale-in 0.3s ease-out forwards;
 }
 
-/* White Orb (for spell slots) */
+/* Gold Orb (for pact slots) */
 .orb {
   @apply w-3 h-3 rounded-full;
-  background: radial-gradient(circle at 30% 30%, #FFFFFF, #A0A0A0);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+  background: radial-gradient(circle at 30% 30%, #d4b13a, #a68820);
+  box-shadow: 0 0 8px rgba(201, 162, 39, 0.6);
 }
 
 .orb-empty {
   @apply w-3 h-3 rounded-full;
   background: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(100, 100, 100, 0.3);
+  border: 1px solid rgba(201, 162, 39, 0.3);
 }
 
 /* ===== Modal/Popup Styles ===== */

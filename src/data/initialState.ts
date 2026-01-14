@@ -1,42 +1,45 @@
+/**
+ * initialState.ts - Warlock Default Character
+ * Level 5 Fiend Warlock for testing
+ */
 import type { CharacterData } from '../types';
 
 export const initialCharacterData: CharacterData = {
-    hp: { current: 35, max: 35, temp: 0 },
-    hitDice: { current: 5, max: 5, size: 6 }, // Level 5 wizard
-    baseAC: 12, // 10 + 2 DEX
-    mageArmour: false,
-    shield: false,
-    dc: 15, // 8 + 4 (INT 18) + 3 (Prof) - adjusted to match probable stats
+    // Core stats
+    hp: { current: 38, max: 38, temp: 0 },  // d8 + CON 14 at level 5
+    hitDice: { current: 5, max: 5, size: 8 }, // d8 for Warlock
+    baseAC: 13, // Leather armor (11) + DEX 2
+    dc: 14, // 8 + 3 (Prof) + 3 (CHA 16)
     profBonus: 3,
     level: 5,
-    savingThrowProficiencies: ['int', 'wis'],
+    savingThrowProficiencies: ['wis', 'cha'], // Warlock saves
     deathSaves: { successes: 0, failures: 0 },
     abilities: {
         str: 8,
         dex: 14,
         con: 14,
-        int: 18, // Level 4 ASI -> 18? Or maybe just 18.
-        wis: 14,
-        cha: 10
+        int: 10,
+        wis: 12,
+        cha: 16  // Primary stat for Warlock
     },
     abilityMods: {
         str: -1,
         dex: 2,
         con: 2,
-        int: 4,
-        wis: 2,
-        cha: 0
+        int: 0,
+        wis: 1,
+        cha: 3
     },
     skills: {
         acrobatics: { name: 'Acrobatics', attr: 'dex', prof: false },
         animalHandling: { name: 'Animal Handling', attr: 'wis', prof: false },
         arcana: { name: 'Arcana', attr: 'int', prof: true },
         athletics: { name: 'Athletics', attr: 'str', prof: false },
-        deception: { name: 'Deception', attr: 'cha', prof: false },
-        history: { name: 'History', attr: 'int', prof: true },
-        insight: { name: 'Insight', attr: 'wis', prof: true },
-        intimidation: { name: 'Intimidation', attr: 'cha', prof: false },
-        investigation: { name: 'Investigation', attr: 'int', prof: true },
+        deception: { name: 'Deception', attr: 'cha', prof: true },
+        history: { name: 'History', attr: 'int', prof: false },
+        insight: { name: 'Insight', attr: 'wis', prof: false },
+        intimidation: { name: 'Intimidation', attr: 'cha', prof: true },
+        investigation: { name: 'Investigation', attr: 'int', prof: false },
         medicine: { name: 'Medicine', attr: 'wis', prof: false },
         nature: { name: 'Nature', attr: 'int', prof: false },
         perception: { name: 'Perception', attr: 'wis', prof: false },
@@ -47,35 +50,66 @@ export const initialCharacterData: CharacterData = {
         stealth: { name: 'Stealth', attr: 'dex', prof: false },
         survival: { name: 'Survival', attr: 'wis', prof: false }
     },
-    slots: {
-        1: { used: 0, max: 4 },
-        2: { used: 0, max: 3 },
-        3: { used: 0, max: 2 },
-        4: { used: 0, max: 0 },
-        5: { used: 0, max: 0 }
-    },
-    defaultMinion: {
-        Skeleton: { hp: 13, ac: 13, notes: "Shortbow (1d6+2), Shortsword (1d6+2)" },
-        Zombie: { hp: 22, ac: 8, notes: "Undead Fortitude, Slam (1d6+1)" }
-    },
     concentration: null,
     attunement: [],
     inventory: [
-        { name: "Component Pouch" },
-        { name: "Arcane Focus" },
-        { name: "Scholar's Pack" }
+        { name: 'Arcane Focus (Rod)' },
+        { name: 'Leather Armor' },
+        { name: "Dungeoneer's Pack" }
     ],
-    preparedSpells: [
-        "Fire Bolt",
-        "Chill Touch",
-        "Mage Hand",
-        "Magic Missile",
-        "Shield",
-        "Mage Armor",
-        "Detect Magic",
-        "Misty Step",
-        "Scorching Ray",
-        "Fireball",
-        "Summon Undead"
+
+    // === WARLOCK-SPECIFIC ===
+    pactSlots: {
+        current: 2,  // Level 5 has 2 slots
+        max: 2,
+        level: 3     // 3rd-level slots at level 5
+    },
+    cantripsKnown: [
+        'Eldritch Blast',
+        'Minor Illusion',
+        'Prestidigitation'
     ],
+    spellsKnown: [
+        'Hex',
+        'Armor of Agathys',
+        'Hellish Rebuke',
+        'Misty Step',
+        'Hold Person',
+        'Darkness'
+    ],
+    arcanum: {},  // Empty until level 11
+    invocations: [
+        {
+            id: 'agonizing-blast',
+            name: 'Agonizing Blast',
+            description: 'Add CHA modifier to Eldritch Blast damage.',
+            active: true
+        },
+        {
+            id: 'devils-sight',
+            name: "Devil's Sight",
+            description: 'See normally in darkness (magical and nonmagical) to 120 ft.',
+            active: true
+        },
+        {
+            id: 'repelling-blast',
+            name: 'Repelling Blast',
+            description: 'Push creature 10 ft when hit by Eldritch Blast.',
+            active: true
+        }
+    ],
+    pactBoon: {
+        type: 'blade',
+        pactWeapon: {
+            name: 'Pact Blade',
+            type: 'longsword'
+        }
+    },
+    patron: {
+        name: 'The Fiend',
+        features: [
+            "Dark One's Blessing",
+            "Dark One's Own Luck"
+        ]
+    }
 };

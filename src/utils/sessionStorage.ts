@@ -1,8 +1,8 @@
 import type { Session, CharacterData, Minion } from '../types';
 import { initialCharacterData } from '../data/initialState';
 
-const SESSIONS_KEY = 'aramancia-sessions';
-const ACTIVE_SESSION_KEY = 'aramancia-active-session';
+const SESSIONS_KEY = 'fuyuki-sessions';
+const ACTIVE_SESSION_KEY = 'fuyuki-active-session';
 
 /**
  * Schema version for localStorage data migrations.
