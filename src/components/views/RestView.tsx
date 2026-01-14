@@ -9,10 +9,11 @@ interface RestViewProps {
     currentHP: number;
     maxHP: number;
     onSpendHitDie: (healed: number, diceSpent: number) => void;
+    onShortRest: () => void;
     onLongRest: () => void;
 }
 
-export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onLongRest }: RestViewProps) {
+export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onShortRest, onLongRest }: RestViewProps) {
     const [showShortRest, setShowShortRest] = useState(false);
 
     if (showShortRest) {
@@ -57,9 +58,21 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onL
                     onSpend={onSpendHitDie}
                 />
 
-                <p className="text-xs text-muted text-center mt-4 opacity-60">
-                    Spend hit dice to recover HP during a short rest (1 hour)
-                </p>
+                <div className="mt-8 flex flex-col gap-4">
+                    <button
+                        onClick={() => {
+                            onShortRest();
+                            setShowShortRest(false);
+                        }}
+                        className="w-full card-parchment p-4 text-center border-accent/20 bg-accent/5 hover:bg-accent/10 transition-colors"
+                    >
+                        <span className="font-kyoto uppercase tracking-[0.2em] text-accent">Finish Short Rest</span>
+                    </button>
+
+                    <p className="text-xs text-muted text-center opacity-60">
+                        Pact Slots will be refilled upon finishing the rest.
+                    </p>
+                </div>
             </div>
         );
     }
@@ -81,17 +94,17 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onL
                 {/* Short Rest */}
                 <button
                     onClick={() => setShowShortRest(true)}
-                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_20px_rgba(201,162,39,0.05)]"
                 >
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="p-3 bg-card-elevated rounded-full border border-white/10 group-hover:border-white/30 transition-colors">
-                            <Sun size={24} className="text-parchment group-hover:text-white transition-colors" />
+                        <div className="p-3 bg-card-elevated rounded-full border border-accent/10 group-hover:border-accent/30 transition-colors">
+                            <Sun size={24} className="text-accent group-hover:text-white transition-colors" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="font-display text-lg text-parchment-light group-hover:text-white transition-colors tracking-wider">
+                            <h3 className="font-kyoto text-lg text-parchment group-hover:text-white transition-colors tracking-widest uppercase">
                                 Short Rest
                             </h3>
-                            <p className="text-xs text-muted">
+                            <p className="text-[10px] text-muted uppercase tracking-widest">
                                 Spend Hit Dice to heal • {hitDice.current}/{hitDice.max} available
                             </p>
                         </div>
@@ -102,21 +115,21 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onL
                 {/* Long Rest */}
                 <button
                     onClick={() => {
-                        if (confirm("Take a Long Rest? This will reset HP, Spell Slots, and recover Hit Dice.")) {
+                        if (confirm("Take a Long Rest? This will reset HP, Pact Slots, Invocations, and recover Hit Dice.")) {
                             onLongRest();
                         }
                     }}
-                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_25px_rgba(255,255,255,0.08)]"
+                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_25px_rgba(201,162,39,0.08)]"
                 >
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="p-3 bg-card-elevated rounded-full border border-white/10 group-hover:border-white/30 group-hover:bg-white/10 transition-colors">
-                            <Moon size={24} className="text-parchment group-hover:text-white transition-colors" />
+                        <div className="p-3 bg-card-elevated rounded-full border border-accent/10 group-hover:border-accent/30 transition-colors">
+                            <Moon size={24} className="text-accent group-hover:text-white transition-colors" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="font-display text-lg text-parchment-light group-hover:text-white transition-colors tracking-wider">
+                            <h3 className="font-kyoto text-lg text-parchment group-hover:text-white transition-colors tracking-widest uppercase">
                                 Long Rest
                             </h3>
-                            <p className="text-xs text-muted">Full HP, all Spell Slots, ½ Hit Dice</p>
+                            <p className="text-[10px] text-muted uppercase tracking-widest">Full HP, Pact Slots, Invocations, ½ Hit Dice</p>
                         </div>
                         <ChevronRight size={20} className="text-muted group-hover:text-white transition-colors" />
                     </div>

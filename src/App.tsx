@@ -44,6 +44,7 @@ import {
   concentrationSet,
   deathSaveChanged,
   hitDiceSpent,
+  shortRestCompleted,
   longRestCompleted,
   levelChanged,
   abilityScoreChanged,
@@ -120,6 +121,11 @@ function App() {
 
   const handleSpendHitDie = useCallback((healed: number, diceSpent: number) => {
     dispatch(hitDiceSpent({ count: diceSpent, healed }));
+  }, [dispatch]);
+
+  const handleShortRest = useCallback(() => {
+    dispatch(shortRestCompleted());
+    setActiveTab('home');
   }, [dispatch]);
 
   const handleLongRest = useCallback(() => {
@@ -256,52 +262,41 @@ function App() {
             maxHP={character.hp.max}
             onSpend={handleSpendHitDie}
           />
-          <div className="mt-8 border-t border-gray-800 pt-8">
+          <div className="mt-8 border-t border-white/5 pt-8">
             <RestView
               hitDice={character.hitDice}
               conMod={character.abilityMods.con}
               currentHP={character.hp.current}
               maxHP={character.hp.max}
               onSpendHitDie={handleSpendHitDie}
+              onShortRest={handleShortRest}
               onLongRest={handleLongRest}
             />
           </div>
-            />
         </div>
+      )}
 
+      {/* Combat Overlay System */}
+      <CombatOverlay />
+
+      {activeTab !== 'home' && activeTab !== 'settings' && (
+        <CombatHUD
+          concentrationSpell={character.concentration}
+        />
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
+          {toast}
         </div>
-  )
-}
+      )}
 
-{/* Combat Overlay System */ }
-<CombatOverlay />
-
-{
-  activeTab !== 'home' && activeTab !== 'settings' && (
-    <CombatHUD
-      baseAC={character.baseAC}
-      dexMod={character.abilityMods.dex}
-      concentrationSpell={character.concentration}
-    />
-  )
-}
-
-{/* Toast */ }
-{
-  toast && (
-    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
-      {toast}
-    </div>
-  )
-}
-
-{/* Session Picker Modal */ }
-{
-  showSessionPicker && (
-    <SessionPicker onSessionSelected={handleSessionSelected} />
-  )
-}
-    </AppShell >
+      {/* Session Picker Modal */}
+      {showSessionPicker && (
+        <SessionPicker onSessionSelected={handleSessionSelected} />
+      )}
+    </AppShell>
   );
 }
 
