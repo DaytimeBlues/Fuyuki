@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { minionAdded, allMinionsCleared, minionSelectors, Minion } from '../../../store/slices/combatSlice';
 import { MinionCard } from './MinionCard';
@@ -84,6 +84,62 @@ export const MinionList: React.FC = () => {
     const minions = useAppSelector(state => minionSelectors.selectAll(state.combat.minions));
     const [showAddMenu, setShowAddMenu] = useState(false);
     const [expandedMinionId, setExpandedMinionId] = useState<string | null>(null);
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const [scrollTop, setScrollTop] = useState(0);
+    const [viewportHeight, setViewportHeight] = useState(0);
+
+    const shouldVirtualize = minions.length > 80;
+    const rowHeight = 180;
+    const overscan = 6;
+
+    useEffect(() => {
+        if (!shouldVirtualize) return;
+
+        const element = scrollContainerRef.current;
+        if (!element) return;
+
+        const updateViewport = () => {
+            setViewportHeight(element.clientHeight);
+        };
+
+        const handleScroll = () => {
+            setScrollTop(element.scrollTop);
+        };
+
+        updateViewport();
+        element.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', updateViewport);
+
+        element.dataset.refReady = 'true';
+
+        return () => {
+            element.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', updateViewport);
+        };
+    }, [shouldVirtualize]);
+
+    const { visibleMinions, totalHeight, startIndex } = useMemo(() => {
+        if (!shouldVirtualize) {
+            return {
+                visibleMinions: minions,
+                totalHeight: minions.length * rowHeight,
+                startIndex: 0,
+            };
+        }
+
+        const effectiveHeight = viewportHeight || rowHeight * 3;
+        const nextStart = Math.max(0, Math.floor(scrollTop / rowHeight) - overscan);
+        const nextEnd = Math.min(
+            minions.length,
+            Math.ceil((scrollTop + effectiveHeight) / rowHeight) + overscan,
+        );
+
+        return {
+            visibleMinions: minions.slice(nextStart, nextEnd),
+            totalHeight: minions.length * rowHeight,
+            startIndex: nextStart,
+        };
+    }, [minions, overscan, rowHeight, scrollTop, shouldVirtualize, viewportHeight]);
 
     const handleAddMinion = (templateKey: string) => {
         const template = MINION_TEMPLATES[templateKey];
@@ -187,16 +243,48 @@ export const MinionList: React.FC = () => {
 
             {/* Minion Cards */}
             {minions.length > 0 ? (
-                <div className="space-y-2">
-                    {minions.map(minion => (
-                        <MinionCard
-                            key={minion.id}
-                            minion={minion}
-                            isExpanded={expandedMinionId === minion.id}
-                            onToggleExpand={() => toggleExpand(minion.id)}
-                        />
-                    ))}
-                </div>
+                shouldVirtualize ? (
+                    <div
+                        ref={scrollContainerRef}
+                        data-testid="minion-virtual-scroll"
+                        className="max-h-[600px] overflow-y-auto pr-1"
+                    >
+                        <div
+                            data-testid="minion-virtual-content"
+                            className="relative"
+                            style={{ height: `${totalHeight}px` }}
+                        >
+                            {visibleMinions.map((minion, index) => {
+                                const top = (startIndex + index) * rowHeight;
+                                return (
+                                    <div
+                                        key={minion.id}
+                                        data-testid="minion-virtual-row"
+                                        className="absolute left-0 right-0 pb-2"
+                                        style={{ transform: `translateY(${top}px)` }}
+                                    >
+                                        <MinionCard
+                                            minion={minion}
+                                            isExpanded={expandedMinionId === minion.id}
+                                            onToggleExpand={() => toggleExpand(minion.id)}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="space-y-2">
+                        {minions.map(minion => (
+                            <MinionCard
+                                key={minion.id}
+                                minion={minion}
+                                isExpanded={expandedMinionId === minion.id}
+                                onToggleExpand={() => toggleExpand(minion.id)}
+                            />
+                        ))}
+                    </div>
+                )
             ) : (
                 <div className="text-center py-8 text-stone-600 italic border border-dashed border-stone-800 rounded-lg">
                     No undead thralls summoned.

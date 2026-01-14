@@ -1,0 +1,29 @@
+/**
+ * Redux Store Configuration
+ * 
+ * WHY: Central state store with persistence middleware for automatic sessionStorage sync.
+ * The character slice is the single source of truth for all character data.
+ */
+import { configureStore } from '@reduxjs/toolkit';
+import characterReducer from './slices/characterSlice';
+import spellbookReducer from './slices/spellbookSlice';
+import combatReducer from './slices/combatSlice';
+import { persistenceMiddleware } from './slices/persistenceMiddleware';
+import { createConcentrationMiddleware } from './middleware/concentrationMiddleware';
+
+const concentrationMiddleware = createConcentrationMiddleware();
+
+export const store = configureStore({
+    reducer: {
+        character: characterReducer,
+        spellbook: spellbookReducer,
+        combat: combatReducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware()
+            .prepend(concentrationMiddleware.middleware)
+            .concat(persistenceMiddleware),
+});
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
