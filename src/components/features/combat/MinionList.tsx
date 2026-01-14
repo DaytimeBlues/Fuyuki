@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { minionAdded, allMinionsCleared, minionSelectors, Minion } from '../../../store/slices/combatSlice';
 import { MinionCard } from './MinionCard';
 import { Plus, Trash2, Skull } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 // Preset minion templates based on SRD stat blocks
 const MINION_TEMPLATES: Record<string, Omit<Minion, 'id'>> = {
@@ -84,6 +85,20 @@ export const MinionList: React.FC = () => {
     const minions = useAppSelector(state => minionSelectors.selectAll(state.combat.minions));
     const [showAddMenu, setShowAddMenu] = useState(false);
     const [expandedMinionId, setExpandedMinionId] = useState<string | null>(null);
+    const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
+
+    const setScrollRef = useCallback((node: HTMLDivElement | null) => {
+        setScrollElement(node);
+    }, []);
+
+    const virtualizer = useVirtualizer({
+        count: minions.length,
+        getScrollElement: () => scrollElement,
+        estimateSize: () => 140,
+        overscan: 6,
+    });
+
+    const virtualItems = useMemo(() => virtualizer.getVirtualItems(), [virtualizer]);
 
     const handleAddMinion = (templateKey: string) => {
         const template = MINION_TEMPLATES[templateKey];
@@ -187,16 +202,35 @@ export const MinionList: React.FC = () => {
 
             {/* Minion Cards */}
             {minions.length > 0 ? (
-                <div className="space-y-2" role="list">
-                    {minions.map(minion => (
-                        <div key={minion.id} role="listitem">
-                            <MinionCard
-                                minion={minion}
-                                isExpanded={expandedMinionId === minion.id}
-                                onToggleExpand={() => toggleExpand(minion.id)}
-                            />
-                        </div>
-                    ))}
+                <div
+                    ref={setScrollRef}
+                    className="max-h-[520px] overflow-auto"
+                >
+                    <div
+                        className="relative space-y-2"
+                        role="list"
+                        style={{ height: virtualizer.getTotalSize() }}
+                    >
+                        {virtualItems.map((virtualItem) => {
+                            const minion = minions[virtualItem.index];
+                            if (!minion) return null;
+
+                            return (
+                                <div
+                                    key={minion.id}
+                                    role="listitem"
+                                    className="absolute left-0 top-0 w-full"
+                                    style={{ transform: `translateY(${virtualItem.start}px)` }}
+                                >
+                                    <MinionCard
+                                        minion={minion}
+                                        isExpanded={expandedMinionId === minion.id}
+                                        onToggleExpand={() => toggleExpand(minion.id)}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             ) : (
                 <div className="text-center py-8 text-stone-600 italic border border-dashed border-stone-800 rounded-lg">

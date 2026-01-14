@@ -19,4 +19,5 @@ export const MinionSchema = z.object({
     attacks: z.array(MinionAttackSchema),
     conditions: z.array(z.string()),
     controlExpiresRound: z.number().int().min(0).optional(),
+    notes: z.string().optional(),
 });

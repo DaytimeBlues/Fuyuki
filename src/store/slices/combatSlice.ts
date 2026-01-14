@@ -15,6 +15,7 @@ export interface Minion {
     attacks: MinionAttack[];
     conditions: string[];
     controlExpiresRound?: number;
+    notes?: string;
 }
 
 export interface MinionAttack {
@@ -142,9 +143,48 @@ export const combatSlice = createSlice({
         },
 
         minionUpdated: (state, action: PayloadAction<{ id: string; changes: Partial<Minion> }>) => {
+            const minion = state.minions.entities[action.payload.id];
+            if (!minion) return;
+
+            const sanitizeNumber = (value: unknown, fallback: number, min: number) => {
+                if (typeof value !== 'number' || !Number.isFinite(value)) {
+                    return fallback;
+                }
+                return Math.max(min, Math.trunc(value));
+            };
+
+            const nextMaxHp = 'maxHp' in action.payload.changes
+                ? sanitizeNumber(action.payload.changes.maxHp, minion.maxHp, 1)
+                : minion.maxHp;
+            const nextHp = 'hp' in action.payload.changes
+                ? Math.min(
+                    sanitizeNumber(action.payload.changes.hp, minion.hp, 0),
+                    nextMaxHp
+                )
+                : minion.hp;
+
+            const nextName = 'name' in action.payload.changes
+                ? (typeof action.payload.changes.name === 'string' && action.payload.changes.name.trim().length > 0
+                    ? action.payload.changes.name
+                    : minion.name)
+                : minion.name;
+
+            const sanitizedChanges: Partial<Minion> = {
+                ...action.payload.changes,
+                hp: nextHp,
+                maxHp: nextMaxHp,
+                ac: 'ac' in action.payload.changes
+                    ? sanitizeNumber(action.payload.changes.ac, minion.ac, 0)
+                    : minion.ac,
+                speed: 'speed' in action.payload.changes
+                    ? sanitizeNumber(action.payload.changes.speed, minion.speed, 0)
+                    : minion.speed,
+                name: nextName,
+            };
+
             minionAdapter.updateOne(state.minions, {
                 id: action.payload.id,
-                changes: action.payload.changes,
+                changes: sanitizedChanges,
             });
         },
 
