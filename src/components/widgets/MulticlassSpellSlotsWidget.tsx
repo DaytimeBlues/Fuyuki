@@ -8,6 +8,7 @@ import {
 } from '../../utils/spellSlotCalculator';
 
 interface MulticlassSpellSlotsWidgetProps {
+    currentSlots?: Record<number, { used: number; max: number }>;
     onSlotsCalculated: (slots: Record<number, { used: number; max: number }>) => void;
 }
 
@@ -23,7 +24,7 @@ const CASTER_CLASSES = [
     { name: 'Arcane Trickster', type: 'third' as CasterType },
 ];
 
-export function MulticlassSpellSlotsWidget({ onSlotsCalculated }: MulticlassSpellSlotsWidgetProps) {
+export function MulticlassSpellSlotsWidget({ currentSlots, onSlotsCalculated }: MulticlassSpellSlotsWidgetProps) {
     const [classLevels, setClassLevels] = useState<ClassLevel[]>([
         { className: 'Wizard', level: 5, casterType: 'full' }
     ]);
@@ -63,7 +64,9 @@ export function MulticlassSpellSlotsWidget({ onSlotsCalculated }: MulticlassSpel
     const handleApply = () => {
         const newSlots: Record<number, { used: number; max: number }> = {};
         Object.entries(slots).forEach(([level, max]) => {
-            newSlots[parseInt(level)] = { used: 0, max };
+            const slotLevel = parseInt(level);
+            const currentUsed = currentSlots?.[slotLevel]?.used ?? 0;
+            newSlots[slotLevel] = { used: Math.min(currentUsed, max), max };
         });
         onSlotsCalculated(newSlots);
         setShowConfig(false);
