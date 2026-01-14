@@ -28,7 +28,9 @@ export const CastModal: React.FC<CastModalProps> = ({ spell, availableSlots, onC
         let desc = "";
         if (spell.damage && spell.damage[0]?.scaling?.type === 'per_slot_level') {
             const baseCount = spell.damage[0].count;
-            const extra = (level - spell.level) * (spell.damage[0].scaling.diceIncreasePerLevel || 0);
+            // Correct Logic: (Slot Level - Base Level) * Increase
+            const levelsAboveBase = Math.max(0, level - spell.level);
+            const extra = levelsAboveBase * (spell.damage[0].scaling.diceIncreasePerLevel || 0);
             const totalDice = baseCount + extra;
             desc = `Deals ${totalDice}${spell.damage[0].sides > 0 ? 'd' + spell.damage[0].sides : ''} ${spell.damage[0].type} damage.`;
         }
@@ -63,6 +65,18 @@ export const CastModal: React.FC<CastModalProps> = ({ spell, availableSlots, onC
                             </div>
                         </div>
                     )}
+
+                    {/* Components Info */}
+                    <div className="flex items-center gap-2 text-xs text-stone-500 font-mono border-b border-stone-800 pb-2">
+                        <span className="uppercase tracking-wider font-bold">Components:</span>
+                        <span className="text-stone-400">
+                            {[
+                                spell.components.verbal && 'V',
+                                spell.components.somatic && 'S',
+                                spell.components.material && `M (${spell.components.material})`
+                            ].filter(Boolean).join(', ')}
+                        </span>
+                    </div>
 
                     {/* Slot Selection */}
                     <div className="space-y-2">

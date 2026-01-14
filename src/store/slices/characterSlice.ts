@@ -202,9 +202,24 @@ export const characterSlice = createSlice({
         // --- INVENTORY ---
         inventoryItemAdded: (state, action: PayloadAction<InventoryItem>) => {
             state.inventory.push(action.payload);
+            state.toast = `Added ${action.payload.name}`;
         },
         inventoryItemRemoved: (state, action: PayloadAction<number>) => {
             state.inventory.splice(action.payload, 1);
+        },
+        inventoryItemUpdated: (state, action: PayloadAction<{ index: number; item: InventoryItem }>) => {
+            if (state.inventory[action.payload.index]) {
+                state.inventory[action.payload.index] = action.payload.item;
+            }
+        },
+        itemChargeConsumed: (state, action: PayloadAction<number>) => {
+            const item = state.inventory[action.payload];
+            if (item && item.charges && item.charges.current > 0) {
+                item.charges.current -= 1;
+                state.toast = `Used charge on ${item.name}`;
+            } else if (item) {
+                state.toast = `${item.name} has no charges left!`;
+            }
         },
 
         // --- MINIONS ---
@@ -215,7 +230,7 @@ export const characterSlice = createSlice({
         minionHpChanged: (state, action: PayloadAction<{ id: string; hp: number }>) => {
             const minion = state.minions.find(m => m.id === action.payload.id);
             if (minion) {
-                minion.hp.current = Math.max(0, action.payload.hp);
+                minion.hp = Math.max(0, action.payload.hp);
             }
         },
         minionRemoved: (state, action: PayloadAction<string>) => {
@@ -309,6 +324,8 @@ export const {
     itemUnattuned,
     inventoryItemAdded,
     inventoryItemRemoved,
+    inventoryItemUpdated,
+    itemChargeConsumed,
     minionAdded,
     minionHpChanged,
     minionRemoved,

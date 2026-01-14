@@ -41,11 +41,24 @@ export interface MinionStats {
 
 export interface Minion {
     id: string;
-    type: 'Skeleton' | 'Zombie';
     name: string;
-    hp: { current: number; max: number };
+    type: 'skeleton' | 'zombie' | 'undead_spirit';
+    form?: 'ghostly' | 'putrid' | 'skeletal';
+    hp: number;
+    maxHp: number;
     ac: number;
-    notes: string;
+    speed: number;
+    attacks: MinionAttack[];
+    conditions: string[];
+    controlExpiresRound?: number;
+    notes?: string;
+}
+
+export interface MinionAttack {
+    name: string;
+    toHit: number;
+    damage: string;
+    damageType: string;
 }
 
 export interface InventoryItem {
@@ -55,6 +68,14 @@ export interface InventoryItem {
      * These are spell *names* that should match entries in `src/data/spells.ts`.
      */
     spells?: string[];
+    /**
+     * Optional charges for items like wands.
+     */
+    charges?: {
+        current: number;
+        max: number;
+    };
+    description?: string;
 }
 
 // Re-export Schema types

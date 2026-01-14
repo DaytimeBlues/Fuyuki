@@ -27,13 +27,14 @@ export const QuickActionsWidget: React.FC = () => {
 
     // CON modifier for concentration check (from character)
     const conMod = useAppSelector(state => {
-        const conScore = state.character.abilities.constitution;
+        const conScore = state.character.abilities.con;
         return Math.floor((conScore - 10) / 2);
     });
-    const profBonus = useAppSelector(state => state.character.proficiencyBonus);
+    const profBonus = useAppSelector(state => state.character.profBonus);
 
     // War Caster feat gives advantage on concentration checks
-    const hasWarCaster = useAppSelector(state => state.character.feats.includes('War Caster'));
+    // TODO: Add feats support to CharacterState when needed
+    const hasWarCaster = false;
 
     const handleTriggerConcentrationCheck = () => {
         const damage = parseInt(damageInput, 10);

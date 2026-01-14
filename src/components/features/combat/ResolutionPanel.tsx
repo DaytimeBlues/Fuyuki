@@ -5,7 +5,9 @@ import { SpellV3 } from '../../../schemas/spellSchema';
 import { Crosshair, Shield, Sparkles, Check, X } from 'lucide-react';
 
 type SpellDecision = { level: number; summary: string };
-type SpellDetailsLike = SpellV3 & {
+type SpellDetailsLike = Partial<SpellV3> & {
+    name: string;
+    level: number;
     desc?: string;
     decisionTree?: SpellDecision[];
 };

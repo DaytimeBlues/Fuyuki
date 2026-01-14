@@ -2,7 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { initialSpellsV3 } from '../../../data/spellsV3';
 import { SpellCard } from './SpellCard';
-import { spellPrepared, spellUnprepared, slotExpended } from '../../../store/slices/spellbookSlice';
+import { spellPrepared, spellUnprepared } from '../../../store/slices/spellbookSlice';
+import { slotUsed, selectSlots, concentrationSet } from '../../../store/slices/characterSlice';
 import { CastModal } from './CastModal';
 import { SpellV3 } from '../../../schemas/spellSchema';
 
@@ -11,7 +12,19 @@ export const SpellList: React.FC = () => {
 
     // Selectors
     const preparedSpells = useAppSelector(state => state.spellbook.preparedSpellIds);
-    const availableSlots = useAppSelector(state => state.spellbook.availableSlots);
+    // Use character slots (Source of Truth) instead of spellbook
+    const characterSlots = useAppSelector(selectSlots);
+
+    // Derived available slots for UI compatibility
+    const availableSlots = useMemo(() => {
+        const avail: Record<number, number> = {};
+        Object.keys(characterSlots).forEach(key => {
+            const level = Number(key);
+            const slot = characterSlots[level];
+            avail[level] = Math.max(0, slot.max - slot.used);
+        });
+        return avail;
+    }, [characterSlots]);
 
     // UI State
     const [filterLevel, setFilterLevel] = useState<number | 'all'>('all');
@@ -52,11 +65,23 @@ export const SpellList: React.FC = () => {
 
     const handleCastConfirm = (slotLevel: number) => {
         if (castingSpell) {
-            dispatch(slotExpended({ level: slotLevel }));
-            // TODO: Dispatch concentration check if needed
+            // 1. Consume Slot
+            if (slotLevel > 0) { // Cantrips match slot 0 but don't consume? Actually logic handles cantrips by not confirming with >0 usually. 
+                // But wait, cantrips don't use slots. 
+                dispatch(slotUsed({ level: slotLevel }));
+            }
+
+            // 2. Set Concentration
+            if (castingSpell.duration.type === 'concentration') {
+                dispatch(concentrationSet(castingSpell.name));
+            }
+
             setCastingSpell(null);
         }
     };
+
+    // Helper to check if currently concentrating (for the warning in CastModal)
+    const currentConcentration = useAppSelector(state => state.character.concentration);
 
     return (
         <div className="space-y-6">
@@ -142,7 +167,7 @@ export const SpellList: React.FC = () => {
                     availableSlots={availableSlots}
                     onConfirm={handleCastConfirm}
                     onCancel={() => setCastingSpell(null)}
-                    isConcentrating={false} // TODO: Hook up to combat slice
+                    isConcentrating={!!currentConcentration}
                 />
             )}
         </div>

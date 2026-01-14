@@ -1,4 +1,4 @@
-import { Feather, Shield, Wand2, Skull, BookOpen, User, Settings, Brain } from 'lucide-react';
+import { Feather, Shield, Wand2, Skull, BookOpen, User, Settings, Brain, Backpack } from 'lucide-react';
 import { BackgroundVideo } from './BackgroundVideo';
 
 interface AppShellProps {
@@ -14,6 +14,7 @@ const navItems = [
     { id: 'grimoire', icon: BookOpen, label: 'Arcana' },
     { id: 'abilities', icon: Brain, label: 'Abilities' },
     { id: 'bio', icon: User, label: 'Bio' },
+    { id: 'inventory', icon: Backpack, label: 'Inventory' },
     { id: 'settings', icon: Settings, label: 'Settings' },
 ];
 

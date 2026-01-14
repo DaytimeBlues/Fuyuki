@@ -6,7 +6,13 @@ import { spells } from '../../data/spells';
 import { SpellV3 } from '../../schemas/spellSchema';
 
 // Define the shape expected by ResolutionPanel
-type SpellAdapter = SpellV3 & {
+// Using Partial since we're adapting from legacy spell format and don't have all V3 fields
+type SpellAdapter = Partial<SpellV3> & {
+    id: string;
+    name: string;
+    level: number;
+    requiresAttackRoll?: boolean;
+    requiresSavingThrow?: boolean;
     desc?: string;
     decisionTree?: { level: number; summary: string }[];
     higherLevelDescription?: string;
@@ -48,7 +54,7 @@ export const CombatOverlay: React.FC = () => {
                 sides: Number(firstDiceMatch[2]),
                 type: (spell.damageType || 'force').toLowerCase(),
                 // Many wizard damage spells scale by +1 die per slot level.
-                scaling: { type: 'per_slot_level', diceIncreasePerLevel: 1 }
+                scaling: { type: 'per_slot_level' as const, diceIncreasePerLevel: 1 }
             }]
             : undefined;
 

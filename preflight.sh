@@ -45,7 +45,27 @@ elif [ "$ENV" == "PYTHON" ]; then
     pass "Type checks clean."
 fi
 
-# 3. LOGGING ENFORCEMENT
+# 3. LINT CHECK
+echo -e "\nRunning Linter..."
+if [ "$ENV" == "NODE" ]; then
+    npm run lint || fail "ESLint found issues. Fix lint errors before proceeding."
+    pass "Lint checks clean."
+elif [ "$ENV" == "PYTHON" ]; then
+    ruff check . || fail "Python linting failed."
+    pass "Lint checks clean."
+fi
+
+# 4. UNIT TESTS
+echo -e "\nRunning Unit Tests..."
+if [ "$ENV" == "NODE" ]; then
+    npm run test || fail "Unit tests failed. Run 'npm run test:ui' to debug."
+    pass "Unit tests passed."
+elif [ "$ENV" == "PYTHON" ]; then
+    pytest --ignore=e2e || fail "Unit tests failed."
+    pass "Unit tests passed."
+fi
+
+# 5. LOGGING ENFORCEMENT
 echo -e "\nVerifying Observability..."
 CHANGED_FILES=$(git diff --name-only --cached)
 if [ -z "$CHANGED_FILES" ]; then
@@ -67,14 +87,14 @@ else
 fi
 pass "Logging presence verified."
 
-# 4. RUN BUILD
+# 6. RUN BUILD
 echo -e "\nRunning Build..."
 if [ "$ENV" == "NODE" ]; then
     npm run build || fail "Build failed."
 fi
 pass "Build complete."
 
-# 5. RUN E2E TESTS (if available)
+# 7. RUN E2E TESTS (if available)
 echo -e "\nRunning End-to-End Tests..."
 if [ "$ENV" == "NODE" ]; then
     if [ -f "playwright.config.ts" ]; then

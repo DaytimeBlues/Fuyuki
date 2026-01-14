@@ -18,22 +18,32 @@ export function generateSessionId(): string {
  * Migrates session data from older versions to the current schema.
  */
 function migrateSession(session: unknown): Session {
-    // If no version or version < 2.0
-    const version = parseFloat(session.version || '1.0');
-
-    if (version < 2.0) {
-        // Migration to 2.0: Ensure minions have speed
-        if (Array.isArray(session.minions)) {
-            session.minions = session.minions.map((m: unknown) => ({
-                ...m,
-                speed: m.speed ?? 30, // Default speed if missing
-                type: m.type ? m.type.toLowerCase() : 'skeleton' // Normalizing type to lowercase
-            }));
-        }
-        session.version = '2.0';
+    // Type guard for session object
+    if (!session || typeof session !== 'object') {
+        throw new Error('Invalid session data');
     }
 
-    return session as Session;
+    const sessionObj = session as Record<string, unknown>;
+
+    // If no version or version < 2.0
+    const version = parseFloat((sessionObj.version as string) || '1.0');
+
+    if (version < 2.0) {
+        // Migration to 2.0: Ensure minions have speed and lowercase types
+        if (Array.isArray(sessionObj.minions)) {
+            sessionObj.minions = sessionObj.minions.map((m: unknown) => {
+                const minionObj = m as Record<string, unknown>;
+                return {
+                    ...minionObj,
+                    speed: (minionObj.speed as number) ?? 30, // Default speed if missing
+                    type: minionObj.type ? String(minionObj.type).toLowerCase() : 'skeleton' // Normalizing type to lowercase
+                };
+            });
+        }
+        sessionObj.version = '2.0';
+    }
+
+    return sessionObj as unknown as Session;
 }
 
 /**

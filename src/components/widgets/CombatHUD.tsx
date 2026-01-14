@@ -30,11 +30,10 @@ export function CombatHUD({
 
     return (
         <div
-            className={`fixed bottom-2 right-2 z-40 w-44 rounded-lg bg-black/70 backdrop-blur-md p-3 text-parchment shadow-lg sm:bottom-4 sm:right-4 sm:w-52 ${
-                concentrationActive
+            className={`fixed top-20 right-4 z-40 w-44 rounded-lg bg-black/70 backdrop-blur-md p-3 text-parchment shadow-lg sm:w-52 ${concentrationActive
                     ? 'glow-border border border-purple-400/40 shadow-[0_0_14px_rgba(168,85,247,0.35)]'
                     : 'border border-white/10'
-            }`}
+                }`}
         >
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
                 <span className="font-display text-xs uppercase tracking-[0.2em] text-parchment-light">⚔️ Combat</span>

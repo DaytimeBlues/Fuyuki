@@ -1,28 +1,11 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from '../index';
 import { slotExpended } from './spellbookSlice';
+import type { Minion, MinionAttack } from '../../types';
 
-// Minion type for Animate Dead / Summon Undead creatures
-export interface Minion {
-    id: string;
-    name: string;
-    type: 'skeleton' | 'zombie' | 'undead_spirit';
-    form?: 'ghostly' | 'putrid' | 'skeletal'; // For Summon Undead
-    hp: number;
-    maxHp: number;
-    ac: number;
-    speed: number;
-    attacks: MinionAttack[];
-    conditions: string[];
-    controlExpiresRound?: number;
-}
+// Re-export for consumers that need it
+export type { Minion, MinionAttack };
 
-export interface MinionAttack {
-    name: string;
-    toHit: number;
-    damage: string; // e.g., "1d6+2"
-    damageType: string;
-}
 
 // Concentration state
 export interface ConcentrationState {

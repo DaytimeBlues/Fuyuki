@@ -1,5 +1,7 @@
 import { Brain, Star, Zap, Heart, Eye, Sparkles, Dumbbell, ChevronRight } from 'lucide-react';
 import type { AbilityKey, Skill } from '../../types';
+import { useAppSelector } from '../../store/hooks';
+import { selectConcentration, selectSlots } from '../../store/slices/characterSlice';
 
 interface StatsViewProps {
     abilities: Record<AbilityKey, number>;
@@ -45,11 +47,42 @@ export function StatsView({ abilities, abilityMods, skills, profBonus }: StatsVi
         }
     });
 
+    const concentration = useAppSelector(selectConcentration);
+    const slots = useAppSelector(selectSlots);
+
     return (
         <div className="space-y-4 animate-fade-in">
             <div className="text-center mb-6">
                 <h2 className="font-display text-xl text-parchment tracking-wider">Abilities & Skills</h2>
                 <p className="text-xs text-muted mt-1">Proficiency Bonus: {formatMod(profBonus)}</p>
+            </div>
+
+            {/* Concentration Indicator */}
+            {concentration && (
+                <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-3 flex items-center gap-3 animate-pulse">
+                    <Brain className="w-5 h-5 text-purple-400" />
+                    <div className="flex-1">
+                        <p className="text-xs text-purple-300 uppercase tracking-widest font-bold">Concentrating</p>
+                        <p className="text-parchment font-cinzel">{concentration}</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Spell Slots Summary */}
+            <div className="grid grid-cols-3 gap-2">
+                {Object.entries(slots).map(([level, slot]) => (
+                    <div key={level} className="bg-stone-900/50 rounded border border-stone-800 p-2 text-center">
+                        <div className="text-[10px] text-stone-500 uppercase">Lvl {level}</div>
+                        <div className="flex justify-center gap-1 mt-1">
+                            {Array.from({ length: slot.max }).map((_, i) => (
+                                <div
+                                    key={i}
+                                    className={`w-2 h-2 rounded-full ${i < slot.max - slot.used ? 'bg-cyan-500 shadow-[0_0_5px_cyan]' : 'bg-stone-800'}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </div>
 
             <div className="grid gap-3">
