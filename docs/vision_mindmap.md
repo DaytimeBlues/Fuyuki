@@ -1,48 +1,58 @@
-# Fuyuki Vision Mind Map: "Nano Banana Pro" Edition
+# Fuyuki Vision: The "Best of the Best" Ecosystem
 
-This conceptual map visualize the "What's Next" for the Aramancia Tracker project.
+This map visualizes the integration of every system discussed across our technical planning sessions.
 
 ```mermaid
 mindmap
   root((Fuyuki Pro))
-    Core Stability
-      Global Error Boundary
-      Zod Schema Sync
-      Debounced Saves
-    Mobile Experience
+    Core Architecture
+      React 19 / Vite 7 / TS
+      Redux Toolkit (RTK)
+      Zod Schema Validation
+      Debounced Persistence
+    Warlock Logic (RAW)
+      Pact Magic Slots
+      Mystic Arcanum Tracking
+      Eldritch Invocations
+      Ritual List Management
+      Spell Save DC Auto-Calc
+    Pro Automation
+      Concentration Check Middleware
+      Damage-Triggered CON Saves
+      Bulk Minion Roll Engine
+      Negative HP Death Save Reset
+    Native (Mobile)
       Capacitor Bridge
-      AMOLED Dark Theme
-      Native Haptics
-    Performance
-      Minion Virtualization
-      Memoized Selectors
-      Asset Preloading
-    Warlock Prowess
-      Pact Slot Tracking
-      Mystic Arcanum
-      Invocation Toggles
-    Kyoto Aesthetic
-      "Banana Pro" Vibrant Accents
-      Minimalist Icons
-      Smooth Transitions
+      Haptic Feedback Engine
+      AR Portrait Effect Overlay
+      AMOLED Charcoal Theme
+    Aesthetic (Kyoto Noir)
+      Banana Gold (#FFD700)
+      High-Contrast Minimalism
+      Staggered UI Animations
+      Parchment Texture Accents
+    Developer UX
+      Preflight Validation Script
+      AI LLM Directives
+      Fuzz/Property testing
 ```
 
-## Conceptual Drawing: Mystic Arcanum Overlay
-
-> [!NOTE]
-> The "Banana Pro" aesthetic uses a **high-contrast charcoal and gold** palette. Gold (#FFD700) is used for active "Ritual" states and "Pro" features.
+## Data Flow: The Concentration Middleware
 
 ```mermaid
-graph TD
-    A[Warlock Hub] --> B{Mystic Arcanum}
-    B --> C[6th Level: Mass Suggestion]
-    B --> D[7th Level: Forcecage]
-    B --> E[8th Level: Feeblemind]
-    B --> F[9th Level: Foresight]
-    
-    style B fill:#f9f,stroke:#333,stroke-width:4px
-    style C fill:#FFD700,stroke:#000
-    style D fill:#FFD700,stroke:#000
-    style E fill:#FFD700,stroke:#000
-    style F fill:#FFD700,stroke:#000
+sequenceDiagram
+    participant User
+    participant Slice as Redux characterSlice
+    participant Middle as Concentration Middleware
+    participant UI as Toast/Modal System
+
+    User->>Slice: Updates HP (Damage Event)
+    Slice->>Middle: Intercepts hpChanged Action
+    Middle-->>Middle: Calc DC: max(10, damage/2)
+    Middle->>UI: Trigger "Roll CON Save" Toast
+    UI->>User: Display DC [X] for [Spell Name]
+    Note right of User: User rolls physical dice or in-app
 ```
+
+> [!TIP]
+> **Best of the Best Policy**: We prioritize **Mechanical Speed**. Every tap counts. If an automation (like the Concentration DC) can save a user 5 seconds of math, it is a priority 1 feature.

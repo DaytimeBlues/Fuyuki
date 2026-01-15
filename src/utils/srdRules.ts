@@ -27,9 +27,34 @@ export function getAbilityModifier(score: number): number {
 }
 
 /**
+ * Full caster spell slots by level (Wizard, Cleric, Druid, Bard, Sorcerer)
+ * SRD 5.1 Spellcasting Table
+ */
+export const FULL_CASTER_SLOTS: Record<number, Record<number, number>> = {
+    1: { 1: 2 },
+    2: { 1: 3 },
+    3: { 1: 4, 2: 2 },
+    4: { 1: 4, 2: 3 },
+    5: { 1: 4, 2: 3, 3: 2 },
+    6: { 1: 4, 2: 3, 3: 3 },
+    7: { 1: 4, 2: 3, 3: 3, 4: 1 },
+    8: { 1: 4, 2: 3, 3: 3, 4: 2 },
+    9: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 1 },
+    10: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2 },
+    11: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1 },
+    12: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1 },
+    13: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1 },
+    14: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1 },
+    15: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1 },
+    16: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1 },
+    17: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 1, 7: 1, 8: 1, 9: 1 },
+    18: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 1, 7: 1, 8: 1, 9: 1 },
+    19: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 1, 8: 1, 9: 1 },
+    20: { 1: 4, 2: 3, 3: 3, 4: 3, 5: 3, 6: 2, 7: 2, 8: 1, 9: 1 },
+};
+
+/**
  * Get pact slots for a given level
- * @param level Character level (1-20)
- * @returns Pact slots info
  */
 import { getPactSlotInfo } from './warlockRules';
 
@@ -62,7 +87,6 @@ export function calculateMaxHP(level: number, conScore: number, hitDieSize: numb
 /**
  * Calculate Spell Save DC
  * SRD 5.1: 8 + proficiency bonus + spellcasting ability modifier
- * Warlock casting ability is CHA.
  */
 export function getSpellSaveDC(profBonus: number, spellcastingMod: number): number {
     return 8 + profBonus + spellcastingMod;
@@ -106,6 +130,15 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
     // Warlock uses CHA for DC
     const dc = getSpellSaveDC(profBonus, abilityMods.cha);
 
+    // Filter standard slots to match level if multiclassing or generic
+    const slots = { ...prev.slots };
+    const standardMaxSlots = FULL_CASTER_SLOTS[level] || {};
+    Object.keys(slots).forEach(lvlKey => {
+        const lvl = parseInt(lvlKey);
+        const max = standardMaxSlots[lvl] || 0;
+        slots[lvl] = { ...slots[lvl], max };
+    });
+
     return {
         ...prev,
         level,
@@ -116,6 +149,7 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
         hp: { ...prev.hp, current: currentHP, max: maxHP },
         hitDice: { ...prev.hitDice, current: hitDiceCurrent, max: hitDiceMax },
         pactSlots,
+        slots,
     };
 }
 

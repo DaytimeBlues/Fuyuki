@@ -1,42 +1,41 @@
-# Roadmap: Fuyuki Warlock Tracker - Next Phase
+# Implementation Plan: Fuyuki "Best of the Best" Edition
 
-This plan outlines the immediate next steps to bring the Fuyuki tracker to a "Pro" state, focusing on mobile readiness (Capacitor), performance (Virtualization), and robust error handling.
+This roadmap synthesizes the core architecture of the Aramancia Tracker with specialized Warlock mechanics and "Pro" automation features.
 
 ## User Review Required
 
 > [!IMPORTANT]
-> **Capacitor Initialization**: This phase requires `npx cap add android` which may necessitate local machine configuration for Android Studio.
-> **Virtualization**: We will be introducing `tanstack-virtual` which changes how lists are rendered. This is primarily for "Minion Hordes".
+> **Automation Levels**: The "Concentration Middleware" and "Minion Bulk Rolling" represent a shift from manual tracking to automated assistance.
+> **Native Mobile**: Phasing in Capacitor early is critical to ensure feature parity between web and mobile (Nothing Phone 2a).
 
 ## Proposed Changes
 
-### [Core Infrastructure]
-#### [NEW] [GlobalErrorBoundary](file:///c:/Users/Jihye/fuyuki/src/components/ErrorBoundary.tsx)
-- Create a top-level ErrorBoundary to catch and log unhandled crashes.
-#### [MODIFY] [main.tsx](file:///c:/Users/Jihye/fuyuki/src/main.tsx)
-- Wrap the app in the `GlobalErrorBoundary`.
+### Phase 1: Core Hybrid Bridge & Stability
+- **Capacitor Init**: Setup `capacitor.config.ts`, Android projects, and splash screens.
+- **Global Resilience**: Implement a global `ErrorBoundary` and Zod-based data validation for hydration.
+- **Input Sanitization**: Hard-limit all numeric inputs (Level 1-20, Scores 3-30) to prevent state corruption.
 
-### [Mobile Readiness (Capacitor)]
-#### [NEW] [capacitor.config.ts](file:///c:/Users/Jihye/fuyuki/capacitor.config.ts)
-- Initialize Capacitor configuration with app ID `com.daytimeblues.aramancia`.
+### Phase 2: The Warlock Engine
+- **Pact Magic System**: Dedicated `slotUsed` logic for pact slots that recover on Short Rest.
+- **Rituals & Invocations**: Create a "Ritual" tab for toggling passive invocations (e.g., *Agonizing Blast*, *Armor of Shadows*).
+- **Mystic Arcanum Tracking**: Add 6th-9th level "Daily" slot tracking to `RestView`.
 
-### [Performance & UX]
-#### [MODIFY] [MinionList.tsx](file:///c:/Users/Jihye/fuyuki/src/components/minions/MinionList.tsx)
-- Implement `tanstack-virtual` for efficient rendering of 20+ minions.
-#### [MODIFY] [SessionPicker.tsx](file:///c:/Users/Jihye/fuyuki/src/components/SessionPicker.tsx)
-- Add bounds checking for session numbers (1-9999).
+### Phase 3: "Best of the Best" Automation
+- **Concentration Middleware**: A `listenerMiddleware` that triggers a "CON Save DC" toast whenever HP drops while concentrating.
+- **Haptic Bridge**: Integrating `@capacitor/haptics` for tactile feedback on critical events.
+- **Virtualization**: Implementing `@tanstack/react-virtual` for the Minion List to support massive undead armies.
 
-### [Warlock Rituals (UI Enhancements)]
-#### [NEW] [RitualView.tsx](file:///c:/Users/Jihye/fuyuki/src/components/views/RitualView.tsx)
-- A dedicated view for Warlock invocations and passive tracking.
+### Phase 4: Polish & Aesthetic
+- **Kyoto Noir Design**: Full implementation of the Charcoal & Banana Gold palette across all widgets.
+- **Micro-Animations**: Staggered slide-in effects for widgets using Tailwind 4 animations.
 
 ## Verification Plan
 
 ### Automated Tests
-- Run `npm run test` to ensure existing SRD rules are not broken.
-- Add new tests for input validation logic in `SessionPicker`.
+- `npm run test`: Ensure SRD 5.1 rules remain 100% accurate.
+- `fast-check`: Property-based tests for DC calculations and HP overflow logic.
 
 ### Manual Verification
-1. **Virtualization Stress Test**: Create 50+ minions and verify smooth scrolling in `CombatView`.
-2. **Error Recovery**: Artificially trigger a render error and verify the `GlobalErrorBoundary` catches it and shows a "Restore" button.
-3. **Capacitor Sync**: Run `npx cap copy` and check that assets are correctly mirrored to the (future) `android` folder.
+1. **Stress Test**: Spawn 50 minions and verify 120Hz smooth scrolling.
+2. **Mobility Audit**: Run on Android via Capacitor and verify Haptic feedback triggers on damage.
+3. **Data Recovery**: Corrupt a localStorage session manually and verify the app recovers gracefully via Zod.
