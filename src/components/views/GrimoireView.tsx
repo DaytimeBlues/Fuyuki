@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectCharacter, invocationToggled } from '../../store/slices/characterSlice';
-import { INVOCATIONS, PACT_BOONS } from '../../data/warlockData';
-import { Book, Shield, Swords, Flame, Sparkles, ChevronRight, Check } from 'lucide-react';
+import { PACT_BOONS } from '../../data/warlockData';
+import { Book, Swords, Flame, Sparkles, Check } from 'lucide-react';
 
 export function GrimoireView() {
     const character = useAppSelector(selectCharacter);

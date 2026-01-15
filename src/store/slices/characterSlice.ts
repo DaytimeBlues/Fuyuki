@@ -9,7 +9,7 @@
  * to sessionStorage on every action.
  */
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
-import type { CharacterData, AbilityKey, InventoryItem, Minion } from '../../types';
+import type { CharacterData, AbilityKey, InventoryItem } from '../../types';
 import { initialCharacterData } from '../../data/initialState';
 import { getActiveSession } from '../../utils/sessionStorage';
 import { recalculateDerivedCharacterData } from '../../utils/srdRules';

@@ -2,7 +2,6 @@
  * warlockRules.ts
  * Implements D&D 5e SRD 5.1 rules for Warlocks.
  */
-import type { PactSlots } from '../types';
 
 /**
  * Warlock Pact Magic Slot table (SRD 5.1)

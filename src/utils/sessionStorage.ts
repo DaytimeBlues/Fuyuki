@@ -46,7 +46,7 @@ function migrateSession(session: unknown): Session {
     return sessionObj as unknown as Session;
 }
 
-import { SessionSchema, type ValidatedSession } from '../schemas/sessionSchema';
+import { SessionSchema } from '../schemas/sessionSchema';
 
 /**
  * Validates that the parsed data conforms to the Session schema.

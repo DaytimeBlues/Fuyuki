@@ -5,10 +5,6 @@ import {
     calculateMaxHP,
     calculateSpellSaveDC,
     clamp,
-    ABILITY_SCORE_MIN,
-    ABILITY_SCORE_MAX,
-    LEVEL_MIN,
-    LEVEL_MAX,
 } from '../utils/srdRules';
 import { getPactSlotInfo } from '../utils/warlockRules';
 

@@ -29,8 +29,11 @@ export const persistenceMiddleware: Middleware = (store) => (next) => (action) =
         const state = store.getState();
         const character: CharacterState = state.character;
 
-        // Extract CharacterData (without minions and toast) for session storage
-        const { minions, ...characterData } = character;
+        // Get minions from combat slice
+        const minions = state.combat.minions;
+
+        // Extract CharacterData for session storage (exclude toast, it's ephemeral)
+        const { toast, ...characterData } = character; // eslint-disable-line @typescript-eslint/no-unused-vars
 
         // Save to sessionStorage (debounced internally if needed, but let's keep it simple)
         // Using requestIdleCallback for better performance on rapid updates

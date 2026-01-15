@@ -1,17 +1,10 @@
 import { z } from 'zod';
-import { initialCharacterData } from '../data/initialState';
 
 // Helper schema for HP
 const HpSchema = z.object({
     current: z.number().int(),
     max: z.number().int().min(1),
     temp: z.number().int().min(0),
-});
-
-// Helper schema for Slots
-const SlotSchema = z.object({
-    used: z.number().int().min(0),
-    max: z.number().int().min(0),
 });
 
 // Helper for Minions (flexible for now, but structured)

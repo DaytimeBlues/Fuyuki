@@ -7,6 +7,7 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 import { AppShell } from './components/layout/AppShell';
+import { HealthWidget } from './components/widgets/HealthWidget';
 
 import { PactSlotsWidget } from './components/widgets/PactSlotsWidget';
 import { ArcanumWidget } from './components/widgets/ArcanumWidget';
@@ -39,8 +40,6 @@ import {
   selectToast,
   hpChanged,
   tempHpSet,
-  pactSlotUsed,
-  pactSlotRestored,
   concentrationSet,
   deathSaveChanged,
   hitDiceSpent,
@@ -80,7 +79,7 @@ function App() {
 
   // --- SESSION HANDLING ---
   const handleSessionSelected = (session: Session) => {
-    dispatch(hydrate({ characterData: session.characterData, minions: session.minions }));
+    dispatch(hydrate({ characterData: session.characterData }));
     setShowSessionPicker(false);
   };
 
@@ -91,11 +90,6 @@ function App() {
 
   const updateTempHP = useCallback((newTemp: number) => {
     dispatch(tempHpSet(newTemp));
-  }, [dispatch]);
-
-  const updatePactSlot = useCallback((used: boolean) => {
-    if (used) dispatch(pactSlotUsed());
-    else dispatch(pactSlotRestored());
   }, [dispatch]);
 
   const updateDeathSaves = useCallback((type: 'successes' | 'failures', value: number) => {

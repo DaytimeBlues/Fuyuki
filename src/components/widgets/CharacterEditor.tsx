@@ -5,8 +5,8 @@ import {
     ABILITY_SCORE_STANDARD_MAX,
     LEVEL_MIN,
     LEVEL_MAX,
-    clamp,
 } from '../../utils/srdRules';
+import { validateAndClampAbilityScore, validateAndClampLevel } from '../../utils/inputValidation';
 import type { AbilityKey, CharacterData } from '../../types';
 
 const ABILITY_NAMES: Record<AbilityKey, string> = {
@@ -32,16 +32,15 @@ export function CharacterEditor({
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleLevelIncrement = (delta: number) => {
-        const newLevel = clamp(data.level + delta, LEVEL_MIN, LEVEL_MAX);
+        const newLevel = validateAndClampLevel(data.level + delta);
         if (newLevel !== data.level) {
             onLevelChange(newLevel);
         }
     };
 
     const handleAbilityIncrement = (ability: AbilityKey, delta: number) => {
-        const currentScore = data.abilities[ability];
-        const newScore = clamp(currentScore + delta, ABILITY_SCORE_MIN, ABILITY_SCORE_STANDARD_MAX);
-        if (newScore !== currentScore) {
+        const newScore = validateAndClampAbilityScore(data.abilities[ability] + delta);
+        if (newScore !== data.abilities[ability]) {
             onAbilityChange(ability, newScore);
         }
     };

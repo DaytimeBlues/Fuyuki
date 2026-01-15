@@ -66,6 +66,8 @@ export function SessionPicker({ onSessionSelected, onClose }: SessionPickerProps
                                 <label className="text-xs text-muted block mb-1">Session #</label>
                                 <input
                                     type="number"
+                                    min="1"
+                                    max="9999"
                                     value={sessionNumber}
                                     onChange={(e) => {
                                         const num = parseInt(e.target.value) || 1;

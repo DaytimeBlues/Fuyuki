@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import path from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -10,11 +11,11 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.png', 'vite.svg'],
       manifest: {
-        name: 'Aramancia Tracker',
-        short_name: 'Aramancia',
-        description: 'D&D 5e Character Tracker for Aramancia the Necromancer',
-        theme_color: '#FFFFFF',
-        background_color: '#0a0a0a',
+        name: 'Fuyuki Warlock Tracker',
+        short_name: 'Fuyuki',
+        description: 'D&D 5e Warlock Tracker',
+        theme_color: '#0a0a0a',
+        background_color: '#0f0f10',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
@@ -44,27 +45,33 @@ export default defineConfig({
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
               },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
+            },
           },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'gstatic-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
-      }
-    })
+        ],
+      },
+    }),
   ],
-})
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-redux'],
+          'redux-vendor': ['@reduxjs/toolkit'],
+          'ui-vendor': ['lucide-react'],
+        },
+      },
+    },
+    target: 'es2020',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});

@@ -1,7 +1,7 @@
 import { Brain, Star, Zap, Heart, Eye, Sparkles, Dumbbell, ChevronRight } from 'lucide-react';
 import type { AbilityKey, Skill } from '../../types';
 import { useAppSelector } from '../../store/hooks';
-import { selectConcentration, selectCharacter } from '../../store/slices/characterSlice';
+import { selectConcentration } from '../../store/slices/characterSlice';
 import { PactSlotsWidget } from '../widgets/PactSlotsWidget';
 import { ArcanumWidget } from '../widgets/ArcanumWidget';
 
@@ -18,7 +18,6 @@ export function StatsView({
     abilityMods,
     skills,
     profBonus,
-    level,
 }: StatsViewProps) {
 
     // Map abilities to their display info
@@ -47,8 +46,8 @@ export function StatsView({
     };
 
     Object.entries(skills).forEach(([key, skill]) => {
-        if (skillsByAbility[skill.ability]) {
-            skillsByAbility[skill.ability].push({ key, skill });
+        if (skillsByAbility[skill.attr]) {
+            skillsByAbility[skill.attr].push({ key, skill });
         }
     });
 
