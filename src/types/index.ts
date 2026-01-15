@@ -163,6 +163,14 @@ export interface CharacterData {
     concentration: string | null;
     attunement: string[];
     inventory: InventoryItem[];
+    preparedSpells: string[];
+
+    // Spell slots (standard)
+    slots: Record<number, { used: number; max: number }>;
+
+    // Temporary buffs/states
+    mageArmour: boolean;
+    shield: boolean;
 
     // === WARLOCK-SPECIFIC ===
     /** Pact Magic slots (1-3 at levels 1-5, short rest recharge) */

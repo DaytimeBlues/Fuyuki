@@ -57,8 +57,20 @@ export const initialCharacterData: CharacterData = {
         { name: 'Leather Armor' },
         { name: "Dungeoneer's Pack" }
     ],
-
-    // === WARLOCK-SPECIFIC ===
+    preparedSpells: [],
+    slots: {
+        1: { used: 0, max: 0 },
+        2: { used: 0, max: 0 },
+        3: { used: 0, max: 0 },
+        4: { used: 0, max: 0 },
+        5: { used: 0, max: 0 },
+        6: { used: 0, max: 0 },
+        7: { used: 0, max: 0 },
+        8: { used: 0, max: 0 },
+        9: { used: 0, max: 0 }
+    },
+    mageArmour: false,
+    shield: false,
     pactSlots: {
         current: 2,  // Level 5 has 2 slots
         max: 2,

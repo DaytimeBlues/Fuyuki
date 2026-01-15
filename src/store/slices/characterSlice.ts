@@ -257,15 +257,15 @@ export const selectAbilityModifier = createSelector(
 export const selectSpellSaveDC = (state: StateWithCharacter) => state.character.dc;
 export const selectProfBonus = (state: StateWithCharacter) => state.character.profBonus;
 
-/**
- * Calculate current AC based on base AC and dex mod.
- * Warlocks don't have built-in Mage Armor toggle like our previous Wizard version,
- * but can have Armor of Shadows (at-will Mage Armor). 
- * For now, we simplify to base AC + Dex mod.
- */
 export const selectCurrentAC = createSelector(
     [selectCharacter],
-    (character) => character.baseAC + character.abilityMods.dex
+    (character) => {
+        const armorOfShadows = character.invocations.find(i => i.id === 'armor-of-shadows' || i.name === 'Armor of Shadows');
+        if (armorOfShadows?.active) {
+            return 13 + character.abilityMods.dex;
+        }
+        return character.baseAC + character.abilityMods.dex;
+    }
 );
 
 /**

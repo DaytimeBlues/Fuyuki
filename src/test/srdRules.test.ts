@@ -1,13 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
-    getProfBonus,
-    getAbilityMod,
     calculateMaxHP,
     calculateSpellSaveDC,
     recalculateDerivedCharacterData,
-    clamp,
-    LEVEL_MIN,
-    LEVEL_MAX,
 } from '../utils/srdRules';
 import { getPactSlotInfo } from '../utils/warlockRules';
 import type { CharacterData } from '../types';
@@ -86,7 +81,7 @@ describe('SRD 5.1 Warlock Rules', () => {
                 hp: { current: 8, max: 8, temp: 0 },
                 hitDice: { current: 1, max: 1, size: 8 },
                 pactSlots: { current: 1, max: 1, level: 1 },
-                arcanum: { 6: null, 7: null, 8: null, 9: null },
+                arcanum: {},
                 invocations: [],
                 skills: {},
                 savingThrowProficiencies: [],
@@ -97,8 +92,22 @@ describe('SRD 5.1 Warlock Rules', () => {
                 attunement: [],
                 concentration: null,
                 deathSaves: { successes: 0, failures: 0 },
-                pactBoon: 'Blade',
-                patron: 'Fiend'
+                pactBoon: { type: 'blade' },
+                patron: { name: 'Fiend', features: [] },
+                preparedSpells: [],
+                slots: {
+                    1: { used: 0, max: 0 },
+                    2: { used: 0, max: 0 },
+                    3: { used: 0, max: 0 },
+                    4: { used: 0, max: 0 },
+                    5: { used: 0, max: 0 },
+                    6: { used: 0, max: 0 },
+                    7: { used: 0, max: 0 },
+                    8: { used: 0, max: 0 },
+                    9: { used: 0, max: 0 }
+                },
+                mageArmour: false,
+                shield: false
             };
 
             const updated = recalculateDerivedCharacterData({ ...initial, level: 5 });
