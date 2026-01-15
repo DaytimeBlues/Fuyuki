@@ -33,6 +33,17 @@ function getSkillBonus(skill: Skill, abilityMod: number, profBonus: number): num
     return abilityMod + (skill.prof ? profBonus : 0);
 }
 
+// Group skills by ability for the UI
+const skillsByAbility: Record<AbilityKey, { key: string; skill: Skill }[]> = {
+    str: [], dex: [], con: [], int: [], wis: [], cha: []
+};
+
+Object.entries(skills).forEach(([key, skill]) => {
+    if (skillsByAbility[skill.ability]) {
+        skillsByAbility[skill.ability].push({ key, skill });
+    }
+});
+
 const concentration = useAppSelector(selectConcentration);
 
 return (

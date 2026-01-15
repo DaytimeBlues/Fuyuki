@@ -46,29 +46,18 @@ function migrateSession(session: unknown): Session {
     return sessionObj as unknown as Session;
 }
 
+import { SessionSchema, type ValidatedSession } from '../schemas/sessionSchema';
+
 /**
  * Validates that the parsed data conforms to the Session schema.
- * Returns true if valid, false if corrupted or invalid structure.
+ * Uses Zod for strict checking.
  */
 function validateSessionSchema(data: unknown): data is Session {
-    if (!data || typeof data !== 'object') return false;
-    const session = data as Record<string, unknown>;
-
-    // Required string fields
-    if (typeof session.id !== 'string') return false;
-    if (typeof session.sessionNumber !== 'number') return false;
-    if (typeof session.date !== 'string') return false;
-    if (typeof session.lastModified !== 'string') return false;
-
-    // characterData must be an object with required fields
-    if (!session.characterData || typeof session.characterData !== 'object') return false;
-    const charData = session.characterData as Record<string, unknown>;
-    if (!charData.hp || typeof charData.hp !== 'object') return false;
-    if (typeof charData.level !== 'number') return false;
-
-    // minions must be an array
-    if (!Array.isArray(session.minions)) return false;
-
+    const result = SessionSchema.safeParse(data);
+    if (!result.success) {
+        console.warn('Session validation failed:', result.error.format());
+        return false;
+    }
     return true;
 }
 

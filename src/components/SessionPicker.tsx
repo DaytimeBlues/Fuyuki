@@ -67,7 +67,10 @@ export function SessionPicker({ onSessionSelected, onClose }: SessionPickerProps
                                 <input
                                     type="number"
                                     value={sessionNumber}
-                                    onChange={(e) => setSessionNumber(parseInt(e.target.value) || 1)}
+                                    onChange={(e) => {
+                                        const num = parseInt(e.target.value) || 1;
+                                        setSessionNumber(Math.max(1, Math.min(9999, num)));
+                                    }}
                                     className="w-full bg-card-elevated border border-white/10 rounded px-3 py-2 text-parchment focus:outline-none focus:border-white/30"
                                 />
                             </div>
