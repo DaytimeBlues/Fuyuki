@@ -29,6 +29,9 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
             <div className="flex items-center gap-2 mb-4">
                 <Skull size={18} className="text-white" />
                 <h3 className="font-display text-sm text-parchment tracking-wider">Hit Points</h3>
+                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded-full text-white/40 font-display tracking-tighter border border-white/10">
+                    ヒットポイント
+                </span>
                 {temp > 0 && (
                     <span className="ml-auto text-xs bg-white/10 text-white px-2 py-0.5 rounded-full border border-white/20">
                         +{temp} THP

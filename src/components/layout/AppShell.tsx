@@ -56,10 +56,10 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
                                 {/* Title */}
                                 <div>
                                     <h1 className="font-display text-xl text-parchment-light tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                                        Aramancia
+                                        Fuyuki
                                     </h1>
                                     <p className="text-[10px] text-white/50 font-sans uppercase tracking-[0.3em]">
-                                        Tracker
+                                        Warlock Tracker
                                     </p>
                                 </div>
                             </div>
@@ -129,6 +129,17 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
                                             }`}>
                                             {label}
                                         </span>
+                                        {id === 'combat' && (
+                                            <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                            </span>
+                                        )}
+                                        {id === 'combat' && activeTab === 'combat' && (
+                                            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] bg-red-900/80 px-1.5 py-0.5 rounded-full text-red-200 font-display tracking-tighter border border-red-500/30 whitespace-nowrap animate-in fade-in zoom-in slide-in-from-bottom-2 duration-300">
+                                                コンバット
+                                            </span>
+                                        )}
                                     </button>
                                 ))}
                             </div>

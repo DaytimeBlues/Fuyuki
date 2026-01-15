@@ -29,6 +29,9 @@ export const PactSlotsWidget: React.FC = () => {
                 <div className="flex items-center gap-2 text-accent">
                     <Wand2 size={18} />
                     <h3 className="text-sm font-kyoto uppercase tracking-widest">Pact Magic</h3>
+                    <span className="text-[10px] bg-accent/10 px-2 py-0.5 rounded-full text-accent/60 font-display tracking-tighter border border-accent/20">
+                        パックスロット
+                    </span>
                 </div>
                 <span className="text-xs font-medium text-muted">Level {level}</span>
             </div>
