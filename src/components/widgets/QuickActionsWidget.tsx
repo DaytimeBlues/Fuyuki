@@ -1,6 +1,6 @@
-import { Dice, RefreshCw, Heart, Shield, Zap } from 'lucide-react';
+import { Dice1, RefreshCw, Heart, Shield, Zap } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { hpChanged, concentrationSet, shortRestCompleted, levelChanged } from '../../store/slices/characterSlice';
+import { hpChanged, shortRestCompleted, levelChanged } from '../../store/slices/characterSlice';
 import { HapticPresets } from '../../utils/haptics';
 
 export function QuickActionsWidget() {
@@ -8,23 +8,23 @@ export function QuickActionsWidget() {
     const hp = useAppSelector(state => state.character.hp);
     const concentration = useAppSelector(state => state.character.concentration);
     const level = useAppSelector(state => state.character.level);
-    const abilityMods = useAppSelector(state => state.character.abilityMods);
 
     const handleDamage = (amount: number) => {
-        dispatch(hpChanged(Math.max(0, hp.current - amount)));
+        const newHP = Math.max(0, hp.current - amount);
+        dispatch(hpChanged(newHP));
         HapticPresets.damageTaken();
     };
 
     const handleHeal = (amount: number) => {
-        dispatch(hpChanged(Math.min(hp.max, hp.current + amount)));
+        const newHP = Math.min(hp.max, hp.current + amount);
+        dispatch(hpChanged(newHP));
         HapticPresets.healing();
     };
 
     const handleConcentrationCheck = () => {
         if (concentration) {
-            const con = abilityMods.con;
             const dc = Math.max(10, Math.floor(15 / 2));
-            console.log('CON Save DC ' + dc + ' to maintain ' + concentration);
+            console.log(`CON Save DC ${dc} to maintain ${concentration}`);
         }
     };
 
@@ -57,14 +57,14 @@ export function QuickActionsWidget() {
                 <span className="text-[10px] font-display text-parchment">+10 HEAL</span>
             </button>
 
-            <button onClick={handleConcentrationCheck} disabled={!concentration} className={`flex flex-col items-center justify-center gap-1 p-3 rounded-lg bg-card-elevated/80 hover:bg-card-elevated border border-white/10 hover:border-white/30 transition-all ${!concentration ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                <Shield size={20} className={concentration ? 'text-accent' : 'text-muted'} />
-                <span className="text-[10px] font-display text-parchment">CONC. CHECK</span>
+            <button onClick={handleConcentrationCheck} disabled={!concentration} className="flex flex-col items-center justify-center gap-1 p-3 rounded-lg bg-card-elevated/80 hover:bg-card-elevated border border-white/10 hover:border-white/30 transition-all">
+                <Shield size={20} className={concentration ? "text-accent" : "text-muted"} />
+                <span className="text-[10px] font-display text-parchment">CON SAVE</span>
             </button>
 
             <button onClick={handleShortRest} className="flex flex-col items-center justify-center gap-1 p-3 rounded-lg bg-card-elevated/80 hover:bg-card-elevated border border-white/10 hover:border-white/30 transition-all">
-                <Dice size={20} className="text-blue-400" />
-                <span className="text-[10px] font-display text-parchment">SHORT REST</span>
+                <Dice1 size={20} className="text-blue-400" />
+                <span className="text-[10px] font-display text-parchment">REST</span>
             </button>
         </div>
     );
