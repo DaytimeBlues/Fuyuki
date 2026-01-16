@@ -1,4 +1,4 @@
-package com.getcapacitor.myapp;
+package com.daytimeblues.fuyuki;
 
 import static org.junit.Assert.*;
 

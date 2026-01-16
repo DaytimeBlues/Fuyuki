@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
     "@capacitor/cli": "^8.0.0",
     "@capacitor/core": "^8.0.0",
     "@capacitor/haptics": "^8.0.0",
+    "@capacitor/keyboard": "^8.0.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@tanstack/react-virtual": "^3.13.18",
     "@types/uuid": "^10.0.0",

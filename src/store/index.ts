@@ -9,6 +9,7 @@ import characterReducer from './slices/characterSlice';
 import spellbookReducer from './slices/spellbookSlice';
 import combatReducer from './slices/combatSlice';
 import { persistenceMiddleware } from './slices/persistenceMiddleware';
+import { open5eApi } from './api/open5eApi';
 // import concentrationMiddleware from './middleware/concentrationMiddleware';
 
 const listenerMiddleware = createListenerMiddleware();
@@ -20,14 +21,15 @@ export const store = configureStore({
         character: characterReducer,
         spellbook: spellbookReducer,
         combat: combatReducer,
+        [open5eApi.reducerPath]: open5eApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .prepend(listenerMiddleware.middleware)
             .concat(persistenceMiddleware)
+            .concat(open5eApi.middleware)
             // .concat(concentrationMiddleware), // TODO: Enable after fixing circular type reference
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-

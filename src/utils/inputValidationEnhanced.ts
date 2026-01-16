@@ -7,6 +7,27 @@
 
 import { z } from 'zod';
 
+type ValidationIssue = 'required' | 'invalid' | 'out_of_range';
+
+const validationMessages: Record<ValidationIssue, string> = {
+    required: 'is required',
+    invalid: 'is invalid',
+    out_of_range: 'is out of range',
+};
+
+const validationSuggestions: Record<ValidationIssue, string> = {
+    required: 'Please enter a value',
+    invalid: 'Please enter a valid value',
+    out_of_range: 'Please check the valid range',
+};
+
+function getValidationError(field: string, issue: ValidationIssue): { message: string; suggestion: string } {
+    return {
+        message: `${field} ${validationMessages[issue]}`,
+        suggestion: validationSuggestions[issue],
+    };
+}
+
 // Session number validation
 export const SessionNumberSchema = z.number()
     .int('Session number must be a whole number')
@@ -159,7 +180,7 @@ export function validateHP(value: unknown, type: 'current' | 'max' | 'temp'): nu
 
         const validated = schema.parse(num);
         return validated;
-    } catch (error) {
+    } catch {
         const issue = 'invalid';
         const { message, suggestion } = getValidationError('HP', issue);
         
@@ -174,15 +195,23 @@ export function validateHP(value: unknown, type: 'current' | 'max' | 'temp'): nu
 export function isValueValid(value: unknown, type: 'session' | 'ability' | 'level' | 'hp'): boolean {
     try {
         switch (type) {
-            case 'session':
-                return SessionNumberSchema.safeParse(parseInt(String(value)) || 1)).success;
-            case 'ability':
-                const ability = value as keyof z.infer<typeof AbilityScoreSchema.shape>;
-                return AbilityScoreSchema.safeParse({ [ability]: parseInt(String(value)) || 10) }).success;
-            case 'level':
-                return LevelSchema.safeParse(parseInt(String(value)) || 1)).success;
-            case 'hp':
-                return CurrentHPSchema.safeParse(parseInt(String(value)) || 0)).success;
+            case 'session': {
+                const parsed = parseInt(String(value), 10) || 1;
+                return SessionNumberSchema.safeParse(parsed).success;
+            }
+            case 'ability': {
+                const ability = value as keyof z.infer<typeof AbilityScoreSchema>;
+                const parsed = parseInt(String(value), 10) || 10;
+                return AbilityScoreSchema.safeParse({ [ability]: parsed }).success;
+            }
+            case 'level': {
+                const parsed = parseInt(String(value), 10) || 1;
+                return LevelSchema.safeParse(parsed).success;
+            }
+            case 'hp': {
+                const parsed = parseInt(String(value), 10) || 0;
+                return CurrentHPSchema.safeParse(parsed).success;
+            }
             default:
                 return true;
         }
@@ -200,31 +229,35 @@ export function getValidationErrorMessage(
 ): string | null {
     try {
         switch (type) {
-            case 'session':
-                const result = SessionNumberSchema.safeParse(parseInt(String(value)) || 1);
+            case 'session': {
+                const result = SessionNumberSchema.safeParse(parseInt(String(value), 10) || 1);
                 if (!result.success) {
                     return result.error.issues[0]?.message;
                 }
                 return null;
-            case 'ability':
-                const ability = value as keyof z.infer<typeof AbilityScoreSchema.shape>;
-                const result = AbilityScoreSchema.safeParse({ [ability]: parseInt(String(value)) || 10) });
+            }
+            case 'ability': {
+                const ability = value as keyof z.infer<typeof AbilityScoreSchema>;
+                const result = AbilityScoreSchema.safeParse({ [ability]: parseInt(String(value), 10) || 10 });
                 if (!result.success) {
                     return result.error.issues[0]?.message;
                 }
                 return null;
-            case 'level':
-                const result = LevelSchema.safeParse(parseInt(String(value)) || 1);
+            }
+            case 'level': {
+                const result = LevelSchema.safeParse(parseInt(String(value), 10) || 1);
                 if (!result.success) {
                     return result.error.issues[0]?.message;
                 }
                 return null;
-            case 'hp':
-                const result = CurrentHPSchema.safeParse(parseInt(String(value)) || 0);
+            }
+            case 'hp': {
+                const result = CurrentHPSchema.safeParse(parseInt(String(value), 10) || 0);
                 if (!result.success) {
                     return result.error.issues[0]?.message;
                 }
                 return null;
+            }
             default:
                 return null;
         }
