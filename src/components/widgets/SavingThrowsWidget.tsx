@@ -33,33 +33,30 @@ export function SavingThrowsWidget({ abilityMods, profBonus, savingThrowProficie
                     return (
                         <div
                             key={key}
-                            className={`p-3 rounded-lg border transition-all ${
-                                isProficient
+                            className={`p-3 rounded-lg border transition-all ${isProficient
                                     ? 'bg-white/5 border-white/20'
                                     : 'bg-card-elevated/60 border-white/10'
-                            }`}
+                                }`}
                         >
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div
-                                        className={`w-2 h-2 rounded-full ${
-                                            isProficient
+                                        className={`w-2 h-2 rounded-full ${isProficient
                                                 ? 'bg-white shadow-[0_0_6px_rgba(255,255,255,0.4)]'
                                                 : 'bg-white/20'
-                                        }`}
+                                            }`}
                                     />
                                     <span
-                                        className={`text-xs uppercase tracking-wider ${
-                                            isProficient ? 'text-parchment-light font-display' : 'text-muted'
-                                        }`}
+                                        className={`text-xs uppercase tracking-wider ${isProficient ? 'text-parchment-light font-display' : 'text-muted'
+                                            }`}
                                     >
                                         {label}
                                     </span>
                                 </div>
                                 <span
-                                    className={`font-display text-sm ${
-                                        isProficient ? 'text-white' : 'text-muted'
-                                    }`}
+                                    className={`font-display text-sm ${isProficient ? 'text-white' : 'text-muted'
+                                        }`}
+                                    data-testid={`saving-throw-${key}`}
                                 >
                                     {total >= 0 ? '+' : ''}{total}
                                 </span>

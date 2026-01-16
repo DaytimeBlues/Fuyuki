@@ -11,9 +11,19 @@ interface HealthWidgetProps {
 
 export function HealthWidget({ current, max, temp, onChange, onTempChange }: HealthWidgetProps) {
     const [tempInput, setTempInput] = useState('');
+    const [isDamaged, setIsDamaged] = useState(false);
     const percentage = Math.min(100, Math.max(0, (current / max) * 100));
     const isCritical = current === 0;
     const isLow = current <= 10 && current > 0; // Red at 10 HP or below
+
+    // Handle HP Change with Animation
+    const handleHpChange = (newHp: number) => {
+        if (newHp < current) {
+            setIsDamaged(true);
+            setTimeout(() => setIsDamaged(false), 400); // Match animation duration
+        }
+        onChange(newHp);
+    };
 
     // RAW: THP doesn't stack - new THP replaces old (player chooses larger)
     const handleAddTemp = () => {
@@ -25,15 +35,15 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
     };
 
     return (
-        <div className="card-parchment p-4 mb-4">
+        <div className={`card-parchment p-4 mb-4 transition-colors duration-200 ${isDamaged ? 'damage-taken' : ''}`}>
             <div className="flex items-center gap-2 mb-4">
                 <Skull size={18} className="text-white" />
                 <h3 className="font-display text-sm text-parchment tracking-wider">Hit Points</h3>
-                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded-full text-white/40 font-display tracking-tighter border border-white/10">
+                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded-full text-white/40 font-display tracking-tighter border border-white/10" data-testid="app-ready">
                     ヒットポイント
                 </span>
                 {temp > 0 && (
-                    <span className="ml-auto text-xs bg-white/10 text-white px-2 py-0.5 rounded-full border border-white/20">
+                    <span className="ml-auto text-xs bg-white/10 text-white px-2 py-0.5 rounded-full border border-white/20" data-testid="hp-temp-display">
                         +{temp} THP
                     </span>
                 )}
@@ -43,10 +53,10 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                 {/* Circular HP Display */}
                 <div className={`stat-circle ${isCritical ? 'border-red-500' : ''} ${isLow ? 'border-orange-500' : ''}`}>
                     <div className="text-center">
-                        <span className={`font-display text-2xl ${isCritical ? 'text-red-400' : isLow ? 'text-orange-400' : 'text-parchment-light'}`}>
+                        <span className={`font-display text-2xl ${isCritical ? 'text-red-400' : isLow ? 'text-orange-400' : 'text-parchment-light'}`} data-testid="hp-current">
                             {current}
                         </span>
-                        <span className="text-muted text-sm">/{max}</span>
+                        <span className="text-muted text-sm" data-testid="hp-max">/{max}</span>
                     </div>
                 </div>
 
@@ -61,19 +71,23 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                         />
                     </div>
 
-                    {/* +/- Buttons */}
+                    {/* +/- Buttons with Signifiers */}
                     <div className="flex gap-2">
                         <button
-                            onClick={() => onChange(current - 1)}
-                            className="btn-fantasy flex-1 flex items-center justify-center py-2"
+                            onClick={() => handleHpChange(current - 1)}
+                            className="btn-fantasy flex-1 flex flex-col items-center justify-center py-2 h-14 active:bg-red-900/30 active:border-red-500/50 transition-colors"
+                            data-testid="hp-decrease-btn"
                         >
-                            <Minus size={16} />
+                            <Minus size={20} className="mb-0.5" />
+                            <span className="text-[8px] font-display text-muted uppercase tracking-widest leading-none">Damage</span>
                         </button>
                         <button
-                            onClick={() => onChange(current + 1)}
-                            className="btn-fantasy flex-1 flex items-center justify-center py-2"
+                            onClick={() => handleHpChange(current + 1)}
+                            className="btn-fantasy flex-1 flex flex-col items-center justify-center py-2 h-14 active:bg-green-900/30 active:border-green-500/50 transition-colors"
+                            data-testid="hp-increase-btn"
                         >
-                            <Plus size={16} />
+                            <Plus size={20} className="mb-0.5" />
+                            <span className="text-[8px] font-display text-muted uppercase tracking-widest leading-none">Heal</span>
                         </button>
                     </div>
                 </div>
@@ -91,17 +105,20 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                         onChange={(e) => setTempInput(e.target.value)}
                         placeholder={temp.toString()}
                         className="flex-1 bg-card-elevated border border-white/10 rounded px-2 py-1 text-sm text-parchment w-16 text-center focus:outline-none focus:border-white/30"
+                        data-testid="hp-temp-input"
                     />
                     <button
                         onClick={handleAddTemp}
                         className="btn-fantasy text-xs px-2 py-1"
+                        data-testid="hp-temp-set-btn"
                     >
                         Set
                     </button>
                     {temp > 0 && (
                         <button
                             onClick={() => onTempChange(0)}
-                            className="text-xs text-red-400 hover:text-red-300"
+                            className="text-xs text-red-400 hover:text-red-300 border border-red-500/30 px-2 py-1 rounded bg-red-900/20"
+                            data-testid="hp-temp-clear-btn"
                         >
                             Clear
                         </button>

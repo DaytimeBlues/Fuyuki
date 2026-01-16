@@ -46,6 +46,7 @@ export function CombatView() {
                     <div
                         className="bg-card-elevated/80 p-4 rounded-lg border border-white/10 text-center relative group cursor-pointer hover:border-white/30 transition-all"
                         onClick={() => openStats('Skeleton')}
+                        data-testid="skeleton-counter"
                     >
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Info size={12} className="text-white" />
@@ -59,6 +60,7 @@ export function CombatView() {
                     <div
                         className="bg-card-elevated/80 p-4 rounded-lg border border-white/10 text-center relative group cursor-pointer hover:border-white/30 transition-all"
                         onClick={() => openStats('Zombie')}
+                        data-testid="zombie-counter"
                     >
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Info size={12} className="text-white" />
@@ -72,6 +74,7 @@ export function CombatView() {
                 <button
                     onClick={() => setIsDrawerOpen(true)}
                     className="w-full btn-primary flex items-center justify-center gap-2 relative z-10"
+                    data-testid="manage-horde-btn"
                 >
                     <Skull size={16} />
                     Manage Horde
@@ -83,6 +86,7 @@ export function CombatView() {
                 <button
                     className="flex items-center justify-between w-full mb-2 relative z-10"
                     onClick={() => setShowSummons(!showSummons)}
+                    data-testid="summon-undead-toggle"
                 >
                     <div className="flex items-center gap-2">
                         <Bone size={18} className="text-white" />
@@ -128,6 +132,7 @@ export function CombatView() {
                         <div
                             className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer hover:border-white/30 transition-all group"
                             onClick={() => openStats('Skeletal')}
+                            data-testid="summon-skeletal-btn"
                         >
                             <div className="p-2.5 bg-card rounded-lg border border-white/10 group-hover:border-white/30 transition-colors">
                                 <Sword size={18} className="text-parchment group-hover:text-white transition-colors" />
@@ -153,6 +158,7 @@ export function CombatView() {
                 <div
                     className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
                     onClick={() => setSelectedStatBlock(null)}
+                    data-testid="stat-block-modal"
                 >
                     <div
                         className="card-parchment w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl shadow-white/5 animate-scale-in"
@@ -168,6 +174,7 @@ export function CombatView() {
                                 onClick={() => setSelectedStatBlock(null)}
                                 className="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 transition-all shrink-0"
                                 aria-label="Close"
+                                data-testid="close-stat-block-btn"
                             >
                                 <X size={20} />
                             </button>

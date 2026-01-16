@@ -139,6 +139,13 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
         slots[lvl] = { ...slots[lvl], max };
     });
 
+    // Mystic Arcanum initialization
+    const arcanum = { ...prev.arcanum };
+    if (level >= 11 && !arcanum[6]) arcanum[6] = { used: false, spellName: '' };
+    if (level >= 13 && !arcanum[7]) arcanum[7] = { used: false, spellName: '' };
+    if (level >= 15 && !arcanum[8]) arcanum[8] = { used: false, spellName: '' };
+    if (level >= 17 && !arcanum[9]) arcanum[9] = { used: false, spellName: '' };
+
     return {
         ...prev,
         level,
@@ -149,6 +156,7 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
         hp: { ...prev.hp, current: currentHP, max: maxHP },
         hitDice: { ...prev.hitDice, current: hitDiceCurrent, max: hitDiceMax },
         pactSlots,
+        arcanum,
         slots,
     };
 }

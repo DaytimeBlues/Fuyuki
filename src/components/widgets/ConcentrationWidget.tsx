@@ -25,6 +25,7 @@ export function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS,
                     <button
                         onClick={onClear}
                         className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                        data-testid="concentration-clear-btn"
                     >
                         <X size={12} />
                         End
@@ -37,7 +38,7 @@ export function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS,
                     <div className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2">
                         <div className="flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                            <span className="text-sm text-white font-display">{spell}</span>
+                            <span className="text-sm text-white font-display" data-testid="concentration-spell">{spell}</span>
                         </div>
                     </div>
                 </div>
@@ -50,6 +51,7 @@ export function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS,
                                 key={s}
                                 onClick={() => onSet(s)}
                                 className="text-[10px] px-2 py-1 bg-card-elevated border border-white/10 rounded text-muted hover:text-white hover:border-white/30 transition-colors"
+                                data-testid={`concentration-set-btn-${s.toLowerCase().replace(/\s+/g, '-')}`}
                             >
                                 {s}
                             </button>

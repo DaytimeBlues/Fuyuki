@@ -50,13 +50,15 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onS
                 </div>
 
                 {/* Hit Dice Widget */}
-                <HitDiceWidget
-                    hitDice={hitDice}
-                    conMod={conMod}
-                    currentHP={currentHP}
-                    maxHP={maxHP}
-                    onSpend={onSpendHitDie}
-                />
+                <div data-testid="hit-dice-display">
+                    <HitDiceWidget
+                        hitDice={hitDice}
+                        conMod={conMod}
+                        currentHP={currentHP}
+                        maxHP={maxHP}
+                        onSpend={onSpendHitDie}
+                    />
+                </div>
 
                 <div className="mt-8 flex flex-col gap-4">
                     <button
@@ -64,9 +66,10 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onS
                             onShortRest();
                             setShowShortRest(false);
                         }}
-                        className="w-full card-parchment p-4 text-center border-accent/20 bg-accent/5 hover:bg-accent/10 transition-colors"
+                        className="w-full btn-primary-action p-4 text-center"
+                        data-testid="finish-short-rest-btn"
                     >
-                        <span className="font-kyoto uppercase tracking-[0.2em] text-accent">Finish Short Rest</span>
+                        <span className="font-kyoto uppercase tracking-[0.2em]">Finish Short Rest</span>
                     </button>
 
                     <p className="text-xs text-muted text-center opacity-60">
@@ -95,6 +98,7 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onS
                 <button
                     onClick={() => setShowShortRest(true)}
                     className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_20px_rgba(201,162,39,0.05)]"
+                    data-testid="short-rest-btn"
                 >
                     <div className="flex items-center gap-4 relative z-10">
                         <div className="p-3 bg-card-elevated rounded-full border border-accent/10 group-hover:border-accent/30 transition-colors">
@@ -120,6 +124,7 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onS
                         }
                     }}
                     className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_25px_rgba(201,162,39,0.08)]"
+                    data-testid="long-rest-btn"
                 >
                     <div className="flex items-center gap-4 relative z-10">
                         <div className="p-3 bg-card-elevated rounded-full border border-accent/10 group-hover:border-accent/30 transition-colors">

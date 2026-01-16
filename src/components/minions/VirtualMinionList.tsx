@@ -19,6 +19,7 @@ export function VirtualMinionList({ minions, onUpdateMinion, onRemoveMinion }: V
                     <div
                         key={minion.id}
                         className="bg-card-elevated/60 border border-white/10 rounded-xl p-3 flex items-center justify-between animate-in fade-in slide-in-from-bottom-2"
+                        data-testid="minion-card"
                     >
                         <div>
                             <div className="flex items-center gap-2">
@@ -38,15 +39,21 @@ export function VirtualMinionList({ minions, onUpdateMinion, onRemoveMinion }: V
                                 <button
                                     onClick={() => onUpdateMinion(minion.id, Math.max(0, minion.hp - 1))}
                                     className="w-7 h-7 flex items-center justify-center hover:bg-red-500/20 text-muted hover:text-red-400 rounded transition-colors"
+                                    data-testid="minion-damage-btn"
                                 >
                                     <Minus size={14} />
                                 </button>
-                                <span className={`font-display text-sm w-8 text-center ${minion.hp < minion.maxHp / 2 ? 'text-red-400' : 'text-parchment-light'}`}>
-                                    {minion.hp}
-                                </span>
+                                <input
+                                    type="number"
+                                    value={minion.hp}
+                                    onChange={(e) => onUpdateMinion(minion.id, parseInt(e.target.value) || 0)}
+                                    className="w-10 bg-transparent text-center font-display text-sm focus:outline-none border-b border-transparent focus:border-white/30"
+                                    data-testid="minion-hp-input"
+                                />
                                 <button
                                     onClick={() => onUpdateMinion(minion.id, Math.min(minion.maxHp, minion.hp + 1))}
                                     className="w-7 h-7 flex items-center justify-center hover:bg-white/20 text-muted hover:text-white rounded transition-colors"
+                                    data-testid="minion-heal-btn"
                                 >
                                     <Plus size={14} />
                                 </button>
@@ -55,6 +62,7 @@ export function VirtualMinionList({ minions, onUpdateMinion, onRemoveMinion }: V
                             <button
                                 onClick={() => onRemoveMinion(minion.id)}
                                 className="p-2 hover:bg-red-500/10 text-muted hover:text-red-400 rounded-lg transition-colors"
+                                data-testid="remove-minion-btn"
                             >
                                 <Trash2 size={18} />
                             </button>

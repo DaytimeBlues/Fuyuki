@@ -6,17 +6,8 @@
  * Widgets consume state via useAppSelector and dispatch actions.
  */
 import { useState, useEffect, useCallback } from 'react';
-import { AppShell } from './components/layout/AppShell';
-import { HealthWidget } from './components/widgets/HealthWidget';
-
-import { PactSlotsWidget } from './components/widgets/PactSlotsWidget';
-import { ArcanumWidget } from './components/widgets/ArcanumWidget';
-import { DeathSavesWidget } from './components/widgets/DeathSavesWidget';
-import { ConcentrationWidget } from './components/widgets/ConcentrationWidget';
-import { AttunementWidget } from './components/widgets/AttunementWidget';
-import { InventoryWidget } from './components/widgets/InventoryWidget';
-import { HitDiceWidget } from './components/widgets/HitDiceWidget';
 import { InitiativeWidget } from './components/widgets/InitiativeWidget';
+import { AppShell } from './components/layout/AppShell';
 import { ProficiencyWidget } from './components/widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from './components/widgets/SavingThrowsWidget';
 import { CharacterEditor } from './components/widgets/CharacterEditor';
@@ -25,15 +16,13 @@ import { VoiceCommandButton } from './components/widgets/VoiceCommandButton';
 import SpellsView from './components/views/SpellsView';
 import { CombatView } from './components/views/CombatView';
 import { CombatOverlay } from './components/views/CombatOverlay';
+import { DashboardView } from './components/views/DashboardView';
+import { CharacterHubView } from './components/views/CharacterHubView';
+import { MoreView } from './components/views/MoreView';
 import { RestView } from './components/views/RestView';
-import { GrimoireView } from './components/views/GrimoireView';
-import { BiographyView } from './components/views/BiographyView';
-import { StatsView } from './components/views/StatsView';
 import { InventoryView } from './components/views/InventoryView';
 import { SessionPicker } from './components/SessionPicker';
-import { spells } from './data/spells';
 import { getActiveSession } from './utils/sessionStorage';
-import { getRequiredLevelForSpell } from './utils/spellRules';
 import type { Session } from './types';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import {
@@ -41,7 +30,6 @@ import {
   selectToast,
   hpChanged,
   tempHpSet,
-  concentrationSet,
   deathSaveChanged,
   hitDiceSpent,
   shortRestCompleted,
@@ -50,17 +38,16 @@ import {
   abilityScoreChanged,
   itemAttuned,
   itemUnattuned,
-  inventoryItemAdded,
-  inventoryItemRemoved,
-  toastShown,
   toastCleared,
   hydrate,
 } from './store/slices/characterSlice';
-import { castingStarted, slotConfirmed } from './store/slices/combatSlice';
+
+
+// ...
 
 function App() {
   const dispatch = useAppDispatch();
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('stats');
   const [showSessionPicker, setShowSessionPicker] = useState<boolean>(() => {
     return !getActiveSession();
   });
@@ -97,22 +84,6 @@ function App() {
     dispatch(deathSaveChanged({ type, value }));
   }, [dispatch]);
 
-  const handleCastFromInventory = useCallback((spellName: string) => {
-    const spell = spells.find(s => s.name === spellName) ||
-      spells.find(s => s.name.toLowerCase() === spellName.toLowerCase());
-    if (!spell) {
-      dispatch(toastShown(`Unknown spell: ${spellName}`));
-      return;
-    }
-
-    const rollsLower = (spell.rolls ?? '').toLowerCase();
-    const resolutionMode: 'attack' | 'save' | 'automatic' =
-      rollsLower.includes('attack') ? 'attack' : rollsLower.includes('save') ? 'save' : 'automatic';
-
-    dispatch(castingStarted({ spellId: spell.name }));
-    dispatch(slotConfirmed({ slotLevel: spell.lvl, resolutionMode }));
-    setActiveTab('combat');
-  }, [dispatch]);
 
   const handleSpendHitDie = useCallback((healed: number, diceSpent: number) => {
     dispatch(hitDiceSpent({ count: diceSpent, healed }));
@@ -138,47 +109,21 @@ function App() {
 
 
   return (
-    <AppShell activeTab={activeTab} onTabChange={setActiveTab}>
-      {activeTab === 'home' && (
-        <div className="animate-fade-in">
-          <div className="animate-slide-up stagger-1">
-            <HealthWidget
-              current={character.hp.current}
-              max={character.hp.max}
-              temp={character.hp.temp}
-              onChange={updateHealth}
-              onTempChange={updateTempHP}
-            />
-          </div>
-
-          <div className="animate-slide-up stagger-3">
-            <PactSlotsWidget />
-          </div>
-
-          <div className="animate-slide-up stagger-3.5">
-            <ArcanumWidget />
-          </div>
-
-          <div className="animate-slide-up stagger-4">
-            <ConcentrationWidget
-              spell={character.concentration}
-              suggestions={spells
-                .filter(spell => spell.concentration)
-                .filter(spell => getRequiredLevelForSpell(spell.lvl) <= character.level)
-                .map(spell => spell.name)}
-              onClear={() => dispatch(concentrationSet(null))}
-              onSet={(spell) => dispatch(concentrationSet(spell))}
-            />
-          </div>
-
-          <div className="animate-slide-up stagger-5">
-            <DeathSavesWidget
-              successes={character.deathSaves.successes}
-              failures={character.deathSaves.failures}
-              onChange={updateDeathSaves}
-            />
-          </div>
-        </div>
+    <AppShell activeTab={activeTab === 'inventory' || activeTab === 'settings' ? 'more' : activeTab} onTabChange={(tab) => {
+      // Reset to main view if clicking active 'more' tab
+      if (tab === 'more' && (activeTab === 'inventory' || activeTab === 'settings')) {
+        setActiveTab('more');
+        return;
+      }
+      setActiveTab(tab);
+    }}>
+      {activeTab === 'stats' && (
+        <DashboardView
+          character={character}
+          updateHealth={updateHealth}
+          updateTempHP={updateTempHP}
+          updateDeathSaves={updateDeathSaves}
+        />
       )}
 
       {activeTab === 'spells' && (
@@ -193,45 +138,39 @@ function App() {
         </div>
       )}
 
-      {activeTab === 'grimoire' && <div className="animate-fade-in"><GrimoireView /></div>}
+      {activeTab === 'character' && (
+        <CharacterHubView
+          character={character}
+          dispatch={dispatch}
+          actions={{ itemAttuned, itemUnattuned }}
+        />
+      )}
 
-      {activeTab === 'abilities' && (
-        <div className="animate-fade-in">
-          <StatsView
-            abilities={character.abilities}
-            abilityMods={character.abilityMods}
-            skills={character.skills}
-            profBonus={character.profBonus}
-            level={character.level}
-          />
-        </div>
+      {/* MORE TAB & SUB-VIEWS */}
+      {activeTab === 'more' && (
+        <MoreView onSelectView={(view) => setActiveTab(view)} />
       )}
 
       {activeTab === 'inventory' && (
         <div className="animate-fade-in">
+          <button
+            onClick={() => setActiveTab('more')}
+            className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
+          >
+            ← Back to Menu
+          </button>
           <InventoryView />
-        </div>
-      )}
-
-      {activeTab === 'bio' && (
-        <div className="animate-fade-in">
-          <BiographyView />
-          <AttunementWidget
-            items={character.attunement}
-            onAdd={(item) => dispatch(itemAttuned(item))}
-            onRemove={(index) => dispatch(itemUnattuned(index))}
-          />
-          <InventoryWidget
-            items={character.inventory || []}
-            onAdd={(item) => dispatch(inventoryItemAdded(item))}
-            onRemove={(index) => dispatch(inventoryItemRemoved(index))}
-            onCastSpell={handleCastFromInventory}
-          />
         </div>
       )}
 
       {activeTab === 'settings' && (
         <div className="animate-fade-in">
+          <button
+            onClick={() => setActiveTab('more')}
+            className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
+          >
+            ← Back to Menu
+          </button>
           <CharacterEditor
             data={character}
             onLevelChange={handleLevelChange}
@@ -250,13 +189,6 @@ function App() {
             profBonus={character.profBonus}
             savingThrowProficiencies={character.savingThrowProficiencies}
           />
-          <HitDiceWidget
-            hitDice={character.hitDice}
-            conMod={character.abilityMods.con}
-            currentHP={character.hp.current}
-            maxHP={character.hp.max}
-            onSpend={handleSpendHitDie}
-          />
           <div className="mt-8 border-t border-white/5 pt-8">
             <RestView
               hitDice={character.hitDice}
@@ -274,7 +206,8 @@ function App() {
       {/* Combat Overlay System */}
       <CombatOverlay />
 
-      {activeTab !== 'home' && activeTab !== 'settings' && (
+      {/* Persistent HUD (except on settings/more to reduce clutter) */}
+      {activeTab !== 'stats' && activeTab !== 'settings' && activeTab !== 'more' && (
         <CombatHUD
           concentrationSpell={character.concentration}
         />
@@ -282,7 +215,10 @@ function App() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50">
+        <div
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50"
+          data-testid="toast-message"
+        >
           {toast}
         </div>
       )}

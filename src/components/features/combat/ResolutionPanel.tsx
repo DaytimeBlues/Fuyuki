@@ -73,7 +73,7 @@ export const ResolutionPanel: React.FC<ResolutionPanelProps> = ({
     const scaledDamage = getScaledDamage();
 
     return (
-        <div className="card-parchment overflow-hidden shadow-2xl">
+        <div className="card-parchment overflow-hidden shadow-2xl" data-testid="resolution-panel">
             {/* Header */}
             <div className="px-4 py-3 border-b border-white/10">
                 <h3 className="text-lg font-display text-parchment-light">{spell.name}</h3>

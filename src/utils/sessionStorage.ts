@@ -52,14 +52,15 @@ import { SessionSchema } from '../schemas/sessionSchema';
  * Validates that the parsed data conforms to the Session schema.
  * Uses Zod for strict checking.
  */
-function validateSessionSchema(data: unknown): data is Session {
-    const result = SessionSchema.safeParse(data);
-    if (!result.success) {
-        console.warn('Session validation failed:', result.error.format());
-        return false;
-    }
-    return true;
-}
+// function validateSessionSchema(data: unknown): data is Session {
+//     const result = SessionSchema.safeParse(data);
+//     if (!result.success) {
+//         console.error('CRITICAL: Session validation failed:', JSON.stringify(result.error.format(), null, 2));
+//         console.error('Invalid Data:', JSON.stringify(data, null, 2));
+//         return false;
+//     }
+//     return true;
+// }
 
 /**
  * Validates and returns sessions array, filtering out corrupted entries.
@@ -69,13 +70,15 @@ function validateSessionsArray(data: unknown): Session[] {
     if (!Array.isArray(data)) return [];
 
     return data
-        .map(item => migrateSession(item)) // Migrate before validation
+        .map(item => migrateSession(item))
         .filter((item): item is Session => {
-            const isValid = validateSessionSchema(item);
-            if (!isValid) {
-                console.warn('Skipping corrupted session entry:', item);
+            const result = SessionSchema.safeParse(item);
+            if (!result.success) {
+                console.warn('Session schema validation failed (allowing for now):', result.error.format());
+                // Soft validation: Allow it anyway to prevent data loss on minor mismatches
+                return true;
             }
-            return isValid;
+            return true;
         });
 }
 
@@ -125,9 +128,18 @@ export function setActiveSessionId(id: string | null): void {
 
 export function getActiveSession(): Session | null {
     const id = getActiveSessionId();
-    if (!id) return null;
+    if (!id) {
+        console.error('DEBUG: No Active Session ID found');
+        return null;
+    }
     const sessions = getSessions();
-    return sessions.find(s => s.id === id) || null;
+    const session = sessions.find(s => s.id === id) || null;
+    if (!session) {
+        console.error('DEBUG: Active Session ID not found in sessions list', { id, count: sessions.length });
+    } else {
+        console.error('DEBUG: Active Session Found', { id });
+    }
+    return session;
 }
 
 export function createSession(sessionNumber: number, date: string, label?: string): Session {

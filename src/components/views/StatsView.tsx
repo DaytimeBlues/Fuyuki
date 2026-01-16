@@ -1,9 +1,7 @@
 import { Brain, Star, Zap, Heart, Eye, Sparkles, Dumbbell, ChevronRight } from 'lucide-react';
 import type { AbilityKey, Skill } from '../../types';
-import { useAppSelector } from '../../store/hooks';
-import { selectConcentration } from '../../store/slices/characterSlice';
-import { PactSlotsWidget } from '../widgets/PactSlotsWidget';
-import { ArcanumWidget } from '../widgets/ArcanumWidget';
+
+
 
 interface StatsViewProps {
     abilities: Record<AbilityKey, number>;
@@ -51,31 +49,16 @@ export function StatsView({
         }
     });
 
-    const concentration = useAppSelector(selectConcentration);
+
 
     return (
         <div className="space-y-4 animate-fade-in pb-20">
             <div className="text-center mb-6">
-                <h2 className="font-kyoto uppercase text-lg text-parchment tracking-[0.2em]">Stats</h2>
+                <h2 className="font-kyoto uppercase text-lg text-parchment tracking-[0.2em]">Attributes</h2>
                 <p className="text-[10px] text-muted uppercase tracking-widest mt-1">Proficiency Bonus: {formatMod(profBonus)}</p>
             </div>
 
-            {/* Warlock Spellcasting Widgets */}
-            <div className="grid grid-cols-1 gap-4">
-                <PactSlotsWidget />
-                <ArcanumWidget />
-            </div>
 
-            {/* Concentration Indicator */}
-            {concentration && (
-                <div className="card-parchment p-3 flex items-center gap-3 border-accent/30 animate-pulse">
-                    <Brain className="w-5 h-5 text-accent" />
-                    <div className="flex-1">
-                        <p className="text-[10px] text-accent uppercase tracking-widest font-bold">Concentrating</p>
-                        <p className="text-parchment font-kyoto">{concentration}</p>
-                    </div>
-                </div>
-            )}
 
             <div className="grid gap-3">
                 {(Object.keys(abilityInfo) as AbilityKey[]).map((abilityKey, index) => {
@@ -107,10 +90,10 @@ export function StatsView({
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-2xl font-mono text-white font-bold">
+                                    <div className="text-2xl font-mono text-white font-bold" data-testid={`ability-score-${abilityKey}`}>
                                         {score}
                                     </div>
-                                    <div className={`text-sm font-mono ${mod >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    <div className={`text-sm font-mono ${mod >= 0 ? 'text-green-400' : 'text-red-400'}`} data-testid={`ability-mod-${abilityKey}`}>
                                         {formatMod(mod)}
                                     </div>
                                 </div>
@@ -139,7 +122,7 @@ export function StatsView({
                                                             />
                                                         )}
                                                     </div>
-                                                    <div className={`font-mono text-sm font-bold ${bonus >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                                    <div className={`font-mono text-sm font-bold ${bonus >= 0 ? 'text-green-400' : 'text-red-400'}`} data-testid={`skill-bonus-${skill.name.toLowerCase().replace(/\s+/g, '-')}`}>
                                                         {formatMod(bonus)}
                                                     </div>
                                                 </div>

@@ -24,6 +24,7 @@ export interface Spell {
     decisionTree: SpellDecision[];
     concentration?: boolean;
     desc: string;
+    scenario?: string;
     incantation?: string;
     pronunciation?: string;
 }
@@ -202,4 +203,3 @@ export interface Session {
     minions?: Minion[];
     lastModified: string;
 }
-

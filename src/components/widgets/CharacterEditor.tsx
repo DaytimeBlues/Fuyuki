@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { Settings, ChevronUp, ChevronDown, Sparkles } from 'lucide-react';
+import { Settings, ChevronUp, ChevronDown, Plus, Minus } from 'lucide-react';
 import {
     ABILITY_SCORE_MIN,
-    ABILITY_SCORE_STANDARD_MAX,
     LEVEL_MIN,
-    LEVEL_MAX,
 } from '../../utils/srdRules';
 import { validateAndClampAbilityScore, validateAndClampLevel } from '../../utils/inputValidation';
 import type { AbilityKey, CharacterData } from '../../types';
@@ -31,6 +29,16 @@ export function CharacterEditor({
 }: CharacterEditorProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
+    const handleLevelChange = (value: string) => {
+        const newLevel = validateAndClampLevel(parseInt(value) || LEVEL_MIN);
+        onLevelChange(newLevel);
+    };
+
+    const handleAbilityChange = (ability: AbilityKey, value: string) => {
+        const newScore = validateAndClampAbilityScore(parseInt(value) || ABILITY_SCORE_MIN);
+        onAbilityChange(ability, newScore);
+    };
+
     const handleLevelIncrement = (delta: number) => {
         const newLevel = validateAndClampLevel(data.level + delta);
         if (newLevel !== data.level) {
@@ -45,142 +53,65 @@ export function CharacterEditor({
         }
     };
 
-    const formatMod = (mod: number): string => {
-        return mod >= 0 ? `+${mod}` : `${mod}`;
-    };
-
     return (
         <div className="card-parchment p-4 mb-4">
-            {/* Header - Always Visible */}
             <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="w-full flex items-center justify-between"
+                data-testid="character-editor-toggle"
             >
-                <div className="flex items-center gap-2">
-                    <Settings size={18} className="text-white" />
-                    <h3 className="font-display text-sm text-parchment tracking-wider">
-                        CHARACTER EDITOR
-                    </h3>
+                <div className="flex items-center gap-2 text-accent">
+                    <Settings size={18} />
+                    <h3 className="text-sm font-kyoto uppercase tracking-widest">Character Settings</h3>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted">Tap to {isExpanded ? 'collapse' : 'expand'}</span>
-                    {isExpanded ? (
-                        <ChevronUp size={18} className="text-parchment-dark" />
-                    ) : (
-                        <ChevronDown size={18} className="text-parchment-dark" />
-                    )}
-                </div>
+                {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
             </button>
 
-            {/* Collapsible Content */}
             {isExpanded && (
-                <div className="mt-4 pt-4 border-t border-white/10 animate-fade-in">
-                    {/* Level Editor */}
-                    <div className="mb-6">
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="font-display text-xs text-parchment-dark uppercase tracking-wider">
-                                Level
-                            </span>
-                            <div className="flex items-center gap-1 text-xs text-muted">
-                                <Sparkles size={12} />
-                                <span>Prof +{data.profBonus}</span>
-                            </div>
+                <div className="mt-4 space-y-4 animate-scale-in">
+                    {/* Level Setting */}
+                    <div className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+                        <div className="flex flex-col">
+                            <span className="label-kyoto mb-0">Character Level</span>
+                            <span className="text-[10px] text-accent/60 font-display">総レベル</span>
                         </div>
-                        <div className="flex items-center justify-center gap-4">
-                            <button
-                                onClick={() => handleLevelIncrement(-1)}
-                                disabled={data.level <= LEVEL_MIN}
-                                className="btn-fantasy w-10 h-10 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-                                aria-label="Decrease level"
-                            >
-                                −
-                            </button>
-                            <div className="stat-circle">
-                                <span className="font-display text-2xl text-parchment-light">
-                                    {data.level}
-                                </span>
-                            </div>
-                            <button
-                                onClick={() => handleLevelIncrement(1)}
-                                disabled={data.level >= LEVEL_MAX}
-                                className="btn-fantasy w-10 h-10 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-                                aria-label="Increase level"
-                            >
-                                +
-                            </button>
-                        </div>
-                        {/* Derived Stats Preview */}
-                        <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
-                            <div className="bg-black/20 rounded p-2">
-                                <div className="text-muted">Max HP</div>
-                                <div className="text-parchment-light font-display">{data.hp.max}</div>
-                            </div>
-                            <div className="bg-black/20 rounded p-2">
-                                <div className="text-muted">Hit Dice</div>
-                                <div className="text-parchment-light font-display">{data.hitDice.max}d{data.hitDice.size}</div>
-                            </div>
-                            <div className="bg-black/20 rounded p-2">
-                                <div className="text-muted">Spell DC</div>
-                                <div className="text-parchment-light font-display">{data.dc}</div>
-                            </div>
+                        <div className="flex items-center gap-3">
+                            <button onClick={() => handleLevelIncrement(-1)} className="p-1 hover:text-accent" data-testid="level-decrease-btn"><Minus size={16} /></button>
+                            <input
+                                type="number"
+                                value={data.level}
+                                onChange={(e) => handleLevelChange(e.target.value)}
+                                className="w-16 text-center input-kyoto font-display"
+                                data-testid="level-input"
+                            />
+                            <button onClick={() => handleLevelIncrement(1)} className="p-1 hover:text-accent" data-testid="level-increase-btn"><Plus size={16} /></button>
                         </div>
                     </div>
 
-                    {/* Ability Scores Editor */}
-                    <div>
-                        <div className="flex items-center gap-2 mb-3">
-                            <span className="font-display text-xs text-parchment-dark uppercase tracking-wider">
-                                Ability Scores
-                            </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                            {(Object.keys(ABILITY_NAMES) as AbilityKey[]).map((ability) => (
-                                <div
-                                    key={ability}
-                                    className="bg-black/20 rounded-lg p-3"
-                                >
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="font-display text-xs text-parchment uppercase tracking-wider">
-                                            {ability}
-                                        </span>
-                                        <span className="text-xs text-accent font-display">
-                                            {formatMod(data.abilityMods[ability])}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-2">
-                                        <button
-                                            onClick={() => handleAbilityIncrement(ability, -1)}
-                                            disabled={data.abilities[ability] <= ABILITY_SCORE_MIN}
-                                            className="btn-fantasy w-8 h-8 text-sm flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-                                            aria-label={`Decrease ${ABILITY_NAMES[ability]}`}
-                                        >
-                                            −
-                                        </button>
-                                        <div className="flex-1 text-center">
-                                            <span className="font-display text-xl text-parchment-light">
-                                                {data.abilities[ability]}
-                                            </span>
-                                        </div>
-                                        <button
-                                            onClick={() => handleAbilityIncrement(ability, 1)}
-                                            disabled={data.abilities[ability] >= ABILITY_SCORE_STANDARD_MAX}
-                                            className="btn-fantasy w-8 h-8 text-sm flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-                                            aria-label={`Increase ${ABILITY_NAMES[ability]}`}
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                    <div className="mt-1 text-center text-xs text-muted">
-                                        {ABILITY_NAMES[ability]}
+                    {/* Ability Scores */}
+                    <div className="grid grid-cols-2 gap-2">
+                        {(Object.keys(ABILITY_NAMES) as AbilityKey[]).map((ability) => (
+                            <div key={ability} className="bg-white/5 p-2 rounded border border-white/10">
+                                <span className="label-kyoto text-[10px] mb-1">{ABILITY_NAMES[ability]}</span>
+                                <div className="flex items-center justify-between gap-1">
+                                    <input
+                                        type="number"
+                                        value={data.abilities[ability]}
+                                        onChange={(e) => handleAbilityChange(ability, e.target.value)}
+                                        className="w-12 text-center input-kyoto font-display text-sm p-1"
+                                        data-testid={`ability-${ability}-input`}
+                                    />
+                                    <div className="flex flex-col">
+                                        <button onClick={() => handleAbilityIncrement(ability, 1)} className="p-0.5 hover:text-accent" data-testid={`ability-${ability}-increase-btn`}><ChevronUp size={12} /></button>
+                                        <button onClick={() => handleAbilityIncrement(ability, -1)} className="p-0.5 hover:text-accent" data-testid={`ability-${ability}-decrease-btn`}><ChevronDown size={12} /></button>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
 
-                    {/* Info Footer */}
                     <div className="mt-4 pt-3 border-t border-white/10 text-center">
-                        <p className="text-xs text-muted italic">
+                        <p className="text-[10px] text-muted italic">
                             Changes auto-save and cascade to derived stats per SRD 5.1
                         </p>
                     </div>

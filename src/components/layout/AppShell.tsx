@@ -1,5 +1,6 @@
-import { Feather, Shield, Wand2, Skull, BookOpen, User, Settings, Brain, Backpack } from 'lucide-react';
+import { Shield, Wand2, Swords, User, Menu, Feather } from 'lucide-react';
 import { BackgroundVideo } from './BackgroundVideo';
+import { ConcentrationFloatingBubble } from '../ui/ConcentrationFloatingBubble';
 
 interface AppShellProps {
     children: React.ReactNode;
@@ -8,14 +9,11 @@ interface AppShellProps {
 }
 
 const navItems = [
-    { id: 'home', icon: Shield, label: 'Stats' },
-    { id: 'spells', icon: Wand2, label: 'Spellbook' },
-    { id: 'combat', icon: Skull, label: 'Combat' },
-    { id: 'grimoire', icon: BookOpen, label: 'Arcana' },
-    { id: 'abilities', icon: Brain, label: 'Abilities' },
-    { id: 'bio', icon: User, label: 'Bio' },
-    { id: 'inventory', icon: Backpack, label: 'Inventory' },
-    { id: 'settings', icon: Settings, label: 'Settings' },
+    { id: 'stats', icon: Shield, label: 'Stats' },
+    { id: 'spells', icon: Wand2, label: 'Spells' },
+    { id: 'combat', icon: Swords, label: 'Combat' },
+    { id: 'character', icon: User, label: 'Character' },
+    { id: 'more', icon: Menu, label: 'More' },
 ];
 
 export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
@@ -24,7 +22,7 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
             {/* Background Image - OUTSIDE main container */}
             <BackgroundVideo />
 
-            <div className="min-h-screen w-full relative z-10 bg-transparent text-text overflow-x-hidden">
+            <div className="min-h-screen w-full relative z-10 bg-transparent text-text overflow-x-hidden" data-testid="app-ready">
                 {/* Gradient Overlays - above background */}
                 <div className="fixed inset-0 z-5 pointer-events-none">
                     <div className="absolute inset-0 bg-gradient-to-b from-white/3 via-transparent to-transparent" />
@@ -115,6 +113,7 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
                                             ? 'text-white'
                                             : 'text-muted hover:text-parchment'
                                             }`}
+                                        data-testid={`nav-tab-${id}`}
                                     >
                                         <div className={`relative p-1.5 rounded-lg transition-all duration-300 ${activeTab === id
                                             ? 'bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.25)] border border-white/20'
@@ -146,6 +145,9 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
                         </div>
                     </div>
                 </nav>
+
+                {/* Global Overlays */}
+                <ConcentrationFloatingBubble />
             </div>
 
             {/* Hide scrollbar but keep functionality */}

@@ -18,36 +18,53 @@ export function MinionDrawer({
 }: MinionDrawerProps) {
     const dispatch = useAppDispatch();
 
-    const handleAddMinion = (type: 'Skeleton' | 'Zombie') => {
-        const stats = undeadStats.find(s => s.name === type);
+    const handleAddMinion = (type: 'Skeleton' | 'Zombie' | 'Ghostly' | 'Putrid' | 'Skeletal') => {
+        // Map short names to full stat block names
+        const statBlockName = {
+            'Skeleton': 'Skeleton',
+            'Zombie': 'Zombie',
+            'Ghostly': 'Ghostly Spirit (Summon Undead)',
+            'Putrid': 'Putrid Spirit (Summon Undead)',
+            'Skeletal': 'Skeletal Spirit (Summon Undead)'
+        }[type];
+
+        const stats = undeadStats.find(s => s.name === statBlockName);
         if (!stats) return;
 
-        const count = minions.filter(m => m.type === type.toLowerCase()).length + 1;
+        const isSpirit = ['Ghostly', 'Putrid', 'Skeletal'].includes(type);
+        const count = minions.filter(m => m.name.includes(type)).length + 1;
 
         // Ensure type compatibility with minion slice
         // Slice expects 'skeleton' | 'zombie' | 'undead_spirit'
-        const minionType = type.toLowerCase() as 'skeleton' | 'zombie';
+        const minionType = isSpirit ? 'undead_spirit' : type.toLowerCase() as 'skeleton' | 'zombie';
 
         // Helper to parse dice string like "1d6+2" or "1d6 + 2"
         const parseDamage = (desc: string): string => {
             return desc.match(/\d+d\d+(?:\s*[+-]\s*\d+)?/)?.[0] || "1d4";
         };
 
+        // Parse HP/AC. For spirits "30 + 10/Level (40)", we take the value in parens as default (Level 3)
+        const parseValue = (val: string) => {
+            if (val.includes('(')) {
+                return parseInt(val.split('(')[1]) || 10;
+            }
+            return parseInt(val.split(' ')[0]) || 10;
+        };
+
         const newMinion: Minion = {
             id: crypto.randomUUID(),
-            name: `${type} ${count}`,
+            name: `${type} Spirit ${count}`,
             type: minionType,
-            hp: parseInt(stats.hp.split(' ')[0]) || 1, // Extract "13" from "13 (2d8+4)"
-            maxHp: parseInt(stats.hp.split(' ')[0]) || 1,
-            ac: parseInt(stats.ac.split(' ')[0]) || 10,
-            speed: parseInt(stats.speed.split(' ')[0]) || 30,
-            attacks: stats.actions.filter(a =>
-                ['Shortbow', 'Shortsword', 'Slam'].includes(a.name)
-            ).map(a => ({
+            form: isSpirit ? type.toLowerCase() as any : undefined,
+            hp: parseValue(stats.hp),
+            maxHp: parseValue(stats.hp),
+            ac: parseValue(stats.ac),
+            speed: parseValue(stats.speed),
+            attacks: stats.actions.map(a => ({
                 name: a.name,
-                toHit: parseInt(a.desc.match(/\+(\d+)/)?.[1] || "0"),
+                toHit: 0, // Spell Attack Modifier needs to be calculated elsewhere or input. Default to 0 for now.
                 damage: parseDamage(a.desc),
-                damageType: a.desc.includes('piercing') ? 'piercing' : 'bludgeoning'
+                damageType: a.desc.includes('necrotic') ? 'necrotic' : a.desc.includes('slashing') ? 'slashing' : 'piercing'
             })),
             conditions: [],
             controlExpiresRound: undefined,
@@ -98,6 +115,7 @@ export function MinionDrawer({
                                 <button
                                     onClick={handleClearMinions}
                                     className="text-xs text-red-400 hover:text-red-300 uppercase font-display tracking-wider px-3 py-1.5 border border-red-400/30 rounded-lg hover:bg-red-400/10 transition-all"
+                                    data-testid="all-minions-clear-btn"
                                 >
                                     Release All
                                 </button>
@@ -115,21 +133,53 @@ export function MinionDrawer({
 
                 {/* Content - Scrollable */}
                 <div className="overflow-y-auto flex-1 p-4 space-y-4">
-                    {/* Quick Add Buttons */}
+                    {/* Standard Minions */}
+                    <h3 className="text-xs text-muted uppercase tracking-widest font-bold mb-2">Animate Dead</h3>
                     <div className="grid grid-cols-2 gap-3 mb-6">
                         <button
                             onClick={() => handleAddMinion('Skeleton')}
                             className="flex items-center justify-center gap-2 bg-card-elevated/80 hover:bg-card-elevated border border-white/10 hover:border-white/30 p-3 rounded-xl transition-all group"
+                            data-testid="add-minion-skeleton-btn"
                         >
                             <Skull size={18} className="text-muted group-hover:text-white transition-colors" />
-                            <span className="font-display text-sm text-parchment group-hover:text-parchment-light transition-colors">Raise Skeleton</span>
+                            <span className="font-display text-sm text-parchment group-hover:text-parchment-light transition-colors">Skeleton</span>
                         </button>
                         <button
                             onClick={() => handleAddMinion('Zombie')}
                             className="flex items-center justify-center gap-2 bg-card-elevated/80 hover:bg-card-elevated border border-white/10 hover:border-white/30 p-3 rounded-xl transition-all group"
+                            data-testid="add-minion-zombie-btn"
                         >
                             <Biohazard size={18} className="text-muted group-hover:text-white transition-colors" />
-                            <span className="font-display text-sm text-parchment group-hover:text-parchment-light transition-colors">Raise Zombie</span>
+                            <span className="font-display text-sm text-parchment group-hover:text-parchment-light transition-colors">Zombie</span>
+                        </button>
+                    </div>
+
+                    {/* Summon Undead (Tasha's) */}
+                    <h3 className="text-xs text-muted uppercase tracking-widest font-bold mb-2">Summon Undead (Tasha's)</h3>
+                    <div className="grid grid-cols-3 gap-2 mb-6">
+                        <button
+                            onClick={() => handleAddMinion('Ghostly')}
+                            className="flex flex-col items-center justify-center gap-2 bg-blue-950/30 hover:bg-blue-900/40 border border-blue-500/20 hover:border-blue-400/40 p-3 rounded-xl transition-all group"
+                            data-testid="add-minion-ghostly-btn"
+                        >
+                            <Skull size={16} className="text-blue-400/80 group-hover:text-blue-300 transition-colors" />
+                            <span className="font-display text-xs text-blue-200/80 group-hover:text-blue-100 transition-colors">Ghostly</span>
+                        </button>
+                        <button
+                            onClick={() => handleAddMinion('Putrid')}
+                            className="flex flex-col items-center justify-center gap-2 bg-green-950/30 hover:bg-green-900/40 border border-green-500/20 hover:border-green-400/40 p-3 rounded-xl transition-all group"
+                            data-testid="add-minion-putrid-btn"
+                        >
+                            <Biohazard size={16} className="text-green-400/80 group-hover:text-green-300 transition-colors" />
+                            <span className="font-display text-xs text-green-200/80 group-hover:text-green-100 transition-colors">Putrid</span>
+                        </button>
+                        <button
+                            onClick={() => handleAddMinion('Skeletal')}
+                            className="flex flex-col items-center justify-center gap-2 bg-stone-800/50 hover:bg-stone-800 border border-stone-600/30 hover:border-stone-500/50 p-3 rounded-xl transition-all group"
+                            data-testid="add-minion-skeletal-btn"
+                        >
+                            <Skull size={16} className="text-stone-400 group-hover:text-stone-300 transition-colors" />
+                            <span className="font-display text-xs text-stone-300 group-hover:text-stone-200 transition-colors">Skeletal</span>
                         </button>
                     </div>
 

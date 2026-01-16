@@ -36,12 +36,16 @@ export const ArcanumWidget: React.FC = () => {
                             key={lvl}
                             onClick={() => isUsed ? dispatch(arcanumRestored(lvl)) : dispatch(arcanumUsed(lvl))}
                             className={`flex items-center justify-between p-2 rounded border transition-all ${isUsed
-                                    ? 'bg-bg-dark border-transparent text-muted'
-                                    : 'bg-card-elevated border-accent/20 text-text hover:border-accent/50'
+                                ? 'bg-bg-dark border-transparent text-muted'
+                                : 'bg-card-elevated border-accent/20 text-text hover:border-accent/50'
                                 }`}
+                            data-testid={`arcanum-${lvl}`}
                         >
                             <span className="text-xs font-bold">{lvl}th</span>
-                            <div className={`w-2 h-2 rounded-full ${isUsed ? 'bg-bg' : 'bg-accent shadow-[0_0_8px_rgba(201,162,39,0.4)]'}`} />
+                            <div
+                                className={`w-2 h-2 rounded-full ${isUsed ? 'bg-bg' : 'bg-accent shadow-[0_0_8px_rgba(201,162,39,0.4)]'}`}
+                                data-testid={`arcanum-orb-${lvl}`}
+                            />
                         </button>
                     );
                 })}

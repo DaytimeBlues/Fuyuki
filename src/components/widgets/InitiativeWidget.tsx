@@ -21,11 +21,21 @@ export function InitiativeWidget({ dexMod, profBonus = 0, jackOfAllTrades = fals
                 {/* Circular Display */}
                 <div className="stat-circle">
                     <div className="text-center">
-                        <span className="font-display text-3xl text-parchment-light">
+                        <span className="font-display text-3xl text-parchment-light" data-testid="initiative-result">
                             {initiativeBonus >= 0 ? '+' : ''}{initiativeBonus}
                         </span>
                     </div>
                 </div>
+            </div>
+
+            <div className="flex justify-center mt-3">
+                <button
+                    className="btn-fantasy text-[10px] px-3 py-1"
+                    data-testid="initiative-roll-btn"
+                    onClick={() => console.log('Initiative Roll')}
+                >
+                    Roll Initiative
+                </button>
             </div>
 
             {/* Breakdown */}

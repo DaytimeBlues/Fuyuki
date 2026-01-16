@@ -39,7 +39,7 @@ export function HitDiceWidget({ hitDice, conMod, currentHP, maxHP, onSpend }: Hi
                     <h3 className="font-display text-sm text-parchment tracking-wider">Hit Dice</h3>
                 </div>
                 <span className={`text-xs ${hitDice.current === 0 ? 'text-red-400' : 'text-muted'}`}>
-                    {hitDice.current}/{hitDice.max} d{hitDice.size}
+                    <span data-testid="hit-dice-available">{hitDice.current}</span>/<span data-testid="hit-dice-total">{hitDice.max}</span> d{hitDice.size}
                 </span>
             </div>
 
@@ -50,11 +50,11 @@ export function HitDiceWidget({ hitDice, conMod, currentHP, maxHP, onSpend }: Hi
                     return (
                         <div
                             key={i}
-                            className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center text-xs font-display transition-all ${
-                                isAvailable
-                                    ? 'bg-white/10 border-white/30 text-white'
-                                    : 'bg-transparent border-white/10 text-muted'
-                            }`}
+                            className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center text-xs font-display transition-all ${isAvailable
+                                ? 'bg-white/10 border-white/30 text-white'
+                                : 'bg-transparent border-white/10 text-muted'
+                                }`}
+                            data-testid={`hit-die-orb-${i}`}
                         >
                             d{hitDice.size}
                         </div>
@@ -64,7 +64,7 @@ export function HitDiceWidget({ hitDice, conMod, currentHP, maxHP, onSpend }: Hi
 
             {/* Roll Result */}
             {lastRoll && (
-                <div className="bg-white/10 border border-white/20 rounded-lg p-3 mb-3 animate-scale-in">
+                <div className="bg-white/10 border border-white/20 rounded-lg p-3 mb-3 animate-scale-in" data-testid="hit-dice-roll-display">
                     <div className="flex items-center justify-center gap-3">
                         <span className="text-muted text-sm">Rolled</span>
                         <span className="font-display text-2xl text-white">{lastRoll.roll}</span>
@@ -81,9 +81,9 @@ export function HitDiceWidget({ hitDice, conMod, currentHP, maxHP, onSpend }: Hi
             <button
                 onClick={rollHitDie}
                 disabled={!canSpend}
-                className={`w-full btn-fantasy py-3 flex items-center justify-center gap-2 ${
-                    !canSpend ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
+                className={`w-full btn-fantasy py-3 flex items-center justify-center gap-2 ${!canSpend ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                data-testid="spend-hit-die-btn"
             >
                 <Dices size={16} />
                 {currentHP >= maxHP ? 'HP Full' : hitDice.current === 0 ? 'No Hit Dice' : 'Spend Hit Die'}

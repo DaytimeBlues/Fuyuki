@@ -17,7 +17,7 @@ export function ProficiencyWidget({ profBonus, level }: ProficiencyWidgetProps) 
                 {/* Circular Display */}
                 <div className="stat-circle">
                     <div className="text-center">
-                        <span className="font-display text-3xl text-parchment-light">
+                        <span className="font-display text-3xl text-parchment-light" data-testid="proficiency-bonus">
                             +{profBonus}
                         </span>
                     </div>

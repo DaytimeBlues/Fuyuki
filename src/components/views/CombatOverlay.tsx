@@ -77,7 +77,10 @@ export const CombatOverlay: React.FC = () => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in zoom-in duration-200">
+        <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in zoom-in duration-200"
+            data-testid="combat-overlay"
+        >
             <div className="w-full max-w-lg">
                 <ResolutionPanel
                     spell={spellV3}

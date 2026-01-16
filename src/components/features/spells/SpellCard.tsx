@@ -100,10 +100,16 @@ export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAv
             </div>
 
             {/* Description Snippet */}
-            <div className="flex-grow">
+            <div className="flex-grow space-y-3">
                 <p className="text-sm text-stone-400 line-clamp-3 font-serif leading-relaxed italic">
                     {spell.description}
                 </p>
+                {spell.scenario && (
+                    <div className="bg-blue-950/30 border border-blue-900/50 p-2 rounded text-xs text-blue-200 font-sans">
+                        <span className="font-bold text-blue-400 block mb-1">EXAMPLE SCENARIO:</span>
+                        {spell.scenario}
+                    </div>
+                )}
             </div>
 
             {/* Actions */}
@@ -113,10 +119,10 @@ export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAv
                         onClick={onCast}
                         disabled={!slotsAvailable && !isRitual}
                         className={`
-                    px-5 py-2 text-[10px] font-black uppercase tracking-[0.2em] rounded-md
+                    px-5 py-2 text-[10px] uppercase tracking-[0.2em] rounded-md
                     transition-all duration-300 flex items-center gap-2 group/btn
                     ${slotsAvailable
-                                ? 'bg-red-950/40 text-red-400 hover:bg-red-900/60 border border-red-900/50 hover:border-red-500/50 shadow-lg shadow-red-900/10'
+                                ? 'btn-primary-action'
                                 : 'bg-stone-900/50 text-stone-600 cursor-not-allowed border border-stone-800'
                             }
                 `}

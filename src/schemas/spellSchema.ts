@@ -71,6 +71,7 @@ export const SpellSchema = z.object({
     components: ComponentsSchema,
     duration: DurationSchema,
     description: z.string(),
+    scenario: z.string().optional(), // Descriptive usage example for new players
     higherLevelDescription: z.string().optional(), // Text for "When you cast this spell using a spell slot of X level or higher..."
 
     // --- Dynamic/Executable Logic Fields ---

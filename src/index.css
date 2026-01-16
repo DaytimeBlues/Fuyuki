@@ -503,6 +503,37 @@ h6 {
   animation: shake 0.5s ease-in-out;
 }
 
+.damage-taken {
+  animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+  background-color: rgba(197, 61, 61, 0.15) !important;
+  border-color: rgba(197, 61, 61, 0.5) !important;
+}
+
+/* Primary Action Button (High Priority) */
+.btn-primary-action {
+  @apply bg-accent text-bg-dark font-bold font-display uppercase tracking-wider px-6 py-3 rounded shadow-[0_0_15px_rgba(201, 162, 39, 0.4)] transition-all duration-300;
+  border: 1px solid var(--color-accent-glow);
+}
+
+.btn-primary-action:hover {
+  background-color: var(--color-accent-glow);
+  box-shadow: 0 0 25px rgba(201, 162, 39, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Kyoto Form Styles */
+.input-kyoto {
+  @apply w-full bg-stone-950 border border-stone-800 rounded px-3 py-2 text-stone-200 focus:border-accent focus:outline-none transition-colors;
+}
+
+.label-kyoto {
+  @apply block text-xs font-bold text-stone-500 uppercase mb-1 tracking-wider;
+}
+
+.btn-primary-action:active {
+  transform: scale(0.96);
+}
+
 /* ===== Scale In (for modals/popups) ===== */
 @keyframes scale-in {
   from {

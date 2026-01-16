@@ -88,6 +88,15 @@ function requiresSave(desc: string): { required: boolean; ability?: string } {
     return { required: false };
 }
 
+// Custom scenarios to helpful new players
+const spellScenarios: Record<string, string> = {
+    "Eldritch Blast": "SCENARIO: At level 5, you fire TWO beams. You can aim both at the Boss, or one at the Minion and one at the Boss. You roll a separate Attack Roll for each beam (d20 + Cha + Prof). Each hit deals 1d10 force damage.",
+    "Hex": "SCENARIO: You cast this as a Bonus Action on a target. You deal +1d6 Necrotic damage every time you hit them. Also, choose 'Strength' or 'Dexterity' to give them Disadvantage on checks (great for helping your Barbarian shove them). If they die, use a Bonus Action to move the Hex to a new target.",
+    "Armor of Agathys": "SCENARIO: You cast this *before* a fight. A goblin hits you with a scimitar for 4 damage. The damage is fully absorbed by your 5 THP (you have 1 THP left). Because you were hit in melee, the goblin *instantly* takes 5 cold damage and dies. The spell remains active until the last 1 THP is gone.",
+    "Hellish Rebuke": "SCENARIO: An enemy archer shoots you from 40ft away. As a *Reaction* (triggered immediately by taking damage), you point your finger. Flames erupt around the archer (DC 13 DEX Save). If they fail, they take ~11 fire damage immediately.",
+    "Hunger of Hadar": "SCENARIO: You cast this on a group of enemies in a chokepoint. The area becomes pitch black (even to darkvision). Any enemy starting their turn inside takes 2d6 cold damage (no save). If they try to leave, it's difficult terrain (half speed). If they end their turn still inside, they take 2d6 acid damage (DEX save)."
+};
+
 // Transform a single SRD spell to SpellV3 format
 function transformToV3(srd: SRDSpell): SpellV3 {
     const saveInfo = requiresSave(srd.description);
@@ -114,6 +123,7 @@ function transformToV3(srd: SRDSpell): SpellV3 {
             value: durationType !== 'instantaneous' ? srd.duration : undefined,
         },
         description: srd.description,
+        scenario: spellScenarios[srd.name],
         higherLevelDescription: srd.higherLevelSlot || srd.cantripUpgrade,
         requiresAttackRoll: requiresAttack(srd.description),
         requiresSavingThrow: saveInfo.required,

@@ -1,11 +1,12 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { pactSlotUsed, pactSlotRestored, selectPactSlots } from '../../store/slices/characterSlice';
-import { Wand2 } from 'lucide-react';
+import { Wand2, Info } from 'lucide-react';
 
 export const PactSlotsWidget: React.FC = () => {
     const dispatch = useAppDispatch();
     const { current, max, level } = useAppSelector(selectPactSlots);
+    const [showInfo, setShowInfo] = React.useState(false);
 
     const handleUseSlot = () => {
         if (current > 0) {
@@ -21,37 +22,54 @@ export const PactSlotsWidget: React.FC = () => {
     };
 
     return (
-        <div
-            className="card-parchment p-4 flex flex-col gap-3 cursor-pointer active:scale-[0.98] transition-transform"
-            onClick={handleUseSlot}
-        >
+        <div className="card-parchment p-4 flex flex-col gap-3 relative">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-accent">
                     <Wand2 size={18} />
                     <h3 className="text-sm font-kyoto uppercase tracking-widest">Pact Magic</h3>
-                    <span className="text-[10px] bg-accent/10 px-2 py-0.5 rounded-full text-accent/60 font-display tracking-tighter border border-accent/20">
-                        パックスロット
-                    </span>
+                    <button
+                        onClick={() => setShowInfo(!showInfo)}
+                        className="text-muted hover:text-white transition-colors ml-1"
+                        aria-label="Pact Magic Info"
+                    >
+                        <Info size={12} />
+                    </button>
+                    {showInfo && (
+                        <div className="absolute top-10 left-4 bg-stone-900 border border-stone-600 p-2 rounded text-[10px] text-stone-300 w-48 z-10 shadow-xl animate-in fade-in zoom-in-95">
+                            Pact Magic slots recover on a Short Rest. They are always cast at level {level}.
+                        </div>
+                    )}
                 </div>
                 <span className="text-xs font-medium text-muted">Level {level}</span>
             </div>
 
-            <div className="flex flex-wrap gap-2 py-1">
-                {Array.from({ length: max }).map((_, i) => (
-                    <div
-                        key={i}
-                        className={`orb ${i >= current ? 'orb-empty' : 'animate-pulse-glow'}`}
-                        onClick={(e) => i >= current ? handleRestoreSlot(e) : null}
-                    />
-                ))}
+            {/* Fitts's Law: 48px Min Touch Target */}
+            <div className="flex flex-wrap gap-2 py-1 justify-start">
+                {Array.from({ length: max }).map((_, i) => {
+                    const isUsed = i >= current;
+                    return (
+                        <button
+                            key={i}
+                            className={`w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/5 active:bg-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-accent/50 group`}
+                            onClick={isUsed ? handleRestoreSlot : handleUseSlot}
+                            aria-label={isUsed ? "Restore Pact Slot" : "Use Pact Slot"}
+                            data-testid={`pact-slot-btn-${i}`}
+                        >
+                            <div
+                                className={`orb transition-all duration-300 ${isUsed ? 'orb-empty scale-90 opacity-50' : 'animate-pulse-glow group-hover:scale-110'}`}
+                                data-testid={`pact-slot-orb-${i}`}
+                            />
+                        </button>
+                    );
+                })}
             </div>
 
-            <div className="flex items-center justify-between mt-1">
-                <span className="text-2xl font-display font-bold text-text-bright">
+            <div className="flex items-center justify-between mt-1 px-1">
+                <span className="text-2xl font-display font-bold text-text-bright" data-testid="pact-slots-display">
                     {current}<span className="text-lg text-muted mx-1">/</span>{max}
                 </span>
                 <span className="text-[10px] text-muted uppercase tracking-tighter">
-                    {current === 0 ? 'No Slots Left' : 'Tap to Use'}
+                    {current === 0 ? 'Short Rest needed' : 'Tap orb to cast'}
                 </span>
             </div>
         </div>
