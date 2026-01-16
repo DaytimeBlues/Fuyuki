@@ -1,6 +1,6 @@
 import React from 'react';
 import { SpellV3 } from '../../../schemas/spellSchema';
-import { Book, Flame, Shield, Skull, Eye, Star, Zap, Activity } from 'lucide-react';
+import { Book, Flame, Shield, Skull, Eye, Star, Zap, Activity, Info } from 'lucide-react';
 
 interface SpellCardProps {
     spell: SpellV3;
@@ -8,6 +8,7 @@ interface SpellCardProps {
     slotsAvailable: boolean;
     onPrepare: () => void;
     onCast: () => void;
+    onInfo: () => void;
 }
 
 const SchoolIcon = ({ school }: { school: string }) => {
@@ -23,7 +24,7 @@ const SchoolIcon = ({ school }: { school: string }) => {
     }
 };
 
-export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAvailable, onPrepare, onCast }) => {
+export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAvailable, onPrepare, onCast, onInfo }) => {
     const isRitual = spell.ritual;
     const isConcentration = spell.duration.type === 'concentration';
 
@@ -34,7 +35,9 @@ export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAv
                 ? 'bg-stone-900/90 border-stone-600 shadow-xl shadow-black/60 ring-1 ring-stone-600/30'
                 : 'bg-stone-950/80 border-stone-800 opacity-90 hover:opacity-100 hover:border-stone-600'
             }
-    `}>
+    `}
+            data-testid={`spell-card-${spell.id}`}
+        >
             {/* Header */}
             <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-start gap-3 min-w-0">
@@ -54,19 +57,29 @@ export const SpellCard: React.FC<SpellCardProps> = ({ spell, isPrepared, slotsAv
                 </div>
 
                 {/* Toggle Prepare Button */}
-                <button
-                    onClick={onPrepare}
-                    className={`
+                <div className="flex items-center gap-2 shrink-0">
+                    <button
+                        onClick={onInfo}
+                        className="p-2 rounded-lg transition-all duration-200 border text-stone-400 bg-stone-900/50 border-stone-800 hover:text-stone-200 hover:border-stone-700"
+                        title="View spell details"
+                        data-testid={`spell-info-btn-${spell.id}`}
+                    >
+                        <Info className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={onPrepare}
+                        className={`
             p-2 rounded-lg transition-all duration-200 shrink-0 border
             ${isPrepared
-                            ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20 shadow-lg shadow-yellow-500/5'
-                            : 'text-stone-600 bg-stone-900/50 border-stone-800 hover:text-stone-400 hover:border-stone-700'
-                        }
+                                ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20 shadow-lg shadow-yellow-500/5'
+                                : 'text-stone-600 bg-stone-900/50 border-stone-800 hover:text-stone-400 hover:border-stone-700'
+                            }
           `}
-                    title={isPrepared ? "Unprepare" : "Prepare"}
-                >
-                    <Book className="w-4 h-4" />
-                </button>
+                        title={isPrepared ? "Unprepare" : "Prepare"}
+                    >
+                        <Book className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
 
             {/* Tags */}

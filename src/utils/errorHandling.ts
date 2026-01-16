@@ -21,7 +21,13 @@ export function formatErrorMessage(error: Error, context?: string): string {
 /**
  * Get user-friendly error description based on error type
  */
-export function getUserFriendlyError(error: Error): {
+type UserFriendlyError = {
+    title: string;
+    message: string;
+    action: string;
+};
+
+export function getUserFriendlyError(error: Error): UserFriendlyError {
     if (error instanceof TypeError && error.message && error.message.includes('fetch')) {
         return {
             title: 'Network Error',
@@ -67,33 +73,33 @@ interface RecoveryAction {
 /**
  * Recovery action definitions
  */
-const recoveryActions: Record<string, RecoveryActionType> = {
+const recoveryActions: Record<string, RecoveryAction> = {
     storage: {
         title: 'Try Again',
         message: 'Try saving again',
-        action: 'storageTryAgain',
+        action: () => undefined,
     },
     network: {
         title: 'Retry Action',
         message: 'Retry the action',
-        action: 'networkRetry',
+        action: () => undefined,
     },
     parsing: {
         title: 'Refresh',
         message: 'Refresh page',
-        action: 'parsingRefresh',
+        action: () => undefined,
     },
     generic: {
         title: 'Refresh Page',
-        message: 'genericRefresh',
-        action: 'genericRefresh',
+        message: 'Refresh page',
+        action: () => undefined,
     },
 };
 
 /**
  * Map error types to recovery actions
  */
-const typeToActionMap: Record<string, string | null> = {
+const typeToActionMap: Record<string, RecoveryAction | null> = {
     TypeError: recoveryActions.storage,
     SyntaxError: recoveryActions.parsing,
     NetworkError: recoveryActions.network,
@@ -103,14 +109,14 @@ const typeToActionMap: Record<string, string | null> = {
 /**
  * Get recovery action based on error type
  */
-function getRecoveryAction(error: Error): string | null {
+export function getRecoveryAction(error: Error): RecoveryAction {
     return typeToActionMap[error.name] || recoveryActions.generic;
 }
 
 /**
  * Validation error messages with suggestions
  */
-function getValidationError(field: string, issue: 'required' | 'invalid' | 'out_of_range'): string {
+export function getValidationError(field: string, issue: 'required' | 'invalid' | 'out_of_range'): { message: string; suggestion: string } {
     const messages = {
         required: `${field} is required`,
         invalid: `Invalid ${field}`,
@@ -133,11 +139,15 @@ function getValidationError(field: string, issue: 'required' | 'invalid' | 'out_
  * Error class for structured error handling
  */
 export class AppError extends Error {
+    context?: string;
+    recoverable: boolean;
+    recoveryAction?: RecoveryActionType;
+
     constructor(
         message: string,
-        public context?: string,
-        public recoverable: boolean = true,
-        public recoveryAction?: RecoveryActionType
+        context?: string,
+        recoverable: boolean = true,
+        recoveryAction?: RecoveryActionType
     ) {
         super(message);
         this.name = 'AppError';
@@ -145,24 +155,23 @@ export class AppError extends Error {
         this.recoverable = recoverable;
         this.recoveryAction = recoveryAction;
     }
-}
 
-/**
- * Create recoverable error from error
- */
-static createFromError(error: Error, context?: string): AppError {
-    return new AppError(
-        error.message || 'An error occurred',
-        context,
-        true
-    );
-}
+    /**
+     * Create recoverable error from error
+     */
+    static createFromError(error: Error, context?: string): AppError {
+        return new AppError(
+            error.message || 'An error occurred',
+            context,
+            true
+        );
+    }
 
-/**
- * Create non-recoverable error from error
- */
-static createFatal(message: string, context?: string): AppError {
-    return new AppError(message, context, false);
+    /**
+     * Create non-recoverable error from error
+     */
+    static createFatal(message: string, context?: string): AppError {
+        return new AppError(message, context, false);
     }
 }
 

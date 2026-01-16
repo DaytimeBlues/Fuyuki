@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.daytimeblues.aramancia"
+    namespace = "com.daytimeblues.fuyuki"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.daytimeblues.aramancia"
+        applicationId "com.daytimeblues.fuyuki"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

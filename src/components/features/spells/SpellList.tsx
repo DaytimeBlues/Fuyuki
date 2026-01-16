@@ -6,6 +6,7 @@ import { spellPrepared, spellUnprepared, slotExpended } from '../../../store/sli
 import { concentrationSet } from '../../../store/slices/characterSlice';
 import { CastModal } from './CastModal';
 import { SpellV3 } from '../../../schemas/spellSchema';
+import { SpellInfoModal } from './SpellInfoModal';
 
 export const SpellList: React.FC = () => {
     const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ export const SpellList: React.FC = () => {
     const [filterLevel, setFilterLevel] = useState<number | 'all'>('all');
     const [showPreparedOnly, setShowPreparedOnly] = useState(false);
     const [castingSpell, setCastingSpell] = useState<SpellV3 | null>(null);
+    const [infoSpellSlug, setInfoSpellSlug] = useState<string | null>(null);
 
     // Grouping Logic
     const groupedSpells = useMemo(() => {
@@ -147,6 +149,7 @@ export const SpellList: React.FC = () => {
                                     slotsAvailable={spell.level === 0 || Object.entries(availableSlots).some(([lvl, count]) => Number(lvl) >= spell.level && count > 0)}
                                     onPrepare={() => handlePrepareToggle(spell.id)}
                                     onCast={() => setCastingSpell(spell)}
+                                    onInfo={() => setInfoSpellSlug(spell.id)}
                                 />
                             ))}
                         </div>
@@ -168,6 +171,13 @@ export const SpellList: React.FC = () => {
                     onConfirm={handleCastConfirm}
                     onCancel={() => setCastingSpell(null)}
                     isConcentrating={!!currentConcentration}
+                />
+            )}
+
+            {infoSpellSlug && (
+                <SpellInfoModal
+                    spellSlug={infoSpellSlug}
+                    onClose={() => setInfoSpellSlug(null)}
                 />
             )}
         </div>

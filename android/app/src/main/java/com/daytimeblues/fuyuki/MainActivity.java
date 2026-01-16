@@ -1,4 +1,4 @@
-package com.daytimeblues.aramancia;
+package com.daytimeblues.fuyuki;
 
 import com.getcapacitor.BridgeActivity;
 

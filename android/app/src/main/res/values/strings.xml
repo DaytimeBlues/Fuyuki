@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Aramancia Tracker</string>
-    <string name="title_activity_main">Aramancia Tracker</string>
-    <string name="package_name">com.daytimeblues.aramancia</string>
-    <string name="custom_url_scheme">com.daytimeblues.aramancia</string>
+    <string name="app_name">Fuyuki Warlock Tracker</string>
+    <string name="title_activity_main">Fuyuki Warlock Tracker</string>
+    <string name="package_name">com.daytimeblues.fuyuki</string>
+    <string name="custom_url_scheme">com.daytimeblues.fuyuki</string>
 </resources>
