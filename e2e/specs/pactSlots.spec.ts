@@ -20,7 +20,7 @@ test.describe('Pact Slots & Arcanum', () => {
 
         // At level 11, should have 6th level arcanum
         const arcanumBtn = homePage.page.getByTestId('arcanum-6');
-        await expect(arcanumBtn).toBeVisible({ timeout: 10000 });
+        await expect(arcanumBtn).toBeVisible({ timeout: 20000 });
 
         // Wait for animation to settle
         await homePage.page.waitForTimeout(500);

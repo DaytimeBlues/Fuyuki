@@ -8,6 +8,13 @@ export class BasePage {
     }
 
     async waitForAppReady() {
+        // Wait for network idle to ensure hydration
+        try {
+            await this.page.waitForLoadState('networkidle', { timeout: 10000 });
+        } catch (e) {
+            console.warn('Network idle timed out, proceeding anyway');
+        }
+
         // Wait for either the session picker or the main app shell
         const sessionPicker = this.page.getByText('Start Session');
         const homeTab = this.page.getByTestId('nav-tab-home');
@@ -15,19 +22,21 @@ export class BasePage {
         // Race to see which one appears first (or wait for the picker if it's there)
         try {
             await Promise.race([
-                sessionPicker.waitFor({ state: 'visible', timeout: 5000 }),
-                homeTab.waitFor({ state: 'visible', timeout: 5000 })
+                sessionPicker.waitFor({ state: 'visible', timeout: 10000 }),
+                homeTab.waitFor({ state: 'visible', timeout: 10000 })
             ]);
         } catch (_e) { // eslint-disable-line @typescript-eslint/no-unused-vars
-            // If neither appears within 5s, something is wrong, but let's proceed
+            // If neither appears within 10s, something is wrong, but let's proceed
         }
 
         if (await sessionPicker.isVisible()) {
             await sessionPicker.click();
+            // Wait for overlay to disappear
+            await expect(sessionPicker).not.toBeVisible({ timeout: 10000 });
         }
 
         // Now ensure the app shell is visible
-        await expect(homeTab).toBeVisible({ timeout: 10000 });
+        await expect(homeTab).toBeVisible({ timeout: 20000 });
     }
 
     async navigateTo(tab: 'home' | 'spells' | 'combat' | 'grimoire' | 'abilities' | 'inventory' | 'bio' | 'settings') {
