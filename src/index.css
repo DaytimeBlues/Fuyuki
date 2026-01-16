@@ -1,0 +1,780 @@
+@import "tailwindcss";
+
+/* Kyoto Minimalist Fonts - Modern sans-serif with optional Japanese coverage */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@theme {
+  /* Kyoto Accents - Temple Gold & Vermillion */
+  --color-accent: #c9a227;
+  --color-accent-glow: #d4b13a;
+  --color-accent-dark: #a68820;
+  --color-vermillion: #c53d3d;
+  --color-moss: #5c7c5c;
+  --color-indigo: #4a5568;
+
+  /* Background Colors - Void & Charcoal */
+  --color-bg: #0f0f10;
+  --color-bg-dark: #0a0a0b;
+  --color-card: #1a1a1c;
+  --color-card-elevated: #242428;
+
+  /* Parchment Colors - Warm Stone */
+  --color-parchment: #d4c4b0;
+  --color-parchment-dark: #8b7355;
+  --color-parchment-light: #f5f5f4;
+
+  /* Text Colors - Warm Whites */
+  --color-text: #e5e5e4;
+  --color-text-bright: #f5f5f4;
+  --color-muted: #71717a;
+
+  /* Fonts - Modern sans-serif */
+  --font-display: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* Base Styles */
+body {
+  @apply bg-bg text-text font-body antialiased;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(100, 100, 100, 0.05) 0%, transparent 40%),
+    linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-display tracking-wide;
+}
+
+.font-kyoto {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Parchment Card Style - Monochrome */
+.card-parchment {
+  @apply rounded-lg;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(28, 28, 28, 0.9) 50%, rgba(20, 20, 20, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(255, 255, 255, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.card-parchment::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+}
+
+.card-parchment::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.5), transparent);
+}
+
+/* Glowing Border Effect */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 50%, rgba(255, 255, 255, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Fantasy Buttons */
+.btn-fantasy {
+  @apply px-4 py-2 rounded font-display text-sm uppercase tracking-wider;
+  @apply bg-card-elevated border border-parchment-dark/40 text-parchment;
+  @apply transition-all duration-200;
+}
+
+.btn-fantasy:hover {
+  @apply border-accent/50 text-accent;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary {
+  @apply px-4 py-2 rounded font-display text-sm uppercase tracking-wider;
+  @apply bg-white text-bg-dark border border-white;
+  @apply transition-all duration-200;
+}
+
+.btn-primary:hover {
+  @apply bg-parchment-light;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Circular Stat Display (for HP, AC) */
+.stat-circle {
+  @apply relative flex items-center justify-center;
+  @apply w-20 h-20 rounded-full;
+  background: radial-gradient(circle, rgba(20, 20, 20, 0.9) 60%, rgba(255, 255, 255, 0.05) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.08);
+}
+
+/* Decorative Header Border */
+.header-ornate {
+  position: relative;
+}
+
+.header-ornate::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+/* Custom Scrollbar - Elegant */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(20, 20, 20, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 100, 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 200, 200, 0.5);
+}
+
+/* Animations */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ===== Page Transitions ===== */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.4s ease-out forwards;
+}
+
+/* ===== Staggered Widget Entrance ===== */
+.stagger-1 {
+  animation-delay: 0.05s;
+  opacity: 0;
+}
+
+.stagger-2 {
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+.stagger-3 {
+  animation-delay: 0.15s;
+  opacity: 0;
+}
+
+.stagger-4 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.stagger-5 {
+  animation-delay: 0.25s;
+  opacity: 0;
+}
+
+/* ===== Button & Interactive Feedback ===== */
+@keyframes press-down {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.btn-fantasy,
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-fantasy:active,
+.btn-primary:active {
+  animation: press-down 0.15s ease-out;
+}
+
+/* Ripple Effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.2) 10%, transparent 10%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(0);
+  opacity: 0;
+}
+
+.ripple-effect:active::after {
+  animation: ripple 0.4s ease-out;
+}
+
+/* ===== Card Hover Effects ===== */
+.card-parchment {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-parchment:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.7),
+    0 0 50px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Drawer Animation ===== */
+@keyframes drawer-slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes drawer-slide-down {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.drawer-enter {
+  animation: drawer-slide-up 0.3s ease-out forwards;
+}
+
+.drawer-exit {
+  animation: drawer-slide-down 0.3s ease-in forwards;
+}
+
+/* ===== Skeleton Loading ===== */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+      rgba(20, 20, 20, 0.8) 0%,
+      rgba(40, 40, 40, 0.8) 50%,
+      rgba(20, 20, 20, 0.8) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* ===== Glow Pulse for Interactive Elements ===== */
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.25), 0 0 30px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.glow-on-hover:hover {
+  animation: glow-pulse 1.5s ease-in-out infinite;
+}
+
+/* ===== Float Animation (for decorative elements) ===== */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ===== Spin Animation ===== */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* ===== Shake Animation (for damage/errors) ===== */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.damage-taken {
+  animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+  background-color: rgba(197, 61, 61, 0.15) !important;
+  border-color: rgba(197, 61, 61, 0.5) !important;
+}
+
+/* Primary Action Button (High Priority) */
+.btn-primary-action {
+  @apply bg-accent text-bg-dark font-bold font-display uppercase tracking-wider px-6 py-3 rounded shadow-[0_0_15px_rgba(201, 162, 39, 0.4)] transition-all duration-300;
+  border: 1px solid var(--color-accent-glow);
+}
+
+.btn-primary-action:hover {
+  background-color: var(--color-accent-glow);
+  box-shadow: 0 0 25px rgba(201, 162, 39, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Kyoto Form Styles */
+.input-kyoto {
+  @apply w-full bg-stone-950 border border-stone-800 rounded px-3 py-2 text-stone-200 focus:border-accent focus:outline-none transition-colors;
+}
+
+.label-kyoto {
+  @apply block text-xs font-bold text-stone-500 uppercase mb-1 tracking-wider;
+}
+
+.btn-primary-action:active {
+  transform: scale(0.96);
+}
+
+/* ===== Scale In (for modals/popups) ===== */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+/* Gold Orb (for pact slots) */
+.orb {
+  @apply w-3 h-3 rounded-full;
+  background: radial-gradient(circle at 30% 30%, #d4b13a, #a68820);
+  box-shadow: 0 0 8px rgba(201, 162, 39, 0.6);
+}
+
+.orb-empty {
+  @apply w-3 h-3 rounded-full;
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+/* ===== Modal/Popup Styles ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(4px);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(28, 28, 28, 0.9) 50%, rgba(20, 20, 20, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 255, 255, 0.02);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.modal-body {
+  padding: 1rem;
+  overflow-y: auto;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.modal-close:active {
+  transform: scale(0.95);
+}
+
+/* ===== RESPONSIVE DESIGN - Android Optimization ===== */
+
+/* Extra small phones (< 360px) - compact layout */
+@media (max-width: 359px) {
+  body {
+    font-size: 14px;
+  }
+
+  .card-parchment {
+    padding: 0.75rem !important;
+  }
+
+  h1 {
+    font-size: 1rem !important;
+  }
+
+  .btn-fantasy,
+  .btn-primary {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.65rem;
+  }
+
+  .stat-circle {
+    @apply w-16 h-16;
+  }
+
+  .orb,
+  .orb-empty {
+    @apply w-2.5 h-2.5;
+  }
+}
+
+/* Small phones (360px - 413px) - standard mobile */
+@media (min-width: 360px) and (max-width: 413px) {
+  body {
+    font-size: 15px;
+  }
+
+  .card-parchment {
+    padding: 0.875rem !important;
+  }
+}
+
+/* Large phones (414px - 479px) - slightly larger widgets */
+@media (min-width: 414px) and (max-width: 479px) {
+  body {
+    font-size: 16px;
+  }
+
+  .stat-circle {
+    @apply w-24 h-24;
+  }
+
+  .btn-fantasy,
+  .btn-primary {
+    padding: 0.625rem 1.25rem;
+  }
+}
+
+/* Tablets portrait (480px - 767px) - 2-column layout potential */
+@media (min-width: 480px) and (max-width: 767px) {
+  body {
+    font-size: 17px;
+  }
+
+  .stat-circle {
+    @apply w-28 h-28;
+  }
+
+  .btn-fantasy,
+  .btn-primary {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  /* Allow wider container on tablets */
+  .max-w-md {
+    max-width: 32rem !important;
+  }
+}
+
+/* Tablets landscape / Desktop (768px+) - full width container */
+@media (min-width: 768px) {
+  body {
+    font-size: 18px;
+  }
+
+  .stat-circle {
+    @apply w-32 h-32;
+  }
+
+  .btn-fantasy,
+  .btn-primary {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+  }
+
+  /* Even wider container */
+  .max-w-md {
+    max-width: 36rem !important;
+  }
+
+  /* Larger touch targets */
+  nav button {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Touch-friendly hover states (disable on touch devices) */
+@media (hover: none) {
+  .card-parchment:hover {
+    transform: none;
+  }
+
+  .glow-on-hover:hover {
+    animation: none;
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Dark mode preference (already dark, but ensure consistency) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

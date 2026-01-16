@@ -1,0 +1,2 @@
+﻿src/components/features/combat/ResolutionPanel.tsx(65,44): error TS18048: 'spell.level' is possibly 'undefined'.
+src/components/features/combat/ResolutionPanel.tsx(79,47): error TS18048: 'spell.level' is possibly 'undefined'.
