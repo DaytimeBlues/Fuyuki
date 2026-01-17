@@ -1,0 +1,255 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - img "Background" [ref=e4]
+  - generic [ref=e9]:
+    - banner [ref=e10]:
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - img [ref=e17]
+          - generic [ref=e21]:
+            - heading "Aramancia" [level=1] [ref=e22]
+            - paragraph [ref=e23]: Tracker
+        - img [ref=e26]
+    - main [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - img [ref=e34]
+            - heading "Hit Points" [level=3] [ref=e39]
+          - generic [ref=e40]:
+            - button "32 /32 Edit" [ref=e41]:
+              - generic [ref=e42]:
+                - text: "32"
+                - generic [ref=e43]: /32
+              - generic [ref=e45]: Edit
+            - generic [ref=e50]:
+              - button [ref=e51]:
+                - img [ref=e52]
+              - button [ref=e53]:
+                - img [ref=e54]
+          - generic [ref=e56]:
+            - img [ref=e57]
+            - generic [ref=e59]: Temp HP
+            - spinbutton [ref=e60]
+            - button "Add" [ref=e61]
+        - generic [ref=e63]:
+          - generic [ref=e67]:
+            - img [ref=e69]
+            - heading "Defense" [level=3] [ref=e71]
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - generic:
+                - generic: "12"
+                - generic: AC
+            - generic [ref=e74]:
+              - button "Mage Armor base 13 + dex" [ref=e75]:
+                - generic [ref=e76]:
+                  - generic [ref=e77]: Mage Armor
+                  - generic [ref=e78]: base 13 + dex
+              - button "Shield Spell +5 bonus" [ref=e80]:
+                - generic [ref=e81]:
+                  - generic [ref=e82]: Shield Spell
+                  - generic [ref=e83]: +5 bonus
+          - generic [ref=e86]: "Base Armor Class: 12"
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - generic [ref=e90]:
+              - img [ref=e92]
+              - heading "Spellcasting" [level=3] [ref=e95]
+            - generic [ref=e96]:
+              - generic [ref=e97]: Save DC
+              - generic [ref=e98]: "14"
+          - generic [ref=e99]:
+            - generic [ref=e100]:
+              - generic [ref=e101]:
+                - generic [ref=e102]:
+                  - generic [ref=e103]: Level 1
+                  - generic [ref=e104]: slots
+                - generic [ref=e105]:
+                  - generic [ref=e106]: "4"
+                  - generic [ref=e107]: /
+                  - generic [ref=e108]: "4"
+              - generic [ref=e109]:
+                - button "Cast Spell" [ref=e110] [cursor=pointer]
+                - button "Cast Spell" [ref=e114] [cursor=pointer]
+                - button "Cast Spell" [ref=e118] [cursor=pointer]
+                - button "Cast Spell" [ref=e122] [cursor=pointer]
+            - generic [ref=e126]:
+              - generic [ref=e127]:
+                - generic [ref=e128]:
+                  - generic [ref=e129]: Level 2
+                  - generic [ref=e130]: slots
+                - generic [ref=e131]:
+                  - generic [ref=e132]: "3"
+                  - generic [ref=e133]: /
+                  - generic [ref=e134]: "3"
+              - generic [ref=e135]:
+                - button "Cast Spell" [ref=e136] [cursor=pointer]
+                - button "Cast Spell" [ref=e140] [cursor=pointer]
+                - button "Cast Spell" [ref=e144] [cursor=pointer]
+            - generic [ref=e148]:
+              - generic [ref=e149]:
+                - generic [ref=e150]:
+                  - generic [ref=e151]: Level 3
+                  - generic [ref=e152]: slots
+                - generic [ref=e153]:
+                  - generic [ref=e154]: "2"
+                  - generic [ref=e155]: /
+                  - generic [ref=e156]: "2"
+              - generic [ref=e157]:
+                - button "Cast Spell" [ref=e158] [cursor=pointer]
+                - button "Cast Spell" [ref=e162] [cursor=pointer]
+        - generic [ref=e167]:
+          - generic [ref=e169]:
+            - img [ref=e171]
+            - heading "Concentration" [level=3] [ref=e179]
+          - generic [ref=e181]:
+            - paragraph [ref=e182]: Select a spell to track concentration
+            - generic [ref=e183]:
+              - button "Sleep (2024)" [ref=e184]
+              - button "Detect Magic" [ref=e185]
+              - button "Faerie Fire" [ref=e186]
+              - button "Darkness" [ref=e187]
+              - button "Hold Person" [ref=e188]
+              - button "Blur" [ref=e189]
+        - generic [ref=e191]:
+          - generic [ref=e192]:
+            - img [ref=e193]
+            - heading "Death Saves" [level=3] [ref=e198]
+          - generic [ref=e199]:
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - img [ref=e202]
+                - generic [ref=e204]: Success
+              - generic [ref=e205]:
+                - button [ref=e206]
+                - button [ref=e207]
+                - button [ref=e208]
+            - generic [ref=e210]:
+              - generic [ref=e211]:
+                - img [ref=e212]
+                - generic [ref=e217]: Failure
+              - generic [ref=e218]:
+                - button [ref=e219]
+                - button [ref=e220]
+                - button [ref=e221]
+    - navigation [ref=e222]:
+      - generic [ref=e226]:
+        - button "Stats" [ref=e227]:
+          - img [ref=e229]
+          - generic [ref=e232]: Stats
+        - button "Spellbook" [ref=e234]:
+          - img [ref=e236]
+          - generic: Spellbook
+        - button "Combat" [ref=e239]:
+          - img [ref=e241]
+          - generic: Combat
+        - button "Abilities" [ref=e246]:
+          - img [ref=e248]
+          - generic: Abilities
+        - button "Bio" [ref=e256]:
+          - img [ref=e258]
+          - generic: Bio
+        - button "Inventory" [ref=e261]:
+          - img [ref=e263]
+          - generic: Inventory
+        - button "Settings" [ref=e267]:
+          - img [ref=e269]
+          - generic: Settings
+    - button [ref=e273]:
+      - img [ref=e274]
+    - generic [ref=e277]:
+      - generic [ref=e280]:
+        - generic [ref=e281]:
+          - img [ref=e282]
+          - heading "Necromancy" [level=2] [ref=e287]
+          - generic [ref=e288]: 0 Active
+        - button [ref=e290]:
+          - img [ref=e291]
+      - generic [ref=e294]:
+        - generic [ref=e295]:
+          - button "Animate Dead" [ref=e296]
+          - button "Summon Undead" [ref=e297]
+        - generic [ref=e298]:
+          - generic [ref=e299]:
+            - button "Raise Skeleton AC 13 • HP 13" [ref=e300]:
+              - img [ref=e301]
+              - generic [ref=e306]: Raise Skeleton
+              - generic [ref=e307]: AC 13 • HP 13
+            - button "Raise Zombie AC 8 • HP 22" [ref=e308]:
+              - img [ref=e309]
+              - generic [ref=e319]: Raise Zombie
+              - generic [ref=e320]: AC 8 • HP 22
+          - generic [ref=e321]: Requires Level 6 for Undead Thralls
+        - generic [ref=e322]:
+          - heading "Active Servants" [level=3] [ref=e323]
+          - generic [ref=e324]: No undead raised
+    - generic [ref=e325]:
+      - generic [ref=e328]:
+        - generic [ref=e329]:
+          - img [ref=e330]
+          - generic [ref=e333]:
+            - heading "Direstone Runic Wand" [level=2] [ref=e334]
+            - paragraph [ref=e335]: A rigid stone wand from the Direstone mines. Expending the last charge risks crumbling (d20 roll).
+        - button [ref=e336]:
+          - img [ref=e337]
+      - generic [ref=e340]:
+        - generic [ref=e342]:
+          - generic [ref=e343]:
+            - text: "7"
+            - generic [ref=e344]: / 7
+          - generic [ref=e345]: Charges Remaining
+        - generic [ref=e346]:
+          - heading "Imbued Runes" [level=3] [ref=e347]
+          - button "Algiz (Fire Resist) 3 Charges" [ref=e348]:
+            - generic [ref=e349]:
+              - img [ref=e351]
+              - generic [ref=e353]:
+                - generic [ref=e354]: Algiz (Fire Resist)
+                - generic [ref=e356]: 3 Charges
+            - img [ref=e357]
+          - button "Eihwaz (Arcane Lock) 2 Charges" [ref=e359]:
+            - generic [ref=e360]:
+              - img [ref=e362]
+              - generic [ref=e364]:
+                - generic [ref=e365]: Eihwaz (Arcane Lock)
+                - generic [ref=e367]: 2 Charges
+            - img [ref=e368]
+          - button "Hagalaz (Shatter) 2 Charges" [ref=e370]:
+            - generic [ref=e371]:
+              - img [ref=e373]
+              - generic [ref=e375]:
+                - generic [ref=e376]: Hagalaz (Shatter)
+                - generic [ref=e378]: 2 Charges
+            - img [ref=e379]
+          - button "Kenaz (Burning Hands) 1 Charge" [ref=e381]:
+            - generic [ref=e382]:
+              - img [ref=e384]
+              - generic [ref=e386]:
+                - generic [ref=e387]: Kenaz (Burning Hands)
+                - generic [ref=e389]: 1 Charge
+            - img [ref=e390]
+          - button "Kenaz (Heat Metal) 2 Charges" [ref=e392]:
+            - generic [ref=e393]:
+              - img [ref=e395]
+              - generic [ref=e397]:
+                - generic [ref=e398]: Kenaz (Heat Metal)
+                - generic [ref=e400]: 2 Charges
+            - img [ref=e401]
+          - button "Raidho (Stone Shape) 4 Charges" [ref=e403]:
+            - generic [ref=e404]:
+              - img [ref=e406]
+              - generic [ref=e408]:
+                - generic [ref=e409]: Raidho (Stone Shape)
+                - generic [ref=e411]: 4 Charges
+            - img [ref=e412]
+          - button "Raidho (Illusory Script) 1 Charge" [ref=e414]:
+            - generic [ref=e415]:
+              - img [ref=e417]
+              - generic [ref=e419]:
+                - generic [ref=e420]: Raidho (Illusory Script)
+                - generic [ref=e422]: 1 Charge
+            - img [ref=e423]
+```

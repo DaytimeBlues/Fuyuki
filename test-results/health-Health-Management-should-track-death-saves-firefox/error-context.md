@@ -1,18 +1,259 @@
 # Page snapshot
 
 ```yaml
-- generic [ref=e3]:
-  - generic [ref=e4]: "[plugin:vite:react-babel] C:\\Users\\Jihye\\aramancia-tracker\\aramancia-tracker\\src\\components\\minions\\MinionDrawer.tsx: Identifier 'X' has already been declared. (7:9) 10 | import { allMinionsCleared, minionAdded, minionDamaged, minionHealed, minionRemoved, selectAllMinions } from '../../store/slices/combatSlice';"
-  - generic [ref=e5]: C:/Users/Jihye/aramancia-tracker/aramancia-tracker/src/components/minions/MinionDrawer.tsx:7:9
-  - generic [ref=e6]: "5 | import { undeadStats } from '../../data/undeadStats'; 6 | import { useState } from 'react'; 7 | import { X, Trash2, Skull, Biohazard, Minus, Plus, Ghost, Play } from 'lucide-react'; | ^ 8 | import { useAppDispatch, useAppSelector } from '../../store/hooks'; 9 | import { concentrationSet, slotUsed, selectCharacter, selectSpellAttackBonus } from '../../store/slices/characterSlice';"
-  - generic [ref=e7]: at constructor (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:367:19) at TypeScriptParserMixin.raise (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:6624:19) at TypeScriptScopeHandler.declareName (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:4895:21) at TypeScriptParserMixin.declareNameFromIdentifier (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:7594:16) at TypeScriptParserMixin.checkIdentifier (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:7590:12) at TypeScriptParserMixin.checkLVal (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:7527:12) at TypeScriptParserMixin.finishImportSpecifier (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:14342:10) at TypeScriptParserMixin.parseImportSpecifier (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:14499:17) at TypeScriptParserMixin.parseImportSpecifier (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:10205:18) at TypeScriptParserMixin.parseNamedImportSpecifiers (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:14478:36) at TypeScriptParserMixin.parseImportSpecifiersAndAfter (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:14318:37) at TypeScriptParserMixin.parseImport (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:14311:17) at TypeScriptParserMixin.parseImport (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:9412:26) at TypeScriptParserMixin.parseStatementContent (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:12952:27) at TypeScriptParserMixin.parseStatementContent (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:9569:18) at TypeScriptParserMixin.parseStatementLike (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:12843:17) at TypeScriptParserMixin.parseModuleItem (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:12820:17) at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:13392:36) at TypeScriptParserMixin.parseBlockBody (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:13385:10) at TypeScriptParserMixin.parseProgram (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:12698:10) at TypeScriptParserMixin.parseTopLevel (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:12688:25) at TypeScriptParserMixin.parse (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:14568:25) at TypeScriptParserMixin.parse (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:10183:18) at parse (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\parser\lib\index.js:14602:38) at parser (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\core\lib\parser\index.js:41:34) at parser.next (<anonymous>) at normalizeFile (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37) at normalizeFile.next (<anonymous>) at run (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\core\lib\transformation\index.js:22:50) at run.next (<anonymous>) at transform (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\core\lib\transform.js:22:33) at transform.next (<anonymous>) at step (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:261:32) at C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:273:13 at async.call.result.err.err (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:223:11) at C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:189:28 at C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\@babel\core\lib\gensync-utils\async.js:67:7 at C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:113:33 at step (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:287:14) at C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:273:13 at async.call.result.err.err (C:\Users\Jihye\aramancia-tracker\aramancia-tracker\node_modules\gensync\index.js:223:11)
-  - generic [ref=e8]:
-    - text: Click outside, press Esc key, or fix the code to dismiss.
-    - text: You can also disable this overlay by setting
-    - code [ref=e9]: server.hmr.overlay
-    - text: to
-    - code [ref=e10]: "false"
-    - text: in
-    - code [ref=e11]: vite.config.ts
-    - text: .
+- generic [ref=e2]:
+  - img "Background" [ref=e4]
+  - generic [ref=e9]:
+    - banner [ref=e10]:
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - img [ref=e17]
+          - generic [ref=e22]:
+            - heading "Aramancia" [level=1] [ref=e23]
+            - paragraph [ref=e24]: Tracker
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - paragraph [ref=e27]: Level 5
+            - paragraph [ref=e28]: Warlock
+          - img [ref=e30]
+    - main [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - img [ref=e38]
+            - heading "Hit Points" [level=3] [ref=e43]
+          - generic [ref=e44]:
+            - button "32 /32 Edit" [ref=e45]:
+              - generic [ref=e46]:
+                - text: "32"
+                - generic [ref=e47]: /32
+              - generic [ref=e49]: Edit
+            - generic [ref=e54]:
+              - button [ref=e55]:
+                - img [ref=e56]
+              - button [ref=e58]:
+                - img [ref=e59]
+          - generic [ref=e63]:
+            - img [ref=e64]
+            - generic [ref=e66]: Temp HP
+            - spinbutton [ref=e67]
+            - button "Add" [ref=e68]
+        - generic [ref=e70]:
+          - generic [ref=e74]:
+            - img [ref=e76]
+            - heading "Defense" [level=3] [ref=e78]
+          - generic [ref=e79]:
+            - generic [ref=e80]:
+              - generic:
+                - generic: "12"
+                - generic: AC
+            - generic [ref=e81]:
+              - button "Mage Armor base 13 + dex" [ref=e82]:
+                - generic [ref=e83]:
+                  - generic [ref=e84]: Mage Armor
+                  - generic [ref=e85]: base 13 + dex
+              - button "Shield Spell +5 bonus" [ref=e87]:
+                - generic [ref=e88]:
+                  - generic [ref=e89]: Shield Spell
+                  - generic [ref=e90]: +5 bonus
+          - generic [ref=e93]: "Base Armor Class: 12"
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]:
+              - img [ref=e99]
+              - heading "Spellcasting" [level=3] [ref=e108]
+            - generic [ref=e109]:
+              - generic [ref=e110]: Save DC
+              - generic [ref=e111]: "14"
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]:
+                - generic [ref=e115]:
+                  - generic [ref=e116]: Level 1
+                  - generic [ref=e117]: slots
+                - generic [ref=e118]:
+                  - generic [ref=e119]: "4"
+                  - generic [ref=e120]: /
+                  - generic [ref=e121]: "4"
+              - generic [ref=e122]:
+                - button "Cast Spell" [ref=e123] [cursor=pointer]
+                - button "Cast Spell" [ref=e127] [cursor=pointer]
+                - button "Cast Spell" [ref=e131] [cursor=pointer]
+                - button "Cast Spell" [ref=e135] [cursor=pointer]
+            - generic [ref=e139]:
+              - generic [ref=e140]:
+                - generic [ref=e141]:
+                  - generic [ref=e142]: Level 2
+                  - generic [ref=e143]: slots
+                - generic [ref=e144]:
+                  - generic [ref=e145]: "3"
+                  - generic [ref=e146]: /
+                  - generic [ref=e147]: "3"
+              - generic [ref=e148]:
+                - button "Cast Spell" [ref=e149] [cursor=pointer]
+                - button "Cast Spell" [ref=e153] [cursor=pointer]
+                - button "Cast Spell" [ref=e157] [cursor=pointer]
+            - generic [ref=e161]:
+              - generic [ref=e162]:
+                - generic [ref=e163]:
+                  - generic [ref=e164]: Level 3
+                  - generic [ref=e165]: slots
+                - generic [ref=e166]:
+                  - generic [ref=e167]: "2"
+                  - generic [ref=e168]: /
+                  - generic [ref=e169]: "2"
+              - generic [ref=e170]:
+                - button "Cast Spell" [ref=e171] [cursor=pointer]
+                - button "Cast Spell" [ref=e175] [cursor=pointer]
+        - generic [ref=e180]:
+          - generic [ref=e182]:
+            - img [ref=e184]
+            - heading "Concentration" [level=3] [ref=e193]
+          - generic [ref=e195]:
+            - paragraph [ref=e196]: Select a spell to track concentration
+            - generic [ref=e197]:
+              - button "Sleep (2024)" [ref=e198]
+              - button "Detect Magic" [ref=e199]
+              - button "Faerie Fire" [ref=e200]
+              - button "Darkness" [ref=e201]
+              - button "Hold Person" [ref=e202]
+              - button "Blur" [ref=e203]
+        - generic [ref=e205]:
+          - generic [ref=e206]:
+            - img [ref=e207]
+            - heading "Death Saves" [level=3] [ref=e212]
+          - generic [ref=e213]:
+            - generic [ref=e214]:
+              - generic [ref=e215]:
+                - img [ref=e216]
+                - generic [ref=e218]: Success
+              - generic [ref=e219]:
+                - button [ref=e220]
+                - button [ref=e221]
+                - button [ref=e222]
+            - generic [ref=e224]:
+              - generic [ref=e225]:
+                - img [ref=e226]
+                - generic [ref=e231]: Failure
+              - generic [ref=e232]:
+                - button [ref=e233]
+                - button [ref=e234]
+                - button [ref=e235]
+    - navigation [ref=e236]:
+      - generic [ref=e240]:
+        - button "Stats" [ref=e241]:
+          - img [ref=e243]
+          - generic [ref=e246]: Stats
+        - button "Spellbook" [ref=e248]:
+          - img [ref=e250]
+          - generic: Spellbook
+        - button "Combat" [ref=e259]:
+          - img [ref=e261]
+          - generic: Combat
+        - button "Abilities" [ref=e266]:
+          - img [ref=e268]
+          - generic: Abilities
+        - button "Bio" [ref=e277]:
+          - img [ref=e279]
+          - generic: Bio
+        - button "Inventory" [ref=e282]:
+          - img [ref=e284]
+          - generic: Inventory
+        - button "Settings" [ref=e290]:
+          - img [ref=e292]
+          - generic: Settings
+    - button [ref=e296]:
+      - img [ref=e297]
+    - generic [ref=e306]:
+      - generic [ref=e309]:
+        - generic [ref=e310]:
+          - img [ref=e311]
+          - heading "Necromancy" [level=2] [ref=e316]
+          - generic [ref=e317]: 0 Active
+        - button [ref=e319]:
+          - img [ref=e320]
+      - generic [ref=e323]:
+        - generic [ref=e324]:
+          - button "Animate Dead" [ref=e325]
+          - button "Summon Undead" [ref=e326]
+        - generic [ref=e327]:
+          - generic [ref=e328]:
+            - button "Raise Skeleton AC 13 • HP 13" [ref=e329]:
+              - img [ref=e330]
+              - generic [ref=e335]: Raise Skeleton
+              - generic [ref=e336]: AC 13 • HP 13
+            - button "Raise Zombie AC 8 • HP 22" [ref=e337]:
+              - img [ref=e338]
+              - generic [ref=e349]: Raise Zombie
+              - generic [ref=e350]: AC 8 • HP 22
+          - generic [ref=e351]: Requires Level 6 for Undead Thralls
+        - generic [ref=e352]:
+          - heading "Active Servants" [level=3] [ref=e353]
+          - generic [ref=e354]: No undead raised
+    - generic [ref=e355]:
+      - generic [ref=e358]:
+        - generic [ref=e359]:
+          - img [ref=e360]
+          - generic [ref=e369]:
+            - heading "Direstone Runic Wand" [level=2] [ref=e370]
+            - paragraph [ref=e371]: A rigid stone wand from the Direstone mines. Expending the last charge risks crumbling (d20 roll).
+        - button [ref=e372]:
+          - img [ref=e373]
+      - generic [ref=e376]:
+        - generic [ref=e378]:
+          - generic [ref=e379]:
+            - text: "7"
+            - generic [ref=e380]: / 7
+          - generic [ref=e381]: Charges Remaining
+        - generic [ref=e382]:
+          - heading "Imbued Runes" [level=3] [ref=e383]
+          - button "Algiz (Fire Resist) 3 Charges" [ref=e384]:
+            - generic [ref=e385]:
+              - img [ref=e387]
+              - generic [ref=e389]:
+                - generic [ref=e390]: Algiz (Fire Resist)
+                - generic [ref=e392]: 3 Charges
+            - img [ref=e393]
+          - button "Eihwaz (Arcane Lock) 2 Charges" [ref=e395]:
+            - generic [ref=e396]:
+              - img [ref=e398]
+              - generic [ref=e400]:
+                - generic [ref=e401]: Eihwaz (Arcane Lock)
+                - generic [ref=e403]: 2 Charges
+            - img [ref=e404]
+          - button "Hagalaz (Shatter) 2 Charges" [ref=e406]:
+            - generic [ref=e407]:
+              - img [ref=e409]
+              - generic [ref=e411]:
+                - generic [ref=e412]: Hagalaz (Shatter)
+                - generic [ref=e414]: 2 Charges
+            - img [ref=e415]
+          - button "Kenaz (Burning Hands) 1 Charge" [ref=e417]:
+            - generic [ref=e418]:
+              - img [ref=e420]
+              - generic [ref=e422]:
+                - generic [ref=e423]: Kenaz (Burning Hands)
+                - generic [ref=e425]: 1 Charge
+            - img [ref=e426]
+          - button "Kenaz (Heat Metal) 2 Charges" [ref=e428]:
+            - generic [ref=e429]:
+              - img [ref=e431]
+              - generic [ref=e433]:
+                - generic [ref=e434]: Kenaz (Heat Metal)
+                - generic [ref=e436]: 2 Charges
+            - img [ref=e437]
+          - button "Raidho (Stone Shape) 4 Charges" [ref=e439]:
+            - generic [ref=e440]:
+              - img [ref=e442]
+              - generic [ref=e444]:
+                - generic [ref=e445]: Raidho (Stone Shape)
+                - generic [ref=e447]: 4 Charges
+            - img [ref=e448]
+          - button "Raidho (Illusory Script) 1 Charge" [ref=e450]:
+            - generic [ref=e451]:
+              - img [ref=e453]
+              - generic [ref=e455]:
+                - generic [ref=e456]: Raidho (Illusory Script)
+                - generic [ref=e458]: 1 Charge
+            - img [ref=e459]
 ```
