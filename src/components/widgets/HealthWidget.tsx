@@ -16,6 +16,7 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
     const [animationKey, setAnimationKey] = useState(0);
 
     // Memoize calculated percentage for responsiveness
+    const percentage = useMemo(() => Math.min(100, Math.max(0, (current / max) * 100)), [current, max]);
     const isCritical = current === 0;
     const isLow = current <= 10 && current > 0; // Red at 10 HP or below
 
