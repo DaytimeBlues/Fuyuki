@@ -511,7 +511,7 @@ h6 {
 
 /* Primary Action Button (High Priority) */
 .btn-primary-action {
-  @apply bg-accent text-bg-dark font-bold font-display uppercase tracking-wider px-6 py-3 rounded shadow-[0_0_15px_rgba(201, 162, 39, 0.4)] transition-all duration-300;
+  @apply bg-accent text-bg-dark font-bold font-display uppercase tracking-wider px-6 py-3 rounded shadow-[0_0_15px_rgba(201,162,39,0.4)] transition-all duration-300;
   border: 1px solid var(--color-accent-glow);
 }
 
