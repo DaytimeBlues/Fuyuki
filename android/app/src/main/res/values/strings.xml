@@ -4,4 +4,5 @@
     <string name="title_activity_main">Fuyuki Warlock Tracker</string>
     <string name="package_name">com.daytimeblues.fuyuki</string>
     <string name="custom_url_scheme">com.daytimeblues.fuyuki</string>
+    <string name="main_button_label">Main Action</string>
 </resources>
