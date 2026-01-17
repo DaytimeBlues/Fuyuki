@@ -6,7 +6,8 @@
  * - AppShell: Layout, Navigation, Global Overlays (Toasts, SessionPicker)
  * - TabRouter: View-specific routing and state mapping
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+
 import { AppShell } from './components/layout/AppShell';
 import { TabRouter } from './components/layout/TabRouter';
 import { CombatOverlay } from './components/views/CombatOverlay';
@@ -51,13 +52,14 @@ function App() {
     }
   }, [toast, dispatch]);
 
-  const handleSessionSelected = (session: Session) => {
+  const handleSessionSelected = useCallback((session: Session) => {
     dispatch(hydrate({ characterData: session.characterData }));
     setShowSessionPicker(false);
-  };
+  }, [dispatch]);
 
   // --- ACTIONS ---
-  const actions = {
+  // Memoize actions to prevent unnecessary re-renders of TabRouter
+  const actions = useMemo(() => ({
     updateHealth: (newCurrent: number) => dispatch(hpChanged(newCurrent)),
     updateTempHP: (newTemp: number) => dispatch(tempHpSet(newTemp)),
     updateDeathSaves: (type: 'successes' | 'failures', value: number) => dispatch(deathSaveChanged({ type, value })),
@@ -74,9 +76,10 @@ function App() {
     handleAbilityChange: (ability: AbilityKey, newScore: number) => dispatch(abilityScoreChanged({ ability, newScore })),
     itemAttuned: (itemName: string) => dispatch(itemAttuned(itemName)),
     itemUnattuned: (index: number) => dispatch(itemUnattuned(index)),
-  };
+  }), [dispatch]);
 
   const navTab = activeTab === 'inventory' || activeTab === 'settings' ? 'more' : activeTab;
+
 
   return (
     <AppShell

@@ -1,4 +1,5 @@
 import { Shield } from 'lucide-react';
+import { memo, useCallback, useMemo } from 'react';
 
 interface ArmorClassWidgetProps {
     baseAC: number;
@@ -8,12 +9,15 @@ interface ArmorClassWidgetProps {
     onToggle: (key: 'mageArmour' | 'shield') => void;
 }
 
-export function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onToggle }: ArmorClassWidgetProps) {
+export const ArmorClassWidget = memo(function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onToggle }: ArmorClassWidgetProps) {
     // RAW: Mage Armor sets base AC to 13 + DEX (replaces worn armor, mutually exclusive)
     // Shield (spell) adds +5 AC (stacks with base)
-    const mageArmorAC = 13 + dexMod;
-    const effectiveBaseAC = mageArmour ? mageArmorAC : baseAC;
-    const currentAC = effectiveBaseAC + (hasShield ? 5 : 0);
+    const mageArmorAC = 13 + dexMod; // Simple arithmetic - no useMemo needed
+    const effectiveBaseAC = useMemo(() => mageArmour ? mageArmorAC : baseAC, [mageArmour, mageArmorAC, baseAC]);
+    const currentAC = useMemo(() => effectiveBaseAC + (hasShield ? 5 : 0), [effectiveBaseAC, hasShield]);
+
+    const handleToggleMageArmour = useCallback(() => onToggle('mageArmour'), [onToggle]);
+    const handleToggleShield = useCallback(() => onToggle('shield'), [onToggle]);
 
     return (
         <div className="card-parchment p-4 mb-4">
@@ -52,7 +56,7 @@ export function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onTogg
                             type="checkbox"
                             className="hidden"
                             checked={mageArmour}
-                            onChange={() => onToggle('mageArmour')}
+                            onChange={handleToggleMageArmour}
                         />
                     </label>
 
@@ -76,7 +80,7 @@ export function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onTogg
                             type="checkbox"
                             className="hidden"
                             checked={hasShield}
-                            onChange={() => onToggle('shield')}
+                            onChange={handleToggleShield}
                         />
                     </label>
 
@@ -88,4 +92,4 @@ export function ArmorClassWidget({ baseAC, dexMod, mageArmour, hasShield, onTogg
             </div>
         </div>
     );
-}
+});
