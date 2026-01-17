@@ -75,11 +75,25 @@ export const ResolutionPanel: React.FC<ResolutionPanelProps> = ({
     return (
         <div className="card-parchment overflow-hidden shadow-2xl" data-testid="resolution-panel">
             {/* Header */}
-            <div className="px-4 py-3 border-b border-white/10">
-                <h3 className="text-lg font-display text-parchment-light">{spell.name}</h3>
+            <div className="relative px-6 py-4 border-b border-gold-dim/10 bg-white/5">
+                <div className="flex items-baseline justify-between">
+                    <h3 className="text-xl font-display font-bold text-parchment-light tracking-wide uppercase">
+                        {spell.name}
+                    </h3>
+                    <span className="text-xs font-japanese text-gold-dim opacity-50 tracking-widest">
+                        レベル {spell.level || '0'}
+                    </span>
+                </div>
                 {slotLevel > 0 && slotLevel > spell.level && (
-                    <span className="text-xs text-parchment-light/80 font-display">Upcast to Level {slotLevel}</span>
+                    <div className="flex items-center gap-2 mt-1">
+                        <span className="w-1 h-1 rounded-full bg-accent" />
+                        <span className="text-[10px] text-accent font-display tracking-wider uppercase">
+                            Upcast / Level {slotLevel}
+                        </span>
+                    </div>
                 )}
+                {/* Decorative Accent */}
+                <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-gold-dim/20" />
             </div>
 
             {/* Resolution Mode Content */}
@@ -145,21 +159,30 @@ export const ResolutionPanel: React.FC<ResolutionPanelProps> = ({
                             </div>
                         )}
 
-                        {/* Outcome Buttons */}
-                        <div className="grid grid-cols-2 gap-3">
+                        {/* Outcome Buttons - Inkan Style */}
+                        <div className="grid grid-cols-2 gap-4 pt-2">
                             <button
                                 onClick={onHit}
-                                className="flex items-center justify-center gap-2 px-4 py-3 bg-green-900/30 hover:bg-green-900/50 border border-green-800 rounded-lg text-green-300 font-bold uppercase tracking-wider transition-colors"
+                                className="group relative overflow-hidden h-16 rounded bg-stone-900 border border-stone-700 hover:border-moss transition-all duration-300"
                             >
-                                <Check className="w-5 h-5" />
-                                Hit
+                                <div className="absolute inset-0 bg-[url('/assets/noise.png')] opacity-10" />
+                                <div className="relative z-10 flex flex-col items-center justify-center gap-1">
+                                    <span className="text-2xl font-japanese text-moss group-hover:scale-110 transition-transform duration-300">命中</span>
+                                    <span className="text-[9px] uppercase tracking-[0.2em] text-moss/70">Hit</span>
+                                </div>
+                                {/* Stamp Effect */}
+                                <div className="absolute -right-2 -bottom-2 w-8 h-8 opacity-0 group-hover:opacity-20 bg-moss rounded-full blur-lg transition-opacity duration-300" />
                             </button>
+
                             <button
                                 onClick={onMiss}
-                                className="flex items-center justify-center gap-2 px-4 py-3 bg-card-elevated hover:bg-card border border-white/10 rounded-lg text-muted font-bold uppercase tracking-wider transition-colors"
+                                className="group relative overflow-hidden h-16 rounded bg-stone-900 border border-stone-700 hover:border-stone-500 transition-all duration-300"
                             >
-                                <X className="w-5 h-5" />
-                                Miss
+                                <div className="absolute inset-0 bg-[url('/assets/noise.png')] opacity-10" />
+                                <div className="relative z-10 flex flex-col items-center justify-center gap-1">
+                                    <span className="text-2xl font-japanese text-stone-500 group-hover:text-stone-300 transition-colors duration-300">失敗</span>
+                                    <span className="text-[9px] uppercase tracking-[0.2em] text-stone-600">Miss</span>
+                                </div>
                             </button>
                         </div>
                     </div>

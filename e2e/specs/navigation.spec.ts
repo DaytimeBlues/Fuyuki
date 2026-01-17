@@ -11,7 +11,7 @@ test.describe('Navigation', () => {
         // ... (this part is fine, ensure it's preserved)
 
         // IDs from AppShell.tsx navItems
-        const tabs = ['home', 'spells', 'combat', 'grimoire', 'abilities', 'bio', 'inventory', 'settings'];
+        const tabs = ['stats', 'spells', 'combat', 'character', 'more'];
 
         for (const tab of tabs) {
             // Use attribute selector for navigation buttons which we added in AppShell

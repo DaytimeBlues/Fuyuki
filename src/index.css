@@ -60,10 +60,50 @@
   --shadow-elevation-1: 0 4px 20px -8px rgba(0, 0, 0, 0.7);
   --shadow-elevation-2: 0 8px 30px -8px rgba(0, 0, 0, 0.8);
 
-  /* ===== FONTS - Modern sans-serif ===== */
-  --font-display: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-sans: 'Inter', sans-serif;
+  /* ===== FONTS - Modern sans-serif with Japanese Support ===== */
+  --font-display: 'Outfit', 'Noto Sans JP', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-sans: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Noto Sans Mono', monospace;
+}
+
+/* Kyoto Typography Utilities */
+.writing-vertical-rl {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.15em;
+}
+
+.font-japanese {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 500;
+}
+
+/* Inkan (Seal) Stamp */
+.inkan {
+  border: 3px double var(--color-vermillion);
+  color: var(--color-vermillion);
+  background: rgba(197, 61, 61, 0.1);
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  font-family: 'Noto Serif JP', serif;
+  transform: rotate(-5deg);
+  display: inline-block;
+  mix-blend-mode: multiply;
+  box-shadow: 0 0 10px rgba(197, 61, 61, 0.2);
+}
+
+/* Hiragana/Ghost Subtitle */
+.ghost-subtitle {
+  position: absolute;
+  opacity: 0.15;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 900;
+  z-index: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+  letter-spacing: 0.5em;
 }
 
 /* Base Styles */
@@ -547,8 +587,8 @@ textarea {
 
 /* ===== Card Hover Effects ===== */
 .card-parchment {
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
   transform: translate3d(0, 0, 0);
 }

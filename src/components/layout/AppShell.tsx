@@ -13,11 +13,11 @@ interface AppShellProps {
 }
 
 const navItems = [
-    { id: 'stats', icon: Shield, label: 'Stats' },
-    { id: 'spells', icon: Wand2, label: 'Spells' },
-    { id: 'combat', icon: Swords, label: 'Combat' },
-    { id: 'character', icon: User, label: 'Character' },
-    { id: 'more', icon: Menu, label: 'More' },
+    { id: 'stats', icon: Shield, label: 'Stats', ja: 'ステータス' },
+    { id: 'spells', icon: Wand2, label: 'Spells', ja: '呪文' },
+    { id: 'combat', icon: Swords, label: 'Combat', ja: '戦闘' },
+    { id: 'character', icon: User, label: 'Profile', ja: '人物' },
+    { id: 'more', icon: Menu, label: 'Menu', ja: '目録' },
 ];
 
 export function AppShell({
@@ -35,12 +35,16 @@ export function AppShell({
                 <img
                     src="/assets/fuyuki-background.jpg"
                     alt=""
-                    className="w-full h-full object-cover opacity-40 scale-105"
+                    className="w-full h-full object-cover opacity-30 scale-105 contrast-125 saturate-50"
                     onError={(e) => {
                         e.currentTarget.style.display = 'none';
                     }}
                 />
-                <div className="absolute inset-0 bg-bg-void/80 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-bg-void/90 mix-blend-multiply" />
+                {/* Decorative Vertical Text - Right Side */}
+                <div className="absolute top-24 right-4 writing-vertical-rl text-6xl text-white/5 font-black font-japanese pointer-events-none select-none">
+                    ウォーロック
+                </div>
             </div>
 
             <div className="min-h-screen w-full relative z-10 bg-transparent text-text overflow-x-hidden" data-testid="app-ready">
@@ -48,121 +52,118 @@ export function AppShell({
                 <div className="fixed inset-0 z-5 pointer-events-none">
                     <div className="absolute inset-0 bg-gradient-to-b from-white/3 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-bg-dark via-bg-dark/80 to-transparent" />
-                    <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-bg-dark/60 to-transparent" />
+                    <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-bg-dark/70 to-transparent" />
                 </div>
 
                 {/* Header */}
-                <header className="fixed top-0 left-0 right-0 z-40">
-                    {/* Top Runic Border */}
-                    <div className="h-1 w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <header className="fixed top-0 left-0 right-0 z-40 px-4 pt-4 pb-2">
+                    <div className="glass-card rounded-2xl max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto flex items-center justify-between p-3 relative overflow-hidden group">
 
-                    <div className="bg-card/95 backdrop-blur-xl border-b border-white/10 relative">
-                        {/* Corner Decorations */}
-                        <div className="absolute top-2 left-2 w-4 h-4 border-l-2 border-t-2 border-white/30" />
-                        <div className="absolute top-2 right-2 w-4 h-4 border-r-2 border-t-2 border-white/30" />
+                        {/* Shimmer Effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
 
-                        <div className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-                            {/* Left: Icon and Title */}
-                            <div className="flex items-center gap-4">
-                                {/* Glowing Quill Icon */}
-                                <div className="relative">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-white/15 to-white/5 border-2 border-white/30 flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.15)]">
-                                        <Feather size={18} className="text-white" />
-                                    </div>
-                                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-white animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.5)]" />
+                        {/* Left: Icon and Title */}
+                        <div className="flex items-center gap-4 z-10">
+                            {/* Glowing Quill Icon */}
+                            <div className="relative">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-bg-card to-bg-dark border border-white/10 flex items-center justify-center shadow-lg relative overflow-hidden">
+                                    <Feather size={20} className="text-gold-mid relative z-10" />
+                                    <div className="absolute inset-0 bg-gold-mid/10 blur-xl" />
                                 </div>
-
-                                {/* Title */}
-                                <div>
-                                    <h1 className="font-display text-xl text-parchment-light tracking-[0.2em] drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                                        Fuyuki
-                                    </h1>
-                                    <p className="text-[10px] text-white/50 font-sans uppercase tracking-[0.3em]">
-                                        Warlock Tracker
-                                    </p>
-                                </div>
+                                <div className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-gold-bright animate-pulse shadow-accent-sm" />
                             </div>
 
-                            {/* Right: Character Info */}
-                            <div className="flex items-center gap-3">
-                                <div className="text-right">
-                                    <p className="text-xs text-parchment font-display">Level 5</p>
-                                    <p className="text-[10px] text-muted">Kitsune Warlock</p>
+                            {/* Title */}
+                            <div className="flex flex-col">
+                                <div className="flex items-baseline gap-2">
+                                    <h1 className="font-display text-xl text-white tracking-[0.2em] uppercase">
+                                        Fuyuki
+                                    </h1>
+                                    <span className="text-xs text-gold-dim font-japanese opacity-80">冬木</span>
                                 </div>
-                                {/* Character Portrait */}
-                                <div className="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden bg-card-elevated shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                                    <img
-                                        src="/assets/fuyuki-portrait.png"
-                                        alt="Fuyuki"
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            e.currentTarget.style.display = 'none';
-                                        }}
-                                    />
-                                </div>
+                                <p className="text-[10px] text-muted font-mono uppercase tracking-[0.2em]">
+                                    Warlock Tracker
+                                </p>
                             </div>
                         </div>
 
-                        {/* Bottom Ornate Border */}
-                        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                        {/* Right: Character Info */}
+                        <div className="flex items-center gap-3 z-10">
+                            <div className="text-right hidden xs:block">
+                                <p className="text-xs text-parchment font-display">Level 5</p>
+                                <p className="text-[10px] text-muted font-japanese">狐の妖術師</p>
+                            </div>
+                            {/* Character Portrait */}
+                            <div className="w-10 h-10 rounded-full border-2 border-gold-dim/30 overflow-hidden bg-bg-dark shadow-lg">
+                                <img
+                                    src="/assets/fuyuki-portrait.png"
+                                    alt="Fuyuki"
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </header>
 
                 {/* Main Content */}
-                <main className="pt-24 px-4 pb-40 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto relative z-10">
+                <main className="pt-28 px-4 pb-48 max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto relative z-10">
                     {children}
                 </main>
 
-                {/* Bottom Navigation - Scrollable */}
-                <nav className="fixed bottom-0 left-0 right-0 z-50">
-                    {/* Top Glow Line */}
-                    <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-                    <div className="bg-card/98 backdrop-blur-xl border-t border-white/10 relative">
-                        {/* Corner Decorations */}
-                        <div className="absolute bottom-2 left-2 w-4 h-4 border-l-2 border-b-2 border-white/20" />
-                        <div className="absolute bottom-2 right-2 w-4 h-4 border-r-2 border-b-2 border-white/20" />
-
-                        <div className="max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto">
-                            {/* Evenly distributed nav items */}
-                            <div className="flex items-center justify-evenly py-2 px-1">
-                                {navItems.map(({ id, icon: Icon, label }) => (
+                {/* Bottom Navigation - Kyoto Dock */}
+                <nav className="fixed bottom-6 left-0 right-0 z-50 pointer-events-none px-4">
+                    <div className="pointer-events-auto max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto glass-card rounded-2xl p-2 border border-white/10 shadow-2xl">
+                        <div className="flex items-center justify-between px-2">
+                            {navItems.map(({ id, icon: Icon, label, ja }, index) => {
+                                const isActive = activeTab === id;
+                                return (
                                     <button
                                         key={id}
                                         onClick={() => onTabChange(id)}
-                                        className={`flex flex-col items-center gap-1 px-2 py-1.5 rounded-lg transition-all duration-300 group ${activeTab === id
-                                            ? 'text-white'
-                                            : 'text-muted hover:text-parchment'
-                                            }`}
+                                        className={`
+                                            group relative flex flex-col items-center justify-center 
+                                            w-16 h-16 rounded-xl transition-all duration-300
+                                            animate-slide-up hover:-translate-y-1
+                                            stagger-${index + 1}
+                                            ${isActive ? 'bg-white/10 shadow-lg' : 'hover:bg-white/5'}
+                                        `}
                                         data-testid={`nav-tab-${id}`}
+                                        aria-label={label}
                                     >
-                                        <div className={`relative p-1.5 rounded-lg transition-all duration-300 ${activeTab === id
-                                            ? 'bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.25)] border border-white/20'
-                                            : 'group-hover:bg-white/5'
-                                            }`}>
-                                            <Icon size={16} />
-                                            {activeTab === id && (
-                                                <div className="absolute inset-0 rounded-lg bg-white/5 animate-pulse" />
-                                            )}
-                                        </div>
-                                        <span className={`text-[8px] font-sans uppercase tracking-wide transition-colors duration-300 ${activeTab === id ? 'text-white' : 'group-hover:text-parchment'
-                                            }`}>
+                                        <Icon
+                                            size={20}
+                                            strokeWidth={isActive ? 2.5 : 1.5}
+                                            className={`
+                                                mb-1 transition-colors duration-300
+                                                ${isActive ? 'text-gold-bright drop-shadow-md' : 'text-muted group-hover:text-parchment'}
+                                            `}
+                                        />
+                                        <span className={`
+                                            text-[9px] font-display uppercase tracking-widest transition-colors duration-300
+                                            ${isActive ? 'text-white' : 'text-muted/60 group-hover:text-parchment'}
+                                        `}>
                                             {label}
                                         </span>
-                                        {id === 'combat' && (
-                                            <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                                            </span>
-                                        )}
-                                        {id === 'combat' && activeTab === 'combat' && (
-                                            <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[8px] bg-red-900/80 px-1.5 py-0.5 rounded-full text-red-200 font-display tracking-tighter border border-red-500/30 whitespace-nowrap animate-in fade-in zoom-in slide-in-from-bottom-2 duration-300">
-                                                コンバット
-                                            </span>
+
+                                        {/* Japanese Sub-label (appears on hover or active) */}
+                                        <span className={`
+                                            absolute -top-8 text-[10px] font-japanese text-gold-mid
+                                            transition-all duration-300 pointer-events-none
+                                            ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-70 group-hover:translate-y-0'}
+                                        `}>
+                                            {ja}
+                                        </span>
+
+                                        {/* Active Indicator Dot */}
+                                        {isActive && (
+                                            <div className="absolute -bottom-1 w-1 h-1 rounded-full bg-gold-bright shadow-accent-sm" />
                                         )}
                                     </button>
-                                ))}
-                            </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </nav>
@@ -173,10 +174,13 @@ export function AppShell({
                 {/* Toast */}
                 {toast && (
                     <div
-                        className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50"
+                        className="fixed top-24 left-1/2 -translate-x-1/2 glass-card px-6 py-4 rounded-xl z-[100] animate-slide-down flex items-center gap-3 border-l-4 border-gold-mid"
                         data-testid="toast-message"
                     >
-                        {toast}
+                        <div className="w-2 h-2 rounded-full bg-gold-bright animate-pulse" />
+                        <span className="font-display text-sm uppercase tracking-widest text-white">
+                            {toast}
+                        </span>
                     </div>
                 )}
 

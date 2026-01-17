@@ -5,11 +5,17 @@ import { StatsView } from './StatsView';
 import { GrimoireView } from './GrimoireView';
 import { AttunementWidget } from '../widgets/AttunementWidget';
 
+import { CharacterData } from '../../types';
+import { AppDispatch } from '../../store';
+
 interface CharacterHubViewProps {
-    character: any; // wiring entire character object for sub-views
+    character: CharacterData;
     handleCastFromInventory?: (spellName: string) => void;
-    dispatch: any;
-    actions: any; // Pass actions map
+    dispatch: AppDispatch;
+    actions: {
+        itemAttuned: (itemName: string) => any;
+        itemUnattuned: (index: number) => any;
+    };
 }
 
 type SubTab = 'bio' | 'stats' | 'arcana';
@@ -17,7 +23,7 @@ type SubTab = 'bio' | 'stats' | 'arcana';
 export function CharacterHubView({ character, dispatch, actions }: CharacterHubViewProps) {
     const [subTab, setSubTab] = useState<SubTab>('bio');
 
-    const tabs: { id: SubTab, label: string, icon: any }[] = [
+    const tabs: { id: SubTab, label: string, icon: React.ComponentType<{ size?: number | string }> }[] = [
         { id: 'bio', label: 'Biography', icon: User },
         { id: 'stats', label: 'Attributes', icon: Brain },
         { id: 'arcana', label: 'Grimoire', icon: BookOpen },

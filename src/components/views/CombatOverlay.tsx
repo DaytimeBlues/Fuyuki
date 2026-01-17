@@ -78,32 +78,34 @@ export const CombatOverlay: React.FC = () => {
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in zoom-in duration-200"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-bg-void/90 backdrop-blur-xl transition-all duration-300"
             data-testid="combat-overlay"
         >
-            <div className="w-full max-w-lg">
+            {/* Kyoto Decorative Elements */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 flex flex-col items-center justify-center opacity-10 pointer-events-none select-none">
+                <div className="writing-vertical-rl text-[8rem] font-black font-japanese text-white leading-none">
+                    戦闘
+                </div>
+            </div>
+
+            {/* Background Grid Texture (Ma) */}
+            <div className="absolute inset-0 bg-[url('/assets/grid-pattern.png')] opacity-5 pointer-events-none mix-blend-overlay" />
+
+            <div className="w-full max-w-lg relative z-10 animate-scale-in">
+                {/* Header Decoration */}
+                <div className="absolute -top-12 left-0 right-0 flex justify-center pointer-events-none">
+                    <div className="h-px w-24 bg-gradient-to-r from-transparent via-gold-mid to-transparent" />
+                </div>
+
                 <ResolutionPanel
                     spell={spellV3}
                     slotLevel={casting.slotLevel || spell.lvl}
-                    onHit={() => {
-                        // Logic to apply damage to target minion would go here
-                        dispatch(castingCompletedWithSlot());
-                    }}
-                    onMiss={() => {
-                        dispatch(castingCompletedWithSlot());
-                    }}
-                    onPass={() => {
-                        dispatch(castingCompletedWithSlot());
-                    }}
-                    onFail={() => {
-                        dispatch(castingCompletedWithSlot());
-                    }}
-                    onApply={() => {
-                        dispatch(castingCompletedWithSlot());
-                    }}
-                    onCancel={() => {
-                        dispatch(castingCancelled());
-                    }}
+                    onHit={() => dispatch(castingCompletedWithSlot())}
+                    onMiss={() => dispatch(castingCompletedWithSlot())}
+                    onPass={() => dispatch(castingCompletedWithSlot())}
+                    onFail={() => dispatch(castingCompletedWithSlot())}
+                    onApply={() => dispatch(castingCompletedWithSlot())}
+                    onCancel={() => dispatch(castingCancelled())}
                 />
             </div>
         </div>

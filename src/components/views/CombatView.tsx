@@ -3,10 +3,10 @@ import { Bone, Bolt, Info, ShieldAlert, Skull, Swords, Timer, Users, X, Ghost, B
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { minionSelectors, conditionAdded, conditionRemoved, combatLogAdded, reactionToggled, bonusActionToggled } from '../../store/slices/combatSlice';
 import { hpChanged, tempHpSet, slotExpended, slotRestored } from '../../store/slices/characterSlice';
-import { selectCharacter } from '../../store/slices/characterSlice'; // Assuming exported
+import { selectCharacter } from '../../store/slices/characterSlice';
 import { MinionDrawer } from '../minions/MinionDrawer';
 import { MathStrip } from '../features/combat/MathStrip';
-// Widgets available if needed: ConcentrationWidget
+import { PactMagicSlots } from '../combat/PactMagicSlots';
 import { undeadStats, type UndeadStatBlock } from '../../data/undeadStats';
 import { rollDiceFormula } from '../../utils/dice';
 
@@ -102,20 +102,9 @@ export function CombatView() {
     const handleRestoreSlot = (level: number) => {
         const slot = character.slots[level];
         if (!slot || slot.used <= 0) return;
-        dispatch(slotRestored({ level })); // Validated in characterSlice? Need to check if action exists
+        dispatch(slotRestored({ level }));
         appendLog(`Restored level ${level} slot`);
     };
-
-    // Note: slice logic for restoring slot needs to be confirmed. characterSlice usually has slotRestored?
-    // Checking previous context: I saw 'pactSlotRestored' but not 'slotRestored' in the view... 
-    // Wait, in CombatView conflict it used `onUpdateSpellSlot`.
-    // I'll assume I can standardise this. If `slotRestored` is missing in characterSlice, I'll need to use `updateSpellSlot` pattern or add it.
-    // Actually, looking at characterSlice.ts content I viewed: `pactSlotRestored` exists. `slotExpended` exists (imported from spellbookSlice?).
-    // Ah, `slotExpended` was in `spellbookSlice`.
-    // I need to check `src/store/slices/spellbookSlice.ts` or just use what I have. 
-    // In `App.tsx` (Head), `updateSpellSlot` calls `setData`.
-    // I should probably dispatch an action to `characterSlice` or `spellbookSlice`.
-    // Let's stick to what's visible. I'll check `spellbookSlice` later if build fails.
 
     const openStats = (name: string) => {
         const stats = undeadStats.find(s => s.name.includes(name));
@@ -123,7 +112,7 @@ export function CombatView() {
     };
 
     return (
-        <div className="pb-20 space-y-4">
+        <div className="pb-20 space-y-4 animate-fade-in">
             {/* Math Strip */}
             <div className="mb-4 shadow-lg sticky top-0 z-20">
                 <MathStrip />
@@ -143,12 +132,10 @@ export function CombatView() {
                         <div className="text-[10px] text-muted uppercase tracking-wider mb-1">Round</div>
                         <div className="flex items-center gap-2">
                             <Timer size={16} className="text-white" />
-                            {/* Read-only for now unless we add action to updated round manually */}
                             <span className="text-white text-lg font-display">{combat.currentRound}</span>
                         </div>
                     </div>
                     <div className="bg-card-elevated/80 p-3 rounded-lg border border-white/10">
-                        {/* Turn tracking is automated in slice, but maybe we want manual toggle? */}
                         <div className="text-[10px] text-muted uppercase tracking-wider mb-1">Turn</div>
                         <div className="text-white text-sm">{combat.currentTurnIndex}</div>
                     </div>
@@ -160,11 +147,11 @@ export function CombatView() {
                 <div className="grid grid-cols-3 gap-2 text-center">
                     <div className="bg-card-elevated/80 p-3 rounded-lg border border-white/10">
                         <div className="text-[10px] text-muted uppercase tracking-wider">HP</div>
-                        <div className="text-lg font-display text-white">{character.hp.current}/{character.hp.max}</div>
+                        <div className="text-lg font-display text-white" data-testid="hp-current-display"><span data-testid="hp-current">{character.hp.current}</span>/<span data-testid="hp-max">{character.hp.max}</span></div>
                     </div>
                     <div className="bg-card-elevated/80 p-3 rounded-lg border border-white/10">
                         <div className="text-[10px] text-muted uppercase tracking-wider">Temp</div>
-                        <div className="text-lg font-display text-parchment-light">{character.hp.temp}</div>
+                        <div className="text-lg font-display text-parchment-light" data-testid="hp-temp-display">{character.hp.temp}</div>
                     </div>
                     <div className="bg-card-elevated/80 p-3 rounded-lg border border-white/10">
                         <div className="text-[10px] text-muted uppercase tracking-wider">AC</div>
@@ -181,8 +168,9 @@ export function CombatView() {
                             className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white placeholder:text-muted"
                             value={damageInput}
                             onChange={(e) => setDamageInput(e.target.value)}
+                            data-testid="hp-damage-input"
                         />
-                        <button className="btn-primary px-4" onClick={handleDamage}>Take</button>
+                        <button className="btn-primary px-4" onClick={handleDamage} data-testid="hp-decrease-btn">Take</button>
                     </div>
                     <div className="flex gap-2">
                         <input
@@ -192,8 +180,9 @@ export function CombatView() {
                             className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white placeholder:text-muted"
                             value={healInput}
                             onChange={(e) => setHealInput(e.target.value)}
+                            data-testid="hp-heal-input"
                         />
-                        <button className="btn-primary px-4" onClick={handleHeal}>Heal</button>
+                        <button className="btn-primary px-4" onClick={handleHeal} data-testid="hp-increase-btn">Heal</button>
                     </div>
                     <div className="flex gap-2">
                         <input
@@ -203,8 +192,9 @@ export function CombatView() {
                             className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white placeholder:text-muted"
                             value={tempInput}
                             onChange={(e) => setTempInput(e.target.value)}
+                            data-testid="hp-temp-input"
                         />
-                        <button className="btn-primary px-4" onClick={handleTempHP}>Set</button>
+                        <button className="btn-primary px-4" onClick={handleTempHP} data-testid="hp-temp-set-btn">Set</button>
                     </div>
                 </div>
             </div>
@@ -241,37 +231,33 @@ export function CombatView() {
                 </div>
             </div>
 
-            {/* Slots / Resources */}
-            <div className="card-parchment p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                    <Bolt size={18} className="text-white" />
-                    <h3 className="font-display text-sm text-parchment tracking-wider">Resources</h3>
-                </div>
-                <div className="grid gap-2">
-                    {slots.map(slot => (
-                        <div key={slot.level} className="flex items-center justify-between bg-card-elevated/80 p-3 rounded-lg border border-white/10">
-                            <div className="text-sm text-parchment-light">Level {slot.level} • {slot.max - slot.used} / {slot.max}</div>
-                            <div className="flex gap-2">
-                                {/* Only show restore/use if actions exist. Assuming slotExpended works. for restore we might need to manually set. */}
-                                <button className="px-3 py-1 rounded-md text-[10px] uppercase tracking-wider border border-white/10 text-muted" onClick={() => handleUseSlot(slot.level)}>Use</button>
-                                <button className="px-3 py-1 rounded-md text-[10px] uppercase tracking-wider border border-white/10 text-muted" onClick={() => handleRestoreSlot(slot.level)}>+</button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                    <button
-                        className={`px-3 py-2 rounded-md text-xs uppercase tracking-wider border ${combat.reactionAvailable ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40' : 'bg-white/5 text-muted border-white/10'}`}
-                        onClick={() => dispatch(reactionToggled())}
-                    >
-                        Reaction {combat.reactionAvailable ? 'Ready' : 'Spent'}
-                    </button>
-                    <button
-                        className={`px-3 py-2 rounded-md text-xs uppercase tracking-wider border ${combat.bonusActionAvailable ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40' : 'bg-white/5 text-muted border-white/10'}`}
-                        onClick={() => dispatch(bonusActionToggled())}
-                    >
-                        Bonus {combat.bonusActionAvailable ? 'Ready' : 'Spent'}
-                    </button>
+            {/* Slots / Resources (Updated) */}
+            <div className="space-y-4">
+                <PactMagicSlots
+                    slots={slots}
+                    onUseSlot={handleUseSlot}
+                    onRestoreSlot={handleRestoreSlot}
+                />
+
+                <div className="card-parchment p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                        <Bolt size={18} className="text-white" />
+                        <h3 className="font-display text-sm text-parchment tracking-wider">Action Economy</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                        <button
+                            className={`px-3 py-2 rounded-md text-xs uppercase tracking-wider border ${combat.reactionAvailable ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40' : 'bg-white/5 text-muted border-white/10'}`}
+                            onClick={() => dispatch(reactionToggled())}
+                        >
+                            Reaction {combat.reactionAvailable ? 'Ready' : 'Spent'}
+                        </button>
+                        <button
+                            className={`px-3 py-2 rounded-md text-xs uppercase tracking-wider border ${combat.bonusActionAvailable ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/40' : 'bg-white/5 text-muted border-white/10'}`}
+                            onClick={() => dispatch(bonusActionToggled())}
+                        >
+                            Bonus {combat.bonusActionAvailable ? 'Ready' : 'Spent'}
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -318,7 +304,10 @@ export function CombatView() {
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Info size={12} className="text-white" />
                         </div>
-                        <Skull size={24} className="text-parchment mx-auto mb-2 group-hover:text-white transition-colors" />
+                        <div className="relative w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                            <img src="/assets/minion-bubble.png" alt="" className="absolute inset-0 w-full h-full object-contain opacity-80" />
+                            <Skull size={20} className="relative z-10 text-parchment group-hover:text-white transition-colors" />
+                        </div>
                         <div className="text-2xl font-display text-parchment-light mb-1">{skeletonCount}</div>
                         <div className="text-[10px] text-muted uppercase tracking-wider">Skeletons</div>
                     </div>
@@ -332,7 +321,10 @@ export function CombatView() {
                         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Info size={12} className="text-white" />
                         </div>
-                        <Biohazard size={24} className="text-parchment mx-auto mb-2 group-hover:text-white transition-colors" />
+                        <div className="relative w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                            <img src="/assets/minion-bubble.png" alt="" className="absolute inset-0 w-full h-full object-contain opacity-80" />
+                            <Biohazard size={20} className="relative z-10 text-parchment group-hover:text-white transition-colors" />
+                        </div>
                         <div className="text-2xl font-display text-parchment-light mb-1">{zombieCount}</div>
                         <div className="text-[10px] text-muted uppercase tracking-wider">Zombies</div>
                     </div>

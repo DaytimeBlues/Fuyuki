@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Minus, Plus, Trash2, Skull, Biohazard } from 'lucide-react';
 import type { Minion } from '../../types';
 
@@ -16,22 +16,32 @@ function MinionItem({ minion, onUpdateMinion, onRemoveMinion }: {
     const [isDamaged, setIsDamaged] = useState(false);
     const [isHealing, setIsHealing] = useState(false);
     const [animationKey, setAnimationKey] = useState(0);
-    const [prevHp, setPrevHp] = useState(minion.hp);
+    const prevHpRef = useRef(minion.hp);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        if (minion.hp < prevHp) {
+        if (minion.hp < prevHpRef.current) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsDamaged(true);
             setIsHealing(false);
             setAnimationKey(prev => prev + 1);
-            setTimeout(() => setIsDamaged(false), 400);
-        } else if (minion.hp > prevHp) {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            timeoutRef.current = setTimeout(() => setIsDamaged(false), 400);
+        } else if (minion.hp > prevHpRef.current) {
             setIsHealing(true);
             setIsDamaged(false);
             setAnimationKey(prev => prev + 1);
-            setTimeout(() => setIsHealing(false), 400);
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            timeoutRef.current = setTimeout(() => setIsHealing(false), 400);
         }
-        setPrevHp(minion.hp);
-    }, [minion.hp, prevHp]);
+        prevHpRef.current = minion.hp;
+    }, [minion.hp]);
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        };
+    }, []);
 
     return (
         <div

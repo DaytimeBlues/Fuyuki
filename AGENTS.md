@@ -17,8 +17,20 @@
   - **Corners:** 8px rounding (Soft but precise). 4px for inner elements.
   - **Borders:** Thin, subtle borders (`1px solid #333`). Active elements glow.
   - **Glassmorphism:** Used sparingly for overlays (`backdrop-blur-xl`).
+  - **Inkan (Seals):** Use red accent stamps for "Verified" or "Critical" statuses.
 
-## 2. Interaction Design Laws
+## 2. "Kyoto Deep" - Japanese Aesthetic Layer
+
+- **Typography Integration:**
+  - **Vertical Text (`writing-mode: vertical-rl`):** Use for decorative sidebars or status indicators (e.g., "INITIATIVE" -> 「イニシアチブ」).
+  - **Hiragana/Katakana Subtitles:** Every major English header must have a ghostly Japanese subtile (opacity 0.3) behind or below it.
+    - *Combat* -> コンバット
+    - *Spells* -> 呪文
+    - *Stats* -> ステータス
+- **"Ma" (Negative Space):** meaningful emptiness. Do not fill every pixel. Let the background texture breathe.
+- **Wabi-Sabi:** Embrace asymmetry in layout.
+
+## 3. Interaction Design Laws
 
 - **Aesthetic-Usability Effect:** Make it beautiful so users forgive minor issues. High-fidelity visuals are a priority, not an afterthought.
 - **Fitts's Law:** Interactive targets (buttons) must be at least **48px** height/width. Place primary actions at screen edges/corners for easy thumb access.
