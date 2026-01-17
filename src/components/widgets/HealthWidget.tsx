@@ -44,8 +44,6 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
         setTempInput('');
     }, [tempInput, temp, onTempChange]);
 
-    const handleIncrement = useCallback(() => onChange(current + 1), [onChange, current]);
-    const handleDecrement = useCallback(() => onChange(current - 1), [onChange, current]);
     const handleClearTemp = useCallback(() => onTempChange(0), [onTempChange]);
 
     return (
@@ -96,7 +94,6 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                             onClick={() => handleHpChange(current - 1)}
                             className="btn-fantasy flex-1 flex flex-col items-center justify-center py-2 h-14 active:bg-red-900/30 active:border-red-500/50 transition-colors"
                             data-testid="hp-decrease-btn"
-
                         >
                             <Minus size={20} className="mb-0.5" />
                             <span className="text-[8px] font-display text-muted uppercase tracking-widest leading-none">Damage</span>
@@ -105,7 +102,6 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                             onClick={() => handleHpChange(current + 1)}
                             className="btn-fantasy flex-1 flex flex-col items-center justify-center py-2 h-14 active:bg-green-900/30 active:border-green-500/50 transition-colors"
                             data-testid="hp-increase-btn"
-
                         >
                             <Plus size={20} className="mb-0.5" />
                             <span className="text-[8px] font-display text-muted uppercase tracking-widest leading-none">Heal</span>
@@ -137,10 +133,9 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                     </button>
                     {temp > 0 && (
                         <button
-                            onClick={() => onTempChange(0)}
+                            onClick={handleClearTemp}
                             className="text-xs text-red-400 hover:text-red-300 border border-red-500/30 px-2 py-1 rounded bg-red-900/20"
                             data-testid="hp-temp-clear-btn"
-
                         >
                             Clear
                         </button>
