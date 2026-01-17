@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
-import { Bone, Bolt, HeartPulse, Info, ShieldAlert, Skull, Swords, Timer, Users, Zap, X, Shield, Sword, Ghost, Biohazard, ChevronUp, ChevronDown } from 'lucide-react';
+import { Bone, Bolt, Info, ShieldAlert, Skull, Swords, Timer, Users, X, Ghost, Biohazard, ChevronUp, ChevronDown } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { minionSelectors, conditionAdded, conditionRemoved, combatLogAdded, undeadCommandSet, reactionToggled, bonusActionToggled, concentrationStarted, concentrationBroken } from '../../store/slices/combatSlice';
-import { hpChanged, tempHpSet, deathSaveChanged, slotExpended, slotRestored, concentrationSet } from '../../store/slices/characterSlice';
+import { minionSelectors, conditionAdded, conditionRemoved, combatLogAdded, reactionToggled, bonusActionToggled } from '../../store/slices/combatSlice';
+import { hpChanged, tempHpSet, slotExpended, slotRestored } from '../../store/slices/characterSlice';
 import { selectCharacter } from '../../store/slices/characterSlice'; // Assuming exported
 import { MinionDrawer } from '../minions/MinionDrawer';
 import { MathStrip } from '../features/combat/MathStrip';
-import { ConcentrationWidget, DeathSavesWidget } from '../widgets';
+// Widgets available if needed: ConcentrationWidget
 import { undeadStats, type UndeadStatBlock } from '../../data/undeadStats';
 import { rollDiceFormula } from '../../utils/dice';
 
@@ -374,7 +374,7 @@ export function CombatView() {
                             </div>
                         </div>
                         <div className="flex items-center gap-3 p-3 rounded-lg bg-card-elevated/60 border border-white/10 cursor-pointer" onClick={() => openStats('Skeletal')}>
-                            <Sword size={18} className="text-parchment" />
+                            <Swords size={18} className="text-parchment" />
                             <div className="flex-1">
                                 <div className="text-sm font-display text-parchment-light">Skeletal</div>
                                 <div className="text-xs text-muted">Ranged 150ft • 2d4+7 Necrotic</div>

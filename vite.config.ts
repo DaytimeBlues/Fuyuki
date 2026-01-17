@@ -5,6 +5,7 @@ import path from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Fuyuki/', // GitHub Pages base path
   plugins: [
     react(),
     VitePWA({

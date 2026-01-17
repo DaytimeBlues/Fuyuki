@@ -141,7 +141,7 @@ export const MinionCard: React.FC<MinionCardProps> = ({
                     {selectedAction === 'attack' ? (
                         <div className="space-y-2">
                             <div className="text-xs text-stone-500 uppercase tracking-wider">Select Attack</div>
-                            {minion.attacks.map((attack, idx) => (
+                            {minion.attacks?.map((attack, idx) => (
                                 <div key={idx} className="p-3 bg-stone-950 rounded-lg">
                                     <div className="flex justify-between items-center mb-2">
                                         <h5 className="font-semibold text-stone-200">{attack.name}</h5>
@@ -230,9 +230,9 @@ export const MinionCard: React.FC<MinionCardProps> = ({
                     )}
 
                     {/* Conditions */}
-                    {minion.conditions.length > 0 && (
+                    {(minion.conditions ?? []).length > 0 && (
                         <div className="flex flex-wrap gap-1 pt-2 border-t border-stone-800">
-                            {minion.conditions.map((condition, idx) => (
+                            {(minion.conditions ?? []).map((condition, idx) => (
                                 <span
                                     key={idx}
                                     className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-purple-900/30 text-purple-400 border border-purple-900/30 rounded"
