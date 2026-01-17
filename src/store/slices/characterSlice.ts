@@ -191,7 +191,29 @@ export const characterSlice = createSlice({
             state.toast = `${action.payload.ability.toUpperCase()} updated to ${action.payload.newScore}`;
         },
 
-        // --- ATTUNEMENT ---
+        // --- ATTUNEMENT / EQUIPMENT ---
+        itemEquipped: (state, action: PayloadAction<number>) => {
+            const item = state.inventory[action.payload];
+            if (!item) return;
+
+            // Simple toggle
+            const wasEquipped = !!item.equipped;
+
+            // If equipping armor, unequip other armor
+            if (!wasEquipped && item.type === 'armor') {
+                state.inventory.forEach(i => {
+                    if (i.type === 'armor') i.equipped = false;
+                });
+            }
+
+            item.equipped = !wasEquipped;
+
+            // Recalculate derived data (AC/stats)
+            const updated = recalculateDerivedCharacterData(state);
+            Object.assign(state, updated);
+
+            state.toast = `${item.name} ${item.equipped ? 'Equipped' : 'Unequipped'}`;
+        },
         itemAttuned: (state, action: PayloadAction<string>) => {
             if (state.attunement.length < 3) {
                 state.attunement.push(action.payload);
@@ -295,6 +317,7 @@ export const {
     longRestCompleted,
     levelChanged,
     abilityScoreChanged,
+    itemEquipped,
     itemAttuned,
     itemUnattuned,
     inventoryItemAdded,

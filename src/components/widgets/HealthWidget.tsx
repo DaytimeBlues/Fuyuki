@@ -12,15 +12,23 @@ interface HealthWidgetProps {
 export function HealthWidget({ current, max, temp, onChange, onTempChange }: HealthWidgetProps) {
     const [tempInput, setTempInput] = useState('');
     const [isDamaged, setIsDamaged] = useState(false);
+    const [isHealing, setIsHealing] = useState(false);
+    const [animationKey, setAnimationKey] = useState(0);
     const percentage = Math.min(100, Math.max(0, (current / max) * 100));
     const isCritical = current === 0;
     const isLow = current <= 10 && current > 0; // Red at 10 HP or below
 
     // Handle HP Change with Animation
     const handleHpChange = (newHp: number) => {
+        setAnimationKey(prev => prev + 1);
         if (newHp < current) {
             setIsDamaged(true);
+            setIsHealing(false);
             setTimeout(() => setIsDamaged(false), 400); // Match animation duration
+        } else if (newHp > current) {
+            setIsHealing(true);
+            setIsDamaged(false);
+            setTimeout(() => setIsHealing(false), 400);
         }
         onChange(newHp);
     };
@@ -53,7 +61,12 @@ export function HealthWidget({ current, max, temp, onChange, onTempChange }: Hea
                 {/* Circular HP Display */}
                 <div className={`stat-circle ${isCritical ? 'border-red-500' : ''} ${isLow ? 'border-orange-500' : ''}`}>
                     <div className="text-center">
-                        <span className={`font-display text-2xl ${isCritical ? 'text-red-400' : isLow ? 'text-orange-400' : 'text-parchment-light'}`} data-testid="hp-current">
+                        <span
+                            key={animationKey}
+                            className={`font-display text-2xl ${isCritical ? 'text-red-400' : isLow ? 'text-orange-400' : 'text-parchment-light'
+                                } ${isDamaged ? 'animate-number-pop-damage' : isHealing ? 'animate-number-pop-heal' : ''}`}
+                            data-testid="hp-current"
+                        >
                             {current}
                         </span>
                         <span className="text-muted text-sm" data-testid="hp-max">/{max}</span>

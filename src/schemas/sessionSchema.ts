@@ -29,7 +29,8 @@ export const SessionSchema = z.object({
     // We validate structure but allow some flexibility for evolved character data
     // to avoid breaking old saves too aggressively before comprehensive migration logic
     // RELAXED to z.any() to fix persistence false negatives during verifying
-    characterData: z.any(),
+    // Relaxed validation for characterData to allow evolving schemas without blocking loads
+    characterData: z.record(z.any()).or(z.any()),
 
     minions: z.array(MinionSchema).optional().default([]),
 

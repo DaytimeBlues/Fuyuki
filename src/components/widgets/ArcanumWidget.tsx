@@ -43,7 +43,7 @@ export const ArcanumWidget: React.FC = () => {
                         >
                             <span className="text-xs font-bold">{lvl}th</span>
                             <div
-                                className={`w-2 h-2 rounded-full ${isUsed ? 'bg-bg' : 'bg-accent shadow-[0_0_8px_rgba(201,162,39,0.4)]'}`}
+                                className={`w-2 h-2 rounded-full ${isUsed ? 'bg-bg' : 'bg-accent shadow-accent-sm'}`}
                                 data-testid={`arcanum-orb-${lvl}`}
                             />
                         </button>

@@ -130,6 +130,26 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
     // Warlock uses CHA for DC
     const dc = getSpellSaveDC(profBonus, abilityMods.cha);
 
+    // Calculate AC from equipment
+    const equippedArmor = prev.inventory.find(item => item.type === 'armor' && item.equipped);
+    let baseAC = prev.baseAC;
+    let dexBonus = abilityMods.dex;
+
+    if (equippedArmor && equippedArmor.armorStats) {
+        baseAC = equippedArmor.armorStats.baseAC;
+        if (equippedArmor.armorStats.dexCap !== undefined) {
+            dexBonus = Math.min(dexBonus, equippedArmor.armorStats.dexCap);
+        }
+    }
+
+    // Mage Armor check (standard 13 + Dex)
+    if (prev.mageArmour && (!equippedArmor || (equippedArmor.armorStats?.baseAC || 0) < 13)) {
+        baseAC = 13;
+        dexBonus = abilityMods.dex; // Mage Armor doesn't have a dex cap
+    }
+
+    const currentAC = baseAC + dexBonus + (prev.shield ? 2 : 0);
+
     // Filter standard slots to match level if multiclassing or generic
     const slots = { ...prev.slots };
     const standardMaxSlots = FULL_CASTER_SLOTS[level] || {};
@@ -153,6 +173,7 @@ export function recalculateDerivedCharacterData(prev: CharacterData): CharacterD
         abilityMods,
         profBonus,
         dc,
+        baseAC: currentAC, // Store calculated AC (base + dex + shield)
         hp: { ...prev.hp, current: currentHP, max: maxHP },
         hitDice: { ...prev.hitDice, current: hitDiceCurrent, max: hitDiceMax },
         pactSlots,

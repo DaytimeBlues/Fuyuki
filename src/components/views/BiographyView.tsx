@@ -7,16 +7,16 @@ export function BiographyView() {
             {/* Hero Image */}
             <div className="relative h-56 rounded-xl overflow-hidden mb-6 border border-white/20 shadow-2xl shadow-white/5">
                 <img
-                    src="/assets/aramancia-portrait.jpg"
-                    alt="Aramancia Vaelithor"
-                    className="w-full h-full object-cover object-top"
+                    src="/assets/fuyuki-portrait.png"
+                    alt="Fuyuki"
+                    className="w-full h-full object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-bg-dark via-bg-dark/60 to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4">
                     <h2 className="font-display text-2xl text-parchment-light tracking-[0.15em] drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                        Aramancia
+                        Fuyuki
                     </h2>
-                    <p className="text-xs text-white tracking-wider">Exiled Scholar of House Vaelithor</p>
+                    <p className="text-xs text-white tracking-wider">Kitsune Warlock</p>
                 </div>
                 {/* Corner decorations */}
                 <div className="absolute top-3 left-3 w-6 h-6 border-l-2 border-t-2 border-white/30" />

@@ -6,6 +6,10 @@ interface AppShellProps {
     children: React.ReactNode;
     activeTab: string;
     onTabChange: (tab: string) => void;
+    toast?: string | null;
+    clearToast?: () => void;
+    showSessionPicker?: boolean;
+    renderSessionPicker?: () => React.ReactNode;
 }
 
 const navItems = [
@@ -16,7 +20,14 @@ const navItems = [
     { id: 'more', icon: Menu, label: 'More' },
 ];
 
-export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
+export function AppShell({
+    children,
+    activeTab,
+    onTabChange,
+    toast,
+    showSessionPicker,
+    renderSessionPicker
+}: AppShellProps) {
     return (
         <>
             {/* Background Image - OUTSIDE main container */}
@@ -66,13 +77,13 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
                             <div className="flex items-center gap-3">
                                 <div className="text-right">
                                     <p className="text-xs text-parchment font-display">Level 5</p>
-                                    <p className="text-[10px] text-muted">Necromancer</p>
+                                    <p className="text-[10px] text-muted">Kitsune Warlock</p>
                                 </div>
                                 {/* Character Portrait */}
                                 <div className="w-10 h-10 rounded-full border-2 border-white/30 overflow-hidden bg-card-elevated shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                                     <img
-                                        src="/assets/aramancia-portrait.jpg"
-                                        alt="Aramancia"
+                                        src="/assets/fuyuki-portrait.png"
+                                        alt="Fuyuki"
                                         className="w-full h-full object-cover"
                                         onError={(e) => {
                                             e.currentTarget.style.display = 'none';
@@ -148,6 +159,19 @@ export function AppShell({ children, activeTab, onTabChange }: AppShellProps) {
 
                 {/* Global Overlays */}
                 <ConcentrationFloatingBubble />
+
+                {/* Toast */}
+                {toast && (
+                    <div
+                        className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white/95 text-black px-6 py-3 rounded-lg shadow-xl shadow-white/20 z-[100] animate-slide-up font-display text-sm uppercase tracking-widest border border-white/50"
+                        data-testid="toast-message"
+                    >
+                        {toast}
+                    </div>
+                )}
+
+                {/* Session Picker Modal */}
+                {showSessionPicker && renderSessionPicker && renderSessionPicker()}
             </div>
 
             {/* Hide scrollbar but keep functionality */}

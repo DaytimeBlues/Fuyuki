@@ -53,8 +53,28 @@ export const initialCharacterData: CharacterData = {
     concentration: null,
     attunement: [],
     inventory: [
-        { name: 'Arcane Focus (Rod)' },
-        { name: 'Leather Armor' },
+        {
+            name: 'Pact Rapier',
+            type: 'weapon',
+            equipped: true,
+            weaponStats: {
+                damage: '1d8',
+                damageType: 'Piercing',
+                bonus: 1,
+                properties: ['Finesse'],
+                isPactWeapon: true
+            },
+            description: 'A sleek black rod that transforms into a rapier of shadow.'
+        },
+        {
+            name: 'Studded Leather',
+            type: 'armor',
+            equipped: true,
+            armorStats: {
+                baseAC: 12
+            },
+            description: 'Reinforced leather armor with dark steel studs.'
+        },
         { name: "Dungeoneer's Pack" }
     ],
     preparedSpells: [],

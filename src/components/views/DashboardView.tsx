@@ -25,7 +25,7 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
             {/* Vitals Section */}
             <section>
                 <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-3 pl-1">Vitals</h3>
-                <div className="stagger-1">
+                <div className="stagger-1 animate-slide-up">
                     <HealthWidget
                         current={character.hp.current}
                         max={character.hp.max}
@@ -36,7 +36,7 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 mt-4">
-                    <div className="stagger-2">
+                    <div className="stagger-2 animate-slide-up">
                         <ConcentrationWidget
                             spell={character.concentration}
                             suggestions={spells
@@ -64,10 +64,10 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
             <section>
                 <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-3 pl-1 border-t border-white/5 pt-4">Resources</h3>
                 <div className="grid grid-cols-1 gap-4">
-                    <div className="stagger-4">
+                    <div className="stagger-4 animate-slide-up">
                         <PactSlotsWidget />
                     </div>
-                    <div className="stagger-5">
+                    <div className="stagger-5 animate-slide-up">
                         <ArcanumWidget />
                     </div>
                 </div>

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { inventoryItemAdded, inventoryItemRemoved, itemChargeConsumed, toastShown } from '../../store/slices/characterSlice';
+import { inventoryItemAdded, inventoryItemRemoved, itemChargeConsumed, toastShown, itemEquipped } from '../../store/slices/characterSlice';
 import { castingStarted, slotConfirmed } from '../../store/slices/combatSlice';
 import { InventoryItem } from '../../types';
-import { Backpack, Trash2, Plus, Zap, Wand2 } from 'lucide-react';
+import { Backpack, Trash2, Plus, Zap, Wand2, Swords as SwordsIcon, Shield } from 'lucide-react';
 import { spells } from '../../data/spells';
 
 export const InventoryView: React.FC = () => {
@@ -173,43 +173,79 @@ export const InventoryView: React.FC = () => {
                 {inventory.map((item, idx) => (
                     <div
                         key={idx}
-                        className="bg-stone-900/40 border border-stone-800 rounded-lg p-4 flex flex-col gap-3 group hover:border-stone-700 transition-colors"
+                        className={`bg-stone-900/40 border rounded-lg p-4 flex flex-col gap-3 group transition-all duration-300 ${item.equipped ? 'border-accent shadow-accent-subtle' : 'border-stone-800 hover:border-stone-700'
+                            }`}
                         data-testid={`inventory-item-${idx}`}
                     >
                         <div className="flex items-start justify-between">
-                            <div className="space-y-1">
-                                <h3 className="font-bold text-stone-300 flex items-center gap-2">
-                                    {item.name}
+                            <div className="space-y-1 flex-1">
+                                <div className="flex items-center gap-2">
+                                    {item.type === 'weapon' && <SwordsIcon size={14} className="text-accent" />}
+                                    {item.type === 'armor' && <Shield size={14} className="text-blue-400" />}
+                                    <h3 className={`font-display tracking-tight ${item.equipped ? 'text-white' : 'text-stone-300'}`}>
+                                        {item.name}
+                                    </h3>
                                     {item.charges && (
-                                        <span className="text-xs font-mono bg-stone-950 px-2 py-0.5 rounded text-cyan-500 border border-cyan-900/30">
+                                        <span className="text-[10px] font-mono bg-stone-950 px-2 py-0.5 rounded text-cyan-500 border border-cyan-900/30">
                                             {item.charges.current} / {item.charges.max}
                                         </span>
                                     )}
-                                </h3>
+                                </div>
                                 {item.description && (
-                                    <p className="text-sm text-stone-500">{item.description}</p>
+                                    <p className="text-xs text-stone-500 font-sans">{item.description}</p>
                                 )}
+
+                                {/* Item Stats Display */}
+                                <div className="flex gap-3 pt-1">
+                                    {item.weaponStats && (
+                                        <div className="flex items-center gap-1.5 bg-stone-950/50 px-2 py-0.5 rounded border border-white/5">
+                                            <span className="text-[10px] text-muted uppercase tracking-tighter">DMG:</span>
+                                            <span className="text-[11px] text-accent font-display">{item.weaponStats.damage}</span>
+                                            <span className="text-[9px] text-muted italic">{item.weaponStats.damageType}</span>
+                                        </div>
+                                    )}
+                                    {item.armorStats && (
+                                        <div className="flex items-center gap-1.5 bg-stone-950/50 px-2 py-0.5 rounded border border-white/5">
+                                            <span className="text-[10px] text-muted uppercase tracking-tighter">BASE AC:</span>
+                                            <span className="text-[11px] text-blue-400 font-display">{item.armorStats.baseAC}</span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-col items-end gap-2">
+                                <div className="flex items-center gap-1">
+                                    {(item.type === 'weapon' || item.type === 'armor') && (
+                                        <button
+                                            onClick={() => dispatch(itemEquipped(idx))}
+                                            className={`text-[10px] px-2 py-1 rounded border transition-all uppercase tracking-widest font-bold ${item.equipped
+                                                ? 'bg-accent text-bg-dark border-accent ring-2 ring-accent/20'
+                                                : 'bg-stone-800 text-stone-400 border-stone-700 hover:text-white hover:border-white/20'
+                                                }`}
+                                        >
+                                            {item.equipped ? 'Equipped' : 'Equip'}
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => handleDelete(idx)}
+                                        className="p-1.5 hover:bg-red-900/20 rounded text-stone-700 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                        data-testid={`item-delete-btn-${idx}`}
+                                        title="Delete Item"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+
                                 {item.charges && item.charges.current > 0 && !item.spells?.length && (
                                     <button
                                         onClick={() => handleUseCharge(idx)}
                                         title="Use Charge"
-                                        className="p-2 hover:bg-stone-800 rounded text-cyan-500 transition-colors"
+                                        className="p-2 bg-cyan-900/10 hover:bg-cyan-900/20 rounded text-cyan-500 transition-colors border border-cyan-500/20"
                                         data-testid={`item-use-charge-btn-${idx}`}
                                     >
                                         <Zap className="w-4 h-4" />
                                     </button>
                                 )}
-                                <button
-                                    onClick={() => handleDelete(idx)}
-                                    className="p-2 hover:bg-red-900/20 rounded text-red-900 hover:text-red-500 transition-colors"
-                                    data-testid={`item-delete-btn-${idx}`}
-                                    title="Delete Item"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                </button>
                             </div>
                         </div>
 

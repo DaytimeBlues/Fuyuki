@@ -97,7 +97,7 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onS
                 {/* Short Rest */}
                 <button
                     onClick={() => setShowShortRest(true)}
-                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_20px_rgba(201,162,39,0.05)]"
+                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-accent-subtle"
                     data-testid="short-rest-btn"
                 >
                     <div className="flex items-center gap-4 relative z-10">
@@ -123,7 +123,7 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onS
                             onLongRest();
                         }
                     }}
-                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-[0_0_25px_rgba(201,162,39,0.08)]"
+                    className="w-full card-parchment p-5 text-left group transition-all hover:shadow-accent-md"
                     data-testid="long-rest-btn"
                 >
                     <div className="flex items-center gap-4 relative z-10">

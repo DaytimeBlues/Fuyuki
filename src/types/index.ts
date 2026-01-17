@@ -79,6 +79,20 @@ export interface InventoryItem {
         max: number;
     };
     description?: string;
+    type?: 'weapon' | 'armor' | 'item';
+    equipped?: boolean;
+    weaponStats?: {
+        damage: string;
+        damageType: string;
+        bonus?: number;
+        properties?: string[];
+        isPactWeapon?: boolean;
+    };
+    armorStats?: {
+        baseAC: number;
+        dexCap?: number;
+        stealthDisadvantage?: boolean;
+    };
 }
 
 // Re-export Schema types
