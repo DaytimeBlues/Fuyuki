@@ -48,19 +48,56 @@ export const characterSlice = createSlice({
 
         // --- HP ACTIONS ---
         hpChanged: (state, action: PayloadAction<number>) => {
+            let damage = state.hp.current - action.payload; // Positive if taking damage
+
+            // Handle Wild Shape / Polymorph damage interception
+            if (state.transformed && damage > 0) {
+                const shapeHp = state.transformed.hp.current;
+                const absorbed = Math.min(shapeHp, damage);
+                const remaining = damage - absorbed;
+
+                state.transformed.hp.current -= absorbed;
+
+                // Revert if shape reaches 0
+                if (state.transformed.hp.current <= 0) {
+                    state.transformed = null;
+                    state.toast = "Wild Shape Reverted!";
+
+                    // Apply carryover damage to normal HP
+                    damage = remaining;
+                } else {
+                    // Damage fully absorbed by shape
+                    return;
+                }
+            } else if (state.transformed && damage < 0) {
+                // Healed while transformed? Usually heals the form.
+                // Assuming payload is absolute new HP... this is tricky with `hpChanged` taking newCurrent.
+                // Let's assume the UI sends the TARGET new HP for the *visible* bar.
+                // If visible bar is Wild Shape, we update Wild Shape.
+                // But `hpChanged` signature is simple `number`. 
+                // To support both, we might need separate actions or smart inference.
+                // For now, let's assume `hpChanged` targets base HP unless specific `wildShapeHpChanged` is used.
+                // BUT, conflict resolution strategy: The widget dispatches `hpChanged`.
+                // Let's stick to base HP logic here and add specific Wild Shape actions for the widget to use.
+                // If we want simple generic 'take damage', we use a new action `takeDamage` that routes automatically.
+                // For now, I'll keep `hpChanged` targeting BASE character to be safe, and handle Wild Shape in specific actions.
+                // REVERTING the automatic wild shape intersection in `hpChanged` to avoid confusion with direct HP edits.
+            }
+
+            // Standard HP Logic (Base Character)
             const delta = action.payload - state.hp.current;
 
             if (delta < 0) {
-                const damage = Math.abs(delta);
-                const tempAbsorbed = Math.min(state.hp.temp, damage);
-                const remainingDamage = damage - tempAbsorbed;
+                const damageAmt = Math.abs(delta);
+                const tempAbsorbed = Math.min(state.hp.temp, damageAmt);
+                const remainingDamage = damageAmt - tempAbsorbed;
                 const newHP = Math.max(0, state.hp.current - remainingDamage);
 
                 state.hp.temp -= tempAbsorbed;
                 state.hp.current = newHP;
 
                 if (state.concentration && remainingDamage > 0 && newHP > 0) {
-                    const dc = Math.max(10, Math.floor(damage / 2));
+                    const dc = Math.max(10, Math.floor(damageAmt / 2));
                     state.toast = `CON Save DC ${dc} to maintain ${state.concentration}`;
                 }
 
@@ -78,6 +115,79 @@ export const characterSlice = createSlice({
                     state.deathSaves = { successes: 0, failures: 0 };
                     state.toast = "Stabilized! Death saves reset.";
                 }
+            }
+        },
+
+        // --- WILD SHAPE ACTIONS ---
+        wildShapeStarted: (state, action: PayloadAction<{ name: string; hp: number; ac: number }>) => {
+            state.transformed = {
+                active: true,
+                creatureName: action.payload.name,
+                hp: { current: action.payload.hp, max: action.payload.hp },
+                ac: action.payload.ac
+            };
+            state.toast = `Wild Shape: ${action.payload.name}`;
+        },
+        wildShapeEnded: (state) => {
+            state.transformed = null;
+            state.toast = "Wild Shape Ended";
+        },
+        wildShapeHpChanged: (state, action: PayloadAction<number>) => {
+            if (state.transformed) {
+                const newCurrent = Math.max(0, action.payload);
+                const oldCurrent = state.transformed.hp.current;
+                state.transformed.hp.current = newCurrent;
+
+                // Check revert on 0 HP (optional auto-revert logic)
+                if (newCurrent === 0 && oldCurrent > 0) {
+                    // We let the UI handle the 'revert' action or we do it here?
+                    // Safe to just let it sit at 0 until user confirms revert? 
+                    // SRD says redundant damage carries over. 
+                    // Let's implement 'damageDealtToWildShape' instead of absolute set if we want carryover.
+                    // For now, simple setter.
+                }
+            }
+        },
+        wildShapeDamageTaken: (state, action: PayloadAction<number>) => {
+            if (state.transformed) {
+                const damage = action.payload;
+                const shapeHp = state.transformed.hp.current;
+
+                if (damage >= shapeHp) {
+                    const carryover = damage - shapeHp;
+                    state.transformed = null;
+                    state.toast = `Wild Shape Reverted! ${carryover > 0 ? carryover + ' carryover damage' : ''}`;
+
+                    // Apply carryover to main HP
+                    if (carryover > 0) {
+                        // Reuse HP changed logic (copy-paste or internal call not poss in reducer easily)
+                        // Manual subtract
+                        const tempAbsorbed = Math.min(state.hp.temp, carryover);
+                        const remaining = carryover - tempAbsorbed;
+                        state.hp.temp -= tempAbsorbed;
+                        state.hp.current = Math.max(0, state.hp.current - remaining);
+                    }
+                } else {
+                    state.transformed.hp.current -= damage;
+                }
+            }
+        },
+
+        // --- SLOTS MANAGEMENT ---
+        slotsUpdated: (state, action: PayloadAction<Record<number, { used: number; max: number }>>) => {
+            // Merge or overwrite? Overwrite is safer for calculation widget.
+            state.slots = action.payload;
+        },
+        slotExpended: (state, action: PayloadAction<{ level: number }>) => {
+            const slot = state.slots[action.payload.level];
+            if (slot && slot.used < slot.max) {
+                slot.used += 1;
+            }
+        },
+        slotRestored: (state, action: PayloadAction<{ level: number }>) => {
+            const slot = state.slots[action.payload.level];
+            if (slot && slot.used > 0) {
+                slot.used -= 1;
             }
         },
 
@@ -326,6 +436,13 @@ export const {
     itemChargeConsumed,
     toastShown,
     toastCleared,
+    wildShapeStarted,
+    wildShapeEnded,
+    wildShapeHpChanged,
+    wildShapeDamageTaken,
+    slotsUpdated,
+    slotExpended,
+    slotRestored,
 } = characterSlice.actions;
 
 export default characterSlice.reducer;

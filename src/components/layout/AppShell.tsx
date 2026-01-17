@@ -1,5 +1,5 @@
 import { Shield, Wand2, Swords, User, Menu, Feather } from 'lucide-react';
-import { BackgroundVideo } from './BackgroundVideo';
+// Background removed - using static image or CSS for battery optimization
 import { ConcentrationFloatingBubble } from '../ui/ConcentrationFloatingBubble';
 
 interface AppShellProps {
@@ -30,8 +30,18 @@ export function AppShell({
 }: AppShellProps) {
     return (
         <>
-            {/* Background Image - OUTSIDE main container */}
-            <BackgroundVideo />
+            {/* Kyoto Noir Background */}
+            <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                    src="/assets/fuyuki-background.jpg"
+                    alt=""
+                    className="w-full h-full object-cover opacity-40 scale-105"
+                    onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                    }}
+                />
+                <div className="absolute inset-0 bg-bg-void/80 mix-blend-multiply" />
+            </div>
 
             <div className="min-h-screen w-full relative z-10 bg-transparent text-text overflow-x-hidden" data-testid="app-ready">
                 {/* Gradient Overlays - above background */}

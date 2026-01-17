@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppDispatch } from '../../../store/hooks';
-import { minionRemoved, minionDamaged, Minion, MinionAttack } from '../../../store/slices/combatSlice';
+import { minionRemoved, minionDamaged } from '../../../store/slices/combatSlice';
+import type { Minion, MinionAttack } from '../../../types';
 import { Heart, Shield, Zap, Trash2, ChevronDown, ChevronUp, Minus } from 'lucide-react';
 
 interface MinionCardProps {

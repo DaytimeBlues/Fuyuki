@@ -218,6 +218,6 @@ export function minionToCombatant(minion: Minion, initiative: number): Combatant
         currentHp: minion.hp,
         ac: minion.ac,
         initiative,
-        conditions: [...minion.conditions],
+        conditions: minion.conditions ? [...minion.conditions] : [],
     };
 }

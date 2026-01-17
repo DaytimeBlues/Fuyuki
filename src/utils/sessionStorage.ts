@@ -8,7 +8,11 @@ const ACTIVE_SESSION_KEY = 'fuyuki-active-session';
  * Schema version for localStorage data migrations.
  * Increment when CharacterData or Session structure changes.
  */
-export const SCHEMA_VERSION = '2.0';
+/**
+ * Schema version for localStorage data migrations.
+ * Increment when CharacterData or Session structure changes.
+ */
+export const SCHEMA_VERSION = 2; // Numeric version
 
 export function generateSessionId(): string {
     return crypto.randomUUID();
@@ -25,11 +29,13 @@ function migrateSession(session: unknown): Session {
 
     const sessionObj = session as Record<string, unknown>;
 
-    // If no version or version < 2.0
-    const version = parseFloat((sessionObj.version as string) || '1.0');
+    // If no version or version < 2
+    const version = typeof sessionObj.version === 'number'
+        ? sessionObj.version
+        : parseFloat((sessionObj.version as string) || '1.0');
 
-    if (version < 2.0) {
-        // Migration to 2.0: Ensure minions have speed and lowercase types
+    if (version < 2) {
+        // Migration to 2: Ensure minions have speed and lowercase types
         if (Array.isArray(sessionObj.minions)) {
             sessionObj.minions = sessionObj.minions.map((m: unknown) => {
                 const minionObj = m as Record<string, unknown>;
@@ -40,7 +46,7 @@ function migrateSession(session: unknown): Session {
                 };
             });
         }
-        sessionObj.version = '2.0';
+        sessionObj.version = 2;
     }
 
     return sessionObj as unknown as Session;
@@ -150,7 +156,8 @@ export function createSession(sessionNumber: number, date: string, label?: strin
         label,
         characterData: { ...initialCharacterData },
         minions: [],
-        lastModified: new Date().toISOString()
+        lastModified: new Date().toISOString(),
+        version: SCHEMA_VERSION
     };
 
     const sessions = getSessions();

@@ -35,6 +35,14 @@ function renderWithStore(
         initiativeOrder: [],
         currentTurnIndex: 0,
         minions: minionState,
+        // New fields
+        log: [],
+        conditions: [],
+        undeadCommand: null,
+        reactionAvailable: true,
+        bonusActionAvailable: true,
+        inCombat: false,
+        stable: false,
         casting: {
           step: 'idle' as const,
           spellId: null,

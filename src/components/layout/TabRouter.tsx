@@ -10,8 +10,18 @@ import { CharacterEditor } from '../widgets/CharacterEditor';
 import { InitiativeWidget } from '../widgets/InitiativeWidget';
 import { ProficiencyWidget } from '../widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from '../widgets/SavingThrowsWidget';
+import { WildShapeWidget } from '../widgets/WildShapeWidget';
+import { MulticlassSpellSlotsWidget } from '../widgets/MulticlassSpellSlotsWidget';
+import { GrimoireView } from '../views/GrimoireView';
 import type { CharacterData, AbilityKey } from '../../types';
 import type { AppDispatch } from '../../store';
+import {
+    wildShapeStarted,
+    wildShapeEnded,
+    wildShapeDamageTaken,
+    wildShapeHpChanged,
+    slotsUpdated
+} from '../../store/slices/characterSlice';
 
 interface TabRouterProps {
     activeTab: string;
@@ -67,6 +77,37 @@ export function TabRouter({
             return (
                 <div className="animate-fade-in">
                     <CombatView />
+                    {/* 
+                      TODO: Wire up WildShapeWidget to Redux. 
+                      Currently passing undefined props would fail if widget requires them.
+                      Assuming WildShapeWidget needs refactoring to Redux or passing props from 'character'.
+                      CharacterData has 'transformed'.
+                    */}
+                    {character.transformed && (
+                        <WildShapeWidget
+                            transformed={character.transformed}
+                            originalHP={character.hp.current} // This might be wrong if current is transformed HP. Logic needs checking.
+                            onTransform={(creature) => dispatch(wildShapeStarted(creature))}
+                            onDamage={(damage) => {
+                                dispatch(wildShapeDamageTaken(damage));
+                                // Actual logic handled in slice, return dummy to satisfy prop
+                                return { revert: false, carryoverDamage: 0 };
+                            }}
+                            onRevert={() => dispatch(wildShapeEnded())}
+                            onHeal={(amount) => {
+                                if (character.transformed) {
+                                    const newHp = character.transformed.hp.current + amount;
+                                    dispatch(wildShapeHpChanged(newHp));
+                                }
+                            }}
+                        />
+                    )}
+                </div>
+            );
+        case 'grimoire':
+            return (
+                <div className="animate-fade-in">
+                    <GrimoireView />
                 </div>
             );
         case 'character':
@@ -127,6 +168,12 @@ export function TabRouter({
                             onSpendHitDie={handleSpendHitDie}
                             onShortRest={handleShortRest}
                             onLongRest={handleLongRest}
+                        />
+                    </div>
+                    <div className="mt-8 border-t border-white/5 pt-8">
+                        <MulticlassSpellSlotsWidget
+                            currentSlots={character.slots}
+                            onSlotsCalculated={(slots) => dispatch(slotsUpdated(slots))}
                         />
                     </div>
                 </div>

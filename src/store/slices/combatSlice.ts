@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppDispatch, RootState } from '../index';
 import { slotExpended } from './spellbookSlice';
-import type { Minion, MinionAttack } from '../../types';
+import type { Minion, MinionAttack, CombatLogEntry } from '../../types';
 
 // Re-export for consumers that need it
 export type { Minion, MinionAttack };
@@ -54,6 +54,15 @@ export interface CombatState {
 
     // Casting state machine
     casting: CastingState;
+
+    // Wizard Combat Features
+    log: CombatLogEntry[];
+    conditions: string[];
+    undeadCommand: 'commanded' | 'defend' | null;
+    reactionAvailable: boolean;
+    bonusActionAvailable: boolean;
+    inCombat: boolean;
+    stable: boolean;
 }
 
 const initialState: CombatState = {
@@ -74,6 +83,14 @@ const initialState: CombatState = {
         slotLevel: null,
         resolutionMode: null,
     },
+
+    log: [],
+    conditions: [],
+    undeadCommand: null,
+    reactionAvailable: true,
+    bonusActionAvailable: true,
+    inCombat: false,
+    stable: false,
 };
 
 export const combatSlice = createSlice({
@@ -225,6 +242,42 @@ export const combatSlice = createSlice({
             };
             state.phase = 'idle';
         },
+
+        // === Combat Log ===
+        combatLogAdded: (state, action: PayloadAction<Omit<CombatLogEntry, 'id' | 'timestamp'>>) => {
+            const entry: CombatLogEntry = {
+                id: crypto.randomUUID(),
+                timestamp: new Date().toISOString(),
+                ...action.payload,
+            };
+            state.log = [entry, ...state.log].slice(0, 50);
+        },
+
+        // === Conditions ===
+        conditionAdded: (state, action: PayloadAction<string>) => {
+            if (!state.conditions.includes(action.payload)) {
+                state.conditions.push(action.payload);
+            }
+        },
+        conditionRemoved: (state, action: PayloadAction<string>) => {
+            state.conditions = state.conditions.filter(c => c !== action.payload);
+        },
+
+        // === Undead Command ===
+        undeadCommandSet: (state, action: PayloadAction<'commanded' | 'defend' | null>) => {
+            state.undeadCommand = action.payload;
+            if (action.payload === 'commanded') {
+                state.bonusActionAvailable = false;
+            }
+        },
+
+        // === Resources ===
+        reactionToggled: (state) => {
+            state.reactionAvailable = !state.reactionAvailable;
+        },
+        bonusActionToggled: (state) => {
+            state.bonusActionAvailable = !state.bonusActionAvailable;
+        },
     },
 });
 
@@ -248,6 +301,12 @@ export const {
     castingResolved,
     castingCompleted,
     castingCancelled,
+    combatLogAdded,
+    conditionAdded,
+    conditionRemoved,
+    undeadCommandSet,
+    reactionToggled,
+    bonusActionToggled,
 } = combatSlice.actions;
 
 /**

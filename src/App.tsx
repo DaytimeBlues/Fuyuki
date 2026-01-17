@@ -80,7 +80,6 @@ function App() {
 
   const navTab = activeTab === 'inventory' || activeTab === 'settings' ? 'more' : activeTab;
 
-
   return (
     <AppShell
       activeTab={navTab}

@@ -143,5 +143,6 @@ export const initialCharacterData: CharacterData = {
             "Dark One's Blessing",
             "Dark One's Own Luck"
         ]
-    }
+    },
+    transformed: null
 };
