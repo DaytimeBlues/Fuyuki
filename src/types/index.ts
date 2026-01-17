@@ -21,6 +21,8 @@ export interface Spell {
     rolls: string;
     damage: string;
     damageType: string;
+    classes?: string[];
+    source?: string;
     decisionTree: SpellDecision[];
     concentration?: boolean;
     desc: string;

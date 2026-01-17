@@ -94,6 +94,9 @@ export const SpellSchema = z.object({
     // For spells that can be cast as a reaction with specific triggers
     reactionTrigger: z.string().optional(), // e.g., "Which you take when you see a creature within 60 feet of you casting a spell"
 
+    // List of classes that have access to this spell
+    classes: z.array(z.string()).optional(),
+
     // Tags for filtering and searching
     tags: z.array(z.string()).optional(), // e.g., ["control", "damage", "summoning", "utility"]
 });

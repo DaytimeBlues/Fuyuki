@@ -29,3 +29,7 @@ We do not build generic Material Design apps. We build **Artifacts**.
 ## 5. Safety
 - **State:** never modify state directly. Dispatch Redux actions.
 - **Logic:** RAW (Rules as Written) always wins.
+
+## 6. Version Control
+- **Branching:** ALWAYS use `master` as the primary branch. Do not use `main`.
+- **Commit Messages:** Semantic Conventional Commits (e.g., `feat(ui): add glow`).

@@ -29,6 +29,7 @@ export const SpellList: React.FC = () => {
 
     // UI State
     const [filterLevel, setFilterLevel] = useState<number | 'all'>('all');
+    const [filterClass, setFilterClass] = useState<'Warlock' | 'all'>('Warlock');
     const [showPreparedOnly, setShowPreparedOnly] = useState(false);
     const [castingSpell, setCastingSpell] = useState<SpellV3 | null>(null);
     const [infoSpellSlug, setInfoSpellSlug] = useState<string | null>(null);
@@ -36,6 +37,11 @@ export const SpellList: React.FC = () => {
     // Grouping Logic
     const groupedSpells = useMemo(() => {
         let spells = initialSpellsV3;
+
+        // Class Filter
+        if (filterClass === 'Warlock') {
+            spells = spells.filter(s => s.classes?.includes('Warlock'));
+        }
 
         if (showPreparedOnly) {
             spells = spells.filter(s => preparedSpells.includes(s.id));
@@ -55,7 +61,7 @@ export const SpellList: React.FC = () => {
         });
 
         return groups;
-    }, [filterLevel, showPreparedOnly, preparedSpells]);
+    }, [filterLevel, filterClass, showPreparedOnly, preparedSpells]);
 
     const handlePrepareToggle = (spellId: string) => {
         if (preparedSpells.includes(spellId)) {
@@ -88,7 +94,22 @@ export const SpellList: React.FC = () => {
     return (
         <div className="space-y-6">
             {/* Filters */}
-            <div className="flex items-center gap-4 p-4 rounded-lg bg-stone-950 border border-stone-900 sticky top-0 z-10 shadow-xl backdrop-blur-md bg-stone-950/90">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg bg-stone-950 border border-stone-900 sticky top-0 z-10 shadow-xl backdrop-blur-md bg-stone-950/90">
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-stone-500 uppercase tracking-wider font-bold">Class:</span>
+                    <button
+                        onClick={() => setFilterClass(prev => prev === 'Warlock' ? 'all' : 'Warlock')}
+                        className={`px-3 py-1 text-xs rounded border transition-colors ${filterClass === 'Warlock'
+                            ? 'bg-purple-900/20 text-purple-400 border-purple-900/50'
+                            : 'bg-stone-900 text-stone-400 border-stone-800 hover:border-stone-700'
+                            }`}
+                    >
+                        {filterClass === 'Warlock' ? 'Warlock Only' : 'All Spells'}
+                    </button>
+                </div>
+
+                <div className="h-4 w-px bg-stone-800 hidden sm:block" />
+
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-stone-500 uppercase tracking-wider font-bold">Show:</span>
                     <button
@@ -102,9 +123,9 @@ export const SpellList: React.FC = () => {
                     </button>
                 </div>
 
-                <div className="h-4 w-px bg-stone-800" />
+                <div className="h-4 w-px bg-stone-800 hidden sm:block" />
 
-                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar mask-gradient-r">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar mask-gradient-r w-full sm:w-auto">
                     <button
                         onClick={() => setFilterLevel('all')}
                         className={`px-2 py-1 text-xs rounded transition-colors whitespace-nowrap ${filterLevel === 'all' ? 'text-white font-bold' : 'text-stone-500 hover:text-stone-300'
@@ -121,7 +142,7 @@ export const SpellList: React.FC = () => {
                                 : 'text-stone-500 hover:text-stone-300'
                                 }`}
                         >
-                            {level === 0 ? 'Cantrip' : `Lvl ${level}`}
+                            {level === 0 ? 'Cnt' : `Lvl ${level}`}
                         </button>
                     ))}
                 </div>

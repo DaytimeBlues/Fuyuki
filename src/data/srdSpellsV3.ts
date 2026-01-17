@@ -133,6 +133,7 @@ function transformToV3(srd: SRDSpell): SpellV3 {
             onFail: 'full',
         } : undefined,
         damage: parseDamage(srd.description),
+        classes: srd.classes.map(c => c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()),
         tags: [srd.school.toLowerCase()],
     };
 }
@@ -144,8 +145,16 @@ export function getWizardSpellsV3(): SpellV3[] {
         .map(transformToV3);
 }
 
-// Export all wizard spells
+// Get all Warlock spells from SRD in V3 format
+export function getWarlockSpellsV3(): SpellV3[] {
+    return (srdSpellsRaw as SRDSpell[])
+        .filter(s => s.classes.includes('warlock'))
+        .map(transformToV3);
+}
+
+// Export pre-filtered lists
 export const wizardSpellsV3 = getWizardSpellsV3();
+export const warlockSpellsV3 = getWarlockSpellsV3();
 
 // Export all SRD spells in V3 format
 export const allSRDSpellsV3 = (srdSpellsRaw as SRDSpell[]).map(transformToV3);
