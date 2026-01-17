@@ -1,0 +1,267 @@
+Branch: origin/codex/add-test-files-for-redux-and-performance
+Commits: 1
+Log:
+a070517 Add concentration middleware and minion tests
+----------------------------------------
+Branch: origin/codex/create-pr-for-expert-code-review
+Commits: 2
+Log:
+f971e37 Fix combat quick actions typings
+aab7059 Fix TS imports and add error boundary
+----------------------------------------
+Branch: origin/codex/create-test-suite-for-aramancia-tracker
+Commits: 2
+Log:
+85c76c0 Fix virtualization and minion tests
+c7ed47e Add concentration, fuzz, and perf test suites
+----------------------------------------
+Branch: origin/codex/design-single-player-wizard-combat-system
+Commits: 2
+Log:
+b4ceff6 Restore undead controls in combat view
+20af809 Add simplified combat mode state
+----------------------------------------
+Branch: origin/codex/develop-action-plan-from-research-report
+Commits: 1
+Log:
+5a17774 Add refactor action plan
+----------------------------------------
+Branch: origin/codex/fix-lint-testing-issues-and-merge-pr
+Commits: 2
+Log:
+5cdb250 Merge branch 'master' into codex/fix-lint-testing-issues-and-merge-pr
+da6d78b Fix lint and build errors
+----------------------------------------
+Branch: origin/codex/identify-essential-testing-processes
+Commits: 3
+Log:
+0603b59 Merge branch 'master' into codex/identify-essential-testing-processes
+965272e Add combat and session storage tests
+f8ab8a6 Add coverage for combat and rules reducers
+----------------------------------------
+Branch: origin/codex/perform-compatibility-and-static-analysis-review
+Commits: 1
+Log:
+2f3752d Add Android test plan, Espresso smoke test, and CI
+----------------------------------------
+Branch: origin/codex/review-architectural-plan-for-aramancia-tracker
+Commits: 1
+Log:
+5f69748 Add Redux Toolkit store and slices
+----------------------------------------
+Branch: origin/codex/review-expert-code-for-aramancia-tracker
+Commits: 1
+Log:
+6362595 Fix type-only imports and add error boundary
+----------------------------------------
+Branch: origin/codex/stop-video-playback-and-prompt-for-background
+Commits: 2
+Log:
+6b62178 Merge branch 'master' into codex/stop-video-playback-and-prompt-for-background
+7ea0d3a Update background styling and prompt
+----------------------------------------
+Branch: origin/copilot/add-copilot-instructions-file
+Commits: 4
+Log:
+9639e33 Refine Copilot instructions based on code review feedback
+236f8fa Add comprehensive Copilot instructions file
+d125b1b Initial exploration - planning Copilot instructions
+bb63434 Initial plan
+----------------------------------------
+Branch: origin/copilot/fix-eslint-errors-ci-fail
+Commits: 14
+Log:
+ced5608 Refactor normalizeInventory to improve type safety and readability
+f21e591 Fix ESLint errors: replace 'any' types with proper TypeScript types
+92e45a6 Initial plan
+0bc8408 Merge pull request #39 from DaytimeBlues/copilot/sub-pr-29-again
+a58a958 Initial plan
+9b1827c Merge pull request #35 from DaytimeBlues/copilot/sub-pr-29-again
+dd302b2 Initial plan
+5479907 Merge pull request #34 from DaytimeBlues/copilot/sub-pr-29-again
+5b7a56f Initial plan
+6e5dec9 Merge pull request #32 from DaytimeBlues/copilot/sub-pr-29
+f79fb72 Resolve merge conflicts with master
+11eb4fe Merge master into copilot/sub-pr-29 to resolve conflicts
+5bc6174 Initial plan
+6dd6956 Implement spell details, slot expenditure, concentration, and new spells.
+----------------------------------------
+Branch: origin/copilot/fix-eslint-errors-ci-failures
+Commits: 2
+Log:
+81f3866 Fix ESLint errors: remove unused variables and replace any type
+78d3c61 Initial plan
+----------------------------------------
+Branch: origin/copilot/fix-lint-errors-prs-47-48-49
+Commits: 5
+Log:
+f6c0dc3 Add executive summary of ESLint fixes
+80043f1 Add README for patch application instructions
+441ef18 Add patch files for ESLint fixes in PRs #48 and #49
+663a570 Add comprehensive ESLint fix documentation for PRs #47, #48, #49
+9c8f6c7 Initial plan
+----------------------------------------
+Branch: origin/copilot/fix-smooth-performance-issues
+Commits: 6
+Log:
+426082d Add PR summary and complete performance optimization task
+6f9fc56 Address code review feedback: remove unnecessary useMemo calls
+c625ae8 Add comprehensive performance optimization documentation
+70cb069 Add React performance optimizations with memo and useCallback
+a5b5049 Add CSS performance optimizations and Android Studio setup guide
+76fb5d1 Initial plan
+----------------------------------------
+Branch: origin/copilot/implement-v3-architecture
+Commits: 7
+Log:
+ee80dc9 Add comprehensive v3.0 implementation summary
+77f6ba3 Address code review feedback: fix import paths, add security comments, remove console.log, specify parseInt radix
+d671f27 Fix linting errors and finalize v3.0 implementation
+98a8e92 Add tests, documentation, and integrate v3 into main app
+fd2b308 Add v3.0 core architecture: Redux store, selectors, middleware, and UI components
+0ad7e7b Initial commit - planning v3.0 architectural paradigm implementation
+4ac3dc1 Initial plan
+----------------------------------------
+Branch: origin/copilot/introduce-state-driven-engine
+Commits: 6
+Log:
+20b7e59 Merge branch 'master' into copilot/introduce-state-driven-engine
+b5ab5d5 Address code review feedback - fix pluralization and magic numbers
+58794ef Add tests and documentation for Redux architecture
+955a58a Add Redux Toolkit architecture - slices, selectors, middleware, and UI
+3f479ad Initial commit - planning Redux Toolkit architecture implementation
+89ae6fe Initial plan
+----------------------------------------
+Branch: origin/copilot/investigate-pr-merge-issues
+Commits: 2
+Log:
+25468b9 Fix build by aligning character types
+0f6dbb9 Initial plan
+----------------------------------------
+Branch: origin/copilot/review-and-merge-pull-requests
+Commits: 6
+Log:
+3ecae8d Add task completion summary and final documentation
+d051230 Update PR review summary with final recommendations
+4381bd8 Fix ESLint errors: remove unused variables and replace any type
+8ffb591 Add PR review summary document
+fa1ce22 Initial planning for PR review and merge task
+e3ed975 Initial plan
+----------------------------------------
+Branch: origin/copilot/set-up-copilot-instructions
+Commits: 2
+Log:
+d916191 Add Copilot instructions for repository
+fe5a5b4 Initial plan
+----------------------------------------
+Branch: origin/copilot/sub-pr-29
+Commits: 4
+Log:
+f79fb72 Resolve merge conflicts with master
+11eb4fe Merge master into copilot/sub-pr-29 to resolve conflicts
+5bc6174 Initial plan
+6dd6956 Implement spell details, slot expenditure, concentration, and new spells.
+----------------------------------------
+Branch: origin/copilot/sub-pr-29-again
+Commits: 10
+Log:
+a58a958 Initial plan
+9b1827c Merge pull request #35 from DaytimeBlues/copilot/sub-pr-29-again
+dd302b2 Initial plan
+5479907 Merge pull request #34 from DaytimeBlues/copilot/sub-pr-29-again
+5b7a56f Initial plan
+6e5dec9 Merge pull request #32 from DaytimeBlues/copilot/sub-pr-29
+f79fb72 Resolve merge conflicts with master
+11eb4fe Merge master into copilot/sub-pr-29 to resolve conflicts
+5bc6174 Initial plan
+6dd6956 Implement spell details, slot expenditure, concentration, and new spells.
+----------------------------------------
+Branch: origin/copilot/sub-pr-4
+Commits: 4
+Log:
+551469c Add execute permissions to gradlew and improve test result paths
+b03d318 Add gradlew execute permissions and test report artifacts to Android CI
+0551a28 Initial plan
+2f3752d Add Android test plan, Espresso smoke test, and CI
+----------------------------------------
+Branch: origin/copilot/sub-pr-44
+Commits: 3
+Log:
+dad60e1 Fix linting errors: remove unused vars, replace any type with proper typing
+8ec6e01 Initial plan
+5a17774 Add refactor action plan
+----------------------------------------
+Branch: origin/copilot/sub-pr-54
+Commits: 8
+Log:
+43327ad fix: restore correct hp structure for Minion types
+9fba801 Initial plan for fixing lint-test-build issues
+e7eb67a Initial plan
+cee4743 fix: resolve lint errors in PRs 47-49
+b87a296 fix: resolve lint errors in test files
+2644f07 fix: resolve failing tests from testing infrastructure plan
+a570e70 test: add testing infrastructure
+33954d1 docs: add testing infrastructure plan and documentation
+----------------------------------------
+Branch: origin/cursor/combat-and-spell-system-f209
+Commits: 5
+Log:
+ba9646c Merge branch 'master' into cursor/combat-and-spell-system-f209
+bb85572 Merge pull request #31 from DaytimeBlues/copilot/sub-pr-30
+aac22d1 Improve spell adapter to use actual spell data instead of hardcoded defaults
+6c39468 Fix dependency resolution and TypeScript linting errors
+3b680ee Initial plan
+----------------------------------------
+Branch: origin/cursor/minion-attack-roll-formula-c77f
+Commits: 1
+Log:
+8b14dde Introduce MinionTurnCard and combat resolution parsing utilities
+----------------------------------------
+Branch: origin/cursor/minion-attack-roll-formula-e333
+Commits: 1
+Log:
+8ff275b Implement dice rolling for monster actions and display results.
+----------------------------------------
+Branch: origin/cursor/spell-data-combat-display-43cd
+Commits: 11
+Log:
+0bc8408 Merge pull request #39 from DaytimeBlues/copilot/sub-pr-29-again
+a58a958 Initial plan
+9b1827c Merge pull request #35 from DaytimeBlues/copilot/sub-pr-29-again
+dd302b2 Initial plan
+5479907 Merge pull request #34 from DaytimeBlues/copilot/sub-pr-29-again
+5b7a56f Initial plan
+6e5dec9 Merge pull request #32 from DaytimeBlues/copilot/sub-pr-29
+f79fb72 Resolve merge conflicts with master
+11eb4fe Merge master into copilot/sub-pr-29 to resolve conflicts
+5bc6174 Initial plan
+6dd6956 Implement spell details, slot expenditure, concentration, and new spells.
+----------------------------------------
+Branch: origin/cursor/video-deletion-and-battery-optimization-7414
+Commits: 1
+Log:
+c8142ec Remove background video component and usage
+----------------------------------------
+Branch: origin/cursor/video-deletion-and-battery-optimization-7e8c
+Commits: 2
+Log:
+e489850 Merge branch 'master' into cursor/video-deletion-and-battery-optimization-7e8c
+db1afbd Replace background video with static image
+----------------------------------------
+Branch: origin/fix/resolve-lint-errors-prs-47-49
+Commits: 5
+Log:
+cee4743 fix: resolve lint errors in PRs 47-49
+b87a296 fix: resolve lint errors in test files
+2644f07 fix: resolve failing tests from testing infrastructure plan
+a570e70 test: add testing infrastructure
+33954d1 docs: add testing infrastructure plan and documentation
+----------------------------------------
+Branch: origin/fix/test-fixes-2024-01-14
+Commits: 4
+Log:
+b87a296 fix: resolve lint errors in test files
+2644f07 fix: resolve failing tests from testing infrastructure plan
+a570e70 test: add testing infrastructure
+33954d1 docs: add testing infrastructure plan and documentation
+----------------------------------------
