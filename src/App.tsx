@@ -53,8 +53,15 @@ function App() {
   }, [toast, dispatch]);
 
   const handleSessionSelected = useCallback((session: Session) => {
-    dispatch(hydrate({ characterData: session.characterData }));
-    setShowSessionPicker(false);
+    console.log('App: handleSessionSelected called', session);
+    try {
+      dispatch(hydrate({ characterData: session.characterData }));
+      setShowSessionPicker(false);
+      window.scrollTo(0, 0);
+      console.log('App: Session picker hidden');
+    } catch (error) {
+      console.error('App: Error in handleSessionSelected', error);
+    }
   }, [dispatch]);
 
   // --- ACTIONS ---

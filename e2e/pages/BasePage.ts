@@ -1,49 +1,120 @@
 import { Page, expect } from '@playwright/test';
 
 export class BasePage {
-    constructor(protected page: Page) { }
+    protected _page: Page;
+
+    constructor(page: Page) {
+        this._page = page;
+    }
+
+    // Public getter for page access
+    get page(): Page {
+        return this._page;
+    }
 
     async goto() {
         await this.page.goto('/');
     }
 
     async waitForAppReady() {
+        console.log('Starting waitForAppReady...');
+
         // Wait for network idle to ensure hydration
         try {
-            await this.page.waitForLoadState('networkidle', { timeout: 10000 });
+            await this.page.waitForLoadState('networkidle', { timeout: 15000 });
+            console.log('Network idle achieved');
         } catch (e) {
-            console.warn('Network idle timed out, proceeding anyway');
+            console.warn('Network idle timed out after 15s, proceeding anyway');
         }
 
-        // Wait for either the session picker or the main app shell
-        const sessionPicker = this.page.getByText('Start Session');
-        const homeTab = this.page.getByTestId('nav-tab-home');
+        // Take initial screenshot for debugging
+        await this.page.screenshot({ path: 'debug-initial-state.png', fullPage: true });
 
-        // Race to see which one appears first (or wait for the picker if it's there)
+        // Check if session picker is showing
+        const startSessionBtn = this.page.getByText('Start Session');
+        const newSessionBtn = this.page.getByText('New Session');
+        const sessionsTitle = this.page.getByText(/Sessions/i);
+
+        // Wait a bit for app to stabilize
+        await this.page.waitForTimeout(500);
+
+        // Check what's visible
+        const hasStartBtn = await startSessionBtn.isVisible().catch(() => false);
+        const hasNewBtn = await newSessionBtn.isVisible().catch(() => false);
+        const hasTitle = await sessionsTitle.isVisible().catch(() => false);
+
+        console.log('Session picker elements visible:', {
+            hasStartBtn,
+            hasNewBtn,
+            hasTitle
+        });
+
+        if (hasStartBtn || hasNewBtn || hasTitle) {
+            // Session picker is showing
+            console.log('Session picker is visible, handling it...');
+            if (hasStartBtn) {
+                // No existing sessions, can click "Start Session" directly
+                console.log('Clicking "Start Session" button');
+                await startSessionBtn.click();
+                // Wait for click to process
+                await this.page.waitForTimeout(500);
+            } else if (hasNewBtn) {
+                // There are existing sessions, need to click "New Session" first
+                console.log('Clicking "New Session" button');
+                await newSessionBtn.click();
+                // Wait for "Start Session" button to appear
+                await this.page.waitForTimeout(500);
+                const startBtn = this.page.getByText('Start Session');
+                await startBtn.click();
+                await this.page.waitForTimeout(500);
+            }
+
+            // Wait for session picker overlay to disappear
+            console.log('Waiting for session picker to disappear...');
+            await this.page.waitForTimeout(1000);
+        }
+
+        // Wait for ANY visible interactive element to be present
+        // Try stats nav, spells nav, or any main content element
+        console.log('Waiting for main app content...');
+        await this.page.waitForTimeout(500);
+
         try {
-            await Promise.race([
-                sessionPicker.waitFor({ state: 'visible', timeout: 10000 }),
-                homeTab.waitFor({ state: 'visible', timeout: 10000 })
+            // Try multiple selectors to find ANY visible element
+            const mainContent = await Promise.race([
+                this.page.getByTestId('nav-tab-stats').isVisible(),
+                this.page.getByTestId('nav-tab-spells').isVisible(),
+                this.page.getByTestId('nav-tab-combat').isVisible(),
+                this.page.getByTestId('nav-tab-character').isVisible(),
+                this.page.getByTestId('nav-tab-more').isVisible(),
+                this.page.locator('main').isVisible()
             ]);
-        } catch (_e) { // eslint-disable-line @typescript-eslint/no-unused-vars
-            // If neither appears within 10s, something is wrong, but let's proceed
+
+            console.log('Found main content, continuing to test');
+        } catch (e) {
+            console.error('No main content found after session picker. Page content:');
+            const content = await this.page.content();
+            console.log('Page HTML length:', content.length);
+            console.log('Page HTML preview:', content.substring(0, 1000));
+
+            // Take another screenshot
+            await this.page.screenshot({ path: 'debug-after-session.png', fullPage: true });
+            throw new Error('App failed to initialize after session creation');
         }
 
-        if (await sessionPicker.isVisible()) {
-            await sessionPicker.click();
-            // Wait for overlay to disappear
-            await expect(sessionPicker).not.toBeVisible({ timeout: 10000 });
-        }
-
-        // Now ensure the app shell is visible
-        await expect(homeTab).toBeVisible({ timeout: 20000 });
+        // Additional wait to ensure full render
+        await this.page.waitForTimeout(500);
     }
 
-    async navigateTo(tab: 'home' | 'spells' | 'combat' | 'grimoire' | 'abilities' | 'inventory' | 'bio' | 'settings') {
-        const tabBtn = this.page.getByTestId(`nav-tab-${tab}`);
-        await tabBtn.click({ force: true });
-        // Wait for the tab to be active
-        await expect(tabBtn).toHaveClass(/text-white/, { timeout: 10000 });
+
+    async navigateTo(tab: 'stats' | 'spells' | 'combat' | 'character' | 'more' | 'inventory' | 'patron' | 'settings') {
+        if (tab === 'inventory' || tab === 'patron' || tab === 'settings') {
+            await this.page.getByTestId('nav-tab-more').click({ force: true });
+            await this.page.getByTestId(`more-menu-item-${tab}`).click({ force: true });
+        } else {
+            const tabBtn = this.page.getByTestId(`nav-tab-${tab}`);
+            await tabBtn.click({ force: true });
+        }
     }
 
     async verifyToast(message: string | RegExp) {

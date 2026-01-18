@@ -18,8 +18,16 @@ export function SessionPicker({ onSessionSelected, onClose }: SessionPickerProps
     const [label, setLabel] = useState('');
 
     const handleNewSession = () => {
-        const session = createSession(sessionNumber, date, label || undefined);
-        onSessionSelected(session);
+        console.log('Creating new session', { sessionNumber, date, label });
+        try {
+            const session = createSession(sessionNumber, date, label || undefined);
+            console.log('Session created', session);
+            onSessionSelected(session);
+            console.log('onSessionSelected called');
+        } catch (error) {
+            console.error('Error creating session:', error);
+            alert('Failed to create session: ' + error);
+        }
     };
 
     const handleContinue = (id: string) => {
