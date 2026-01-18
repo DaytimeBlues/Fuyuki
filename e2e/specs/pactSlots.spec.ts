@@ -4,6 +4,7 @@ test.describe('Pact Slots & Arcanum', () => {
     test.beforeEach(async ({ homePage }) => {
         await homePage.goto();
         await homePage.waitForAppReady();
+        await homePage.navigateTo('stats');
     });
 
     test('should track pact slot usage', async ({ homePage }) => {
@@ -16,7 +17,7 @@ test.describe('Pact Slots & Arcanum', () => {
         await homePage.navigateTo('settings');
         // Level 5 -> Level 11 (6 clicks)
         await settingsPage.adjustLevel(6);
-        await homePage.navigateTo('home');
+        await homePage.navigateTo('stats');
 
         // At level 11, should have 6th level arcanum
         const arcanumBtn = homePage.page.getByTestId('arcanum-6');

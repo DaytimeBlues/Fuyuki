@@ -14,7 +14,7 @@ test.describe('Rest & Recovery', () => {
         await expect(homePage.page.getByTestId('hit-dice-available').first()).toContainText('5');
         await settingsPage.spendHitDie();
         await settingsPage.finishShortRest();
-        await expect(homePage.page.getByTestId('nav-tab-home')).toBeVisible();
+        await expect(homePage.page.getByTestId('nav-tab-stats')).toBeVisible();
     });
 
     test('should perform a long rest', async ({ homePage, settingsPage }) => {
@@ -23,7 +23,7 @@ test.describe('Rest & Recovery', () => {
         await homePage.navigateTo('settings');
         settingsPage.page.once('dialog', dialog => dialog.accept());
         await settingsPage.takeLongRest();
-        await expect(homePage.page.getByTestId('nav-tab-home')).toBeVisible();
+        await expect(homePage.page.getByTestId('nav-tab-stats')).toBeVisible();
         await homePage.verifyHP(38, 38);
     });
 });

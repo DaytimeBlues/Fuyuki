@@ -4,11 +4,7 @@ test.describe('Settings View', () => {
     test.beforeEach(async ({ homePage }) => {
         await homePage.goto();
         await homePage.waitForAppReady();
-        // Custom approach to navigate to More -> Settings
-        await homePage.page.getByTestId('nav-more').click();
-        await expect(homePage.page.getByText('Menu')).toBeVisible();
-        await homePage.page.getByText('Settings').click(); // Settings card
-        await expect(homePage.page.getByTestId('character-editor-toggle')).toBeVisible();
+        await homePage.navigateTo('settings');
     });
 
     test('should update character level and reflect in stats', async ({ page }) => {

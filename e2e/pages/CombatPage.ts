@@ -19,7 +19,7 @@ export class CombatPage extends BasePage {
     }
 
     async removeMinion(index: number = 0) {
-        await this.page.getByTestId('remove-minion-btn').nth(index).click();
+        await this.page.getByTestId('minion-remove-btn').nth(index).click();
     }
 
     async releaseAllMinions() {
@@ -28,6 +28,10 @@ export class CombatPage extends BasePage {
 
     async getMinionCard(index: number = 0) {
         return this.page.getByTestId('minion-card').nth(index);
+    }
+
+    async getMinionHPInput(index: number = 0) {
+        return this.page.getByTestId('minion-hp-input').nth(index);
     }
 
     async toggleSummonUndeadReference() {

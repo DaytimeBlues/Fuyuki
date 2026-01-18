@@ -4,19 +4,20 @@ test.describe('Concentration Management', () => {
     test.beforeEach(async ({ homePage }) => {
         await homePage.goto();
         await homePage.waitForAppReady();
+        await homePage.navigateTo('stats');
     });
 
     test('should set and clear concentration via suggestions', async ({ homePage }) => {
-        // Detect Magic is a common level 1 concentration spell likely in first 4
-        await homePage.setConcentrationFromSuggestion('Detect Magic');
-        await expect(homePage.page.getByTestId('concentration-spell')).toContainText('Detect Magic');
+        // Hex is a classic Warlock concentration spell
+        await homePage.setConcentrationFromSuggestion('Hex');
+        await expect(homePage.page.getByTestId('concentration-spell')).toContainText('Hex');
 
         await homePage.clearConcentration();
         await expect(homePage.page.getByTestId('concentration-spell')).not.toBeVisible();
     });
 
     test('should show concentration save toast on damage', async ({ homePage }) => {
-        await homePage.setConcentrationFromSuggestion('Detect Magic');
+        await homePage.setConcentrationFromSuggestion('Hex');
 
         // Take damage
         await homePage.decreaseHP(5);

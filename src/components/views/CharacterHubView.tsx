@@ -6,21 +6,19 @@ import { GrimoireView } from './GrimoireView';
 import { AttunementWidget } from '../widgets/AttunementWidget';
 
 import { CharacterData } from '../../types';
-import { AppDispatch } from '../../store';
 
 interface CharacterHubViewProps {
     character: CharacterData;
     handleCastFromInventory?: (spellName: string) => void;
-    dispatch: AppDispatch;
     actions: {
-        itemAttuned: (itemName: string) => any;
-        itemUnattuned: (index: number) => any;
+        itemAttuned: (itemName: string) => void;
+        itemUnattuned: (index: number) => void;
     };
 }
 
 type SubTab = 'bio' | 'stats' | 'arcana';
 
-export function CharacterHubView({ character, dispatch, actions }: CharacterHubViewProps) {
+export function CharacterHubView({ character, actions }: CharacterHubViewProps) {
     const [subTab, setSubTab] = useState<SubTab>('bio');
 
     const tabs: { id: SubTab, label: string, icon: React.ComponentType<{ size?: number | string }> }[] = [
@@ -55,8 +53,8 @@ export function CharacterHubView({ character, dispatch, actions }: CharacterHubV
                         <BiographyView />
                         <AttunementWidget
                             items={character.attunement}
-                            onAdd={(item) => dispatch(actions.itemAttuned(item))}
-                            onRemove={(index) => dispatch(actions.itemUnattuned(index))}
+                            onAdd={(item) => actions.itemAttuned(item)}
+                            onRemove={(index) => actions.itemUnattuned(index)}
                         />
                     </div>
                 )}

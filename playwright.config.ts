@@ -12,7 +12,7 @@ export default defineConfig({
     timeout: 30000,
   },
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:5174/Fuyuki/',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -41,8 +41,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
+    command: 'npm run dev -- --port 5174',
+    port: 5174,
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },

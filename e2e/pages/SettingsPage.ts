@@ -30,7 +30,7 @@ export class SettingsPage extends BasePage {
     }
 
     async verifyAbilityScore(ability: string, expected: number) {
-        await expect(this.page.getByTestId(`ability-${ability}-display`)).toContainText(expected.toString());
+        await expect(this.page.getByTestId(`ability-score-${ability}`)).toContainText(expected.toString());
     }
 
     async spendHitDie() {

@@ -4,17 +4,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @theme {
-  /* ===== THE VOID BASE - AMOLED Optimized ===== */
-  --color-bg-void: #050505;
-  /* True AMOLED Black */
-  --color-bg-ink: #0f0f10;
-  /* Slightly lifted black for contrast */
-  --color-bg: #0f0f10;
-  /* Alias for compatibility */
-  --color-bg-dark: #0a0a0b;
+  /* ===== THE VOID BASE - AMOLED Optimized (Kyoto Noir) ===== */
+  --color-bg-void: #000000;
+  /* Pure Void */
+  --color-bg-ink: #050505;
+  /* Deepest Ink */
+  --color-bg: #000000;
+ 
+  --color-bg-dark: #0a0a0a;
+  --color-card: #121212;
+  /* High contrast surface */
+  --color-card-elevated: #1a1a1a;
   --color-card: #1a1a1c;
   --color-card-elevated: #242428;
-
+ 
   /* ===== KYOTO PRECIOUS METALS - Gold Hierarchy ===== */
   --color-gold-dim: #8a7e56;
   /* Muted gold for borders/inactive */
@@ -26,40 +29,79 @@
   /* Alias for compatibility */
   --color-accent-glow: #d4b13a;
   --color-accent-dark: #a68820;
-
+ 
   /* ===== PATRON GLOW - Dynamic Theming ===== */
   /* Default: Gold. Override via JS for Patron variants */
   --patron-glow: #d4af37;
   /* The Fiend: #ff6b35, Great Old One: #9b59b6, Hexblade: #5dade2 */
-
+ 
   /* ===== VERMILLION INK - Critical States ===== */
   --color-vermillion: #c53d3d;
   --color-vermillion-ink: #3f1d1d;
   /* Critical background */
   --color-vermillion-light: #ff4d4d;
   /* Critical text/icon */
-
+ 
   /* ===== FUNCTIONAL SEMANTICS ===== */
   --color-moss: #5c7c5c;
   /* Success/heal states */
   --color-indigo: #4a5568;
   /* Neutral/spell slots */
-
+  --color-primary: var(--color-gold-mid);
+  --color-danger: var(--color-vermillion);
+  --color-success: #22c55e;
+  --color-info: #0ea5e9;
+  --color-warning: #eab308;
+ 
   /* ===== PARCHMENT COLORS - Warm Stone ===== */
   --color-parchment: #d4c4b0;
   --color-parchment-dark: #8b7355;
   --color-parchment-light: #f5f5f4;
-
+ 
   /* ===== TEXT COLORS - Warm Whites ===== */
   --color-text: #e5e5e4;
   --color-text-bright: #f5f5f4;
   --color-muted: #71717a;
-
-  /* ===== SPACING & DEPTH ===== */
+ 
+  /* ===== SPACING - Explicit Scale ===== */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+ 
+  /* ===== RADIUS - Rounded Corners ===== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+ 
+  /* ===== ELEVATION - Shadow System ===== */
+  --elevation-none: 0;
+  --elevation-sm: 0 4px 20px -8px rgba(0, 0, 0, 0.7);
+  --elevation-md: 0 8px 30px -8px rgba(0, 0, 0, 0.8);
+  --elevation-lg: 0 15px 40px -8px rgba(0, 0, 0, 0.9);
+  --elevation-xl: 0 25px 60px -8px rgba(0, 0, 0, 1);
+  --elevation-2xl: 0 40px 100px -8px rgba(0, 0, 0, 1.15);
+ 
+  /* ===== TEXT HIERARCHY ===== */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+ 
+  /* ===== SPACING & DEPTH (Legacy - Keep for compatibility) ===== */
   --glass-border: 1px solid rgba(255, 215, 0, 0.08);
   --shadow-elevation-1: 0 4px 20px -8px rgba(0, 0, 0, 0.7);
   --shadow-elevation-2: 0 8px 30px -8px rgba(0, 0, 0, 0.8);
-
+ 
   /* ===== FONTS - Modern sans-serif with Japanese Support ===== */
   --font-display: 'Outfit', 'Noto Sans JP', sans-serif;
   --font-body: 'Inter', 'Noto Sans JP', sans-serif;
@@ -122,7 +164,7 @@ h3,
 h4,
 h5,
 h6 {
-  @apply font-display tracking-wide;
+  @apply font-display font-bold tracking-wide;
 }
 
 .font-kyoto {

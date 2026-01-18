@@ -24,7 +24,10 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
         <div className="animate-fade-in space-y-6 pb-20">
             {/* Vitals Section */}
             <section>
-                <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-3 pl-1">Vitals</h3>
+                <div>
+                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-1 pl-1">Vitals</h3>
+                    <div className="text-[10px] font-japanese text-muted opacity-50 mb-3 pl-1 tracking-widest">活力</div>
+                </div>
                 <div className="stagger-1 animate-slide-up">
                     <HealthWidget
                         current={character.hp.current}
@@ -62,7 +65,10 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
 
             {/* Resources Section */}
             <section>
-                <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-3 pl-1 border-t border-white/5 pt-4">Resources</h3>
+                <div className="border-t border-white/5 pt-4">
+                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-1 pl-1">Resources</h3>
+                    <div className="text-[10px] font-japanese text-muted opacity-50 mb-3 pl-1 tracking-widest">資源</div>
+                </div>
                 <div className="grid grid-cols-1 gap-4">
                     <div className="stagger-4 animate-slide-up">
                         <PactSlotsWidget />

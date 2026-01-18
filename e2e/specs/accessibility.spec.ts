@@ -7,7 +7,7 @@ test.describe('Accessibility', () => {
     });
 
     test('main navigation should have labels', async ({ homePage }) => {
-        const homeTab = homePage.page.getByTestId('nav-tab-home');
+        const homeTab = homePage.page.getByTestId('nav-tab-stats');
         await expect(homeTab).toBeVisible();
     });
 });

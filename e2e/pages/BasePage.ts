@@ -13,7 +13,7 @@ export class BasePage {
     }
 
     async goto() {
-        await this.page.goto('/');
+        await this.page.goto('./');
     }
 
     async waitForAppReady() {
@@ -23,7 +23,7 @@ export class BasePage {
         try {
             await this.page.waitForLoadState('networkidle', { timeout: 15000 });
             console.log('Network idle achieved');
-        } catch (e) {
+        } catch {
             console.warn('Network idle timed out after 15s, proceeding anyway');
         }
 
@@ -57,7 +57,7 @@ export class BasePage {
                 // No existing sessions, can click "Start Session" directly
                 console.log('Clicking "Start Session" button');
                 await startSessionBtn.click();
-            } else if (hasNewBtn) {
+            } else {
                 // There are existing sessions, need to click "New Session" first
                 console.log('Clicking "New Session" button');
                 await newSessionBtn.click();
@@ -75,7 +75,7 @@ export class BasePage {
             try {
                 await expect(overlay).not.toBeVisible({ timeout: 5000 });
                 console.log('Session picker overlay is hidden');
-            } catch (e) {
+            } catch {
                 console.log('Overlay still visible after click, continuing anyway');
             }
 
@@ -90,7 +90,7 @@ export class BasePage {
 
         try {
             // Try multiple selectors to find ANY visible element
-            const mainContent = await Promise.race([
+            await Promise.race([
                 this.page.getByTestId('nav-tab-stats').isVisible(),
                 this.page.getByTestId('nav-tab-spells').isVisible(),
                 this.page.getByTestId('nav-tab-combat').isVisible(),
@@ -100,7 +100,7 @@ export class BasePage {
             ]);
 
             console.log('Found main content, continuing to test');
-        } catch (e) {
+        } catch {
             console.error('No main content found after session picker. Page content:');
             const content = await this.page.content();
             console.log('Page HTML length:', content.length);
@@ -116,12 +116,13 @@ export class BasePage {
     }
 
 
-    async navigateTo(tab: 'stats' | 'spells' | 'combat' | 'character' | 'more' | 'inventory' | 'patron' | 'settings') {
-        if (tab === 'inventory' || tab === 'patron' || tab === 'settings') {
+    async navigateTo(tab: 'stats' | 'spells' | 'combat' | 'character' | 'more' | 'inventory' | 'patron' | 'settings' | 'home') {
+        const targetTab = (tab as string) === 'home' ? 'stats' : tab;
+        if (targetTab === 'inventory' || targetTab === 'patron' || targetTab === 'settings') {
             await this.page.getByTestId('nav-tab-more').click({ force: true });
-            await this.page.getByTestId(`more-menu-item-${tab}`).click({ force: true });
+            await this.page.getByTestId(`more-menu-item-${targetTab}`).click({ force: true });
         } else {
-            const tabBtn = this.page.getByTestId(`nav-tab-${tab}`);
+            const tabBtn = this.page.getByTestId(`nav-tab-${targetTab}`);
             await tabBtn.click({ force: true });
         }
     }

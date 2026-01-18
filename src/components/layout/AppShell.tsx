@@ -37,7 +37,7 @@ export function AppShell({
             {/* Kyoto Noir Background */}
             <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
-                    src="/assets/fuyuki-background.jpg"
+                    src={`${import.meta.env.BASE_URL}assets/fuyuki-background.jpg`}
                     alt=""
                     className="w-full h-full object-cover opacity-30 scale-105 contrast-125 saturate-50"
                     onError={(e) => {
@@ -89,6 +89,7 @@ export function AppShell({
                                             <button
                                                 key={id}
                                                 onClick={() => onTabChange(id)}
+                                                data-testid={`nav-tab-${id}`}
                                                 className={`
                                                     flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
                                                     ${isActive ? 'bg-white/10 shadow-accent-sm border border-gold-dim/20' : 'hover:bg-white/5 border border-transparent'}
@@ -113,7 +114,7 @@ export function AppShell({
                             {/* Character Mini-Profile in Sidebar */}
                             <div className="p-3 rounded-xl bg-bg-dark/50 border border-white/5 flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full border border-gold-dim/30 overflow-hidden bg-bg-dark">
-                                    <img src="/assets/fuyuki-portrait.png" alt="Fuyuki" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                                    <img src={`${import.meta.env.BASE_URL}assets/fuyuki-portrait.png`} alt="Fuyuki" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                                 </div>
                                 <div>
                                     <p className="text-xs text-parchment font-display">Level 5</p>
@@ -158,7 +159,7 @@ export function AppShell({
                                         <p className="text-[10px] text-muted font-japanese">狐の妖術師</p>
                                     </div>
                                     <div className="w-10 h-10 rounded-full border-2 border-gold-dim/30 overflow-hidden bg-bg-dark shadow-lg">
-                                        <img src="/assets/fuyuki-portrait.png" alt="Fuyuki" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                                        <img src={`${import.meta.env.BASE_URL}assets/fuyuki-portrait.png`} alt="Fuyuki" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                                     </div>
                                 </div>
                             </div>

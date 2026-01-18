@@ -19,6 +19,7 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
     const percentage = useMemo(() => Math.min(100, Math.max(0, (current / max) * 100)), [current, max]);
     const isCritical = current === 0;
     const isLow = current <= 10 && current > 0; // Red at 10 HP or below
+    const isDanger = current > 0 && current <= max * 0.25;
 
     // Handle HP Change with Animation
     const handleHpChange = (newHp: number) => {
@@ -47,7 +48,7 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
     const handleClearTemp = useCallback(() => onTempChange(0), [onTempChange]);
 
     return (
-        <div className={`card-parchment p-4 mb-4 transition-colors duration-200 ${isDamaged ? 'damage-taken' : ''}`}>
+        <div className={`card-parchment p-4 mb-4 transition-all duration-300 ${isDamaged ? 'damage-taken' : ''} ${isDanger ? 'animate-shake shadow-[0_0_20px_rgba(255,0,0,0.3)] border-vermillion/50' : ''}`}>
             <div className="flex items-center gap-2 mb-4">
                 <Skull size={18} className="text-white" />
                 <h3 className="font-display text-sm text-parchment tracking-wider">Hit Points</h3>
@@ -67,7 +68,7 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                     <div className="text-center">
                         <span
                             key={animationKey}
-                            className={`font-display text-2xl ${isCritical ? 'text-red-400' : isLow ? 'text-orange-400' : 'text-parchment-light'
+                            className={`font-display text-2xl ${isCritical ? 'text-red-400' : isDanger ? 'text-vermillion-light font-bold' : isLow ? 'text-orange-400' : 'text-parchment-light'
                                 } ${isDamaged ? 'animate-number-pop-damage' : isHealing ? 'animate-number-pop-heal' : ''}`}
                             data-testid="hp-current"
                         >

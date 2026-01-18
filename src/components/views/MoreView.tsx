@@ -1,7 +1,7 @@
 import { Archive, Settings, ChevronRight } from 'lucide-react';
 
 interface MoreViewProps {
-    onSelectView: (view: 'inventory' | 'settings') => void;
+    onSelectView: (view: 'inventory' | 'settings' | 'patron') => void;
 }
 
 export function MoreView({ onSelectView }: MoreViewProps) {
@@ -11,8 +11,26 @@ export function MoreView({ onSelectView }: MoreViewProps) {
 
             <div className="grid gap-3">
                 <button
+                    onClick={() => onSelectView('patron')}
+                    className="card-parchment p-4 flex items-center justify-between group active:scale-[0.98] transition-all border border-gold-dim/20 bg-gradient-to-br from-bg-dark/80 to-bg-void"
+                    data-testid="more-menu-item-patron"
+                >
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-gold-mid/10 rounded-lg text-gold-mid group-hover:text-gold-bright group-hover:bg-gold-mid/20 transition-colors">
+                            <span className="font-display font-bold text-lg">契</span>
+                        </div>
+                        <div className="text-left">
+                            <h3 className="font-display text-lg text-parchment group-hover:text-white transition-colors">Pact Sworn</h3>
+                            <p className="text-xs text-muted uppercase tracking-wide">Consult Patron</p>
+                        </div>
+                    </div>
+                    <ChevronRight className="text-muted group-hover:text-accent transition-colors" />
+                </button>
+
+                <button
                     onClick={() => onSelectView('inventory')}
                     className="card-parchment p-4 flex items-center justify-between group active:scale-[0.98] transition-all"
+                    data-testid="more-menu-item-inventory"
                 >
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-white/5 rounded-lg text-parchment group-hover:text-accent group-hover:bg-white/10 transition-colors">
@@ -29,6 +47,7 @@ export function MoreView({ onSelectView }: MoreViewProps) {
                 <button
                     onClick={() => onSelectView('settings')}
                     className="card-parchment p-4 flex items-center justify-between group active:scale-[0.98] transition-all"
+                    data-testid="more-menu-item-settings"
                 >
                     <div className="flex items-center gap-4">
                         <div className="p-3 bg-white/5 rounded-lg text-parchment group-hover:text-accent group-hover:bg-white/10 transition-colors">

@@ -24,12 +24,19 @@ export function PactMagicSlots({ slots, onUseSlot, onRestoreSlot }: PactMagicSlo
     };
 
     return (
-        <div className="card-parchment p-5 shadow-2xl shadow-bg-void/50 border border-white/5 relative overflow-hidden">
+        <div className="card-parchment p-5 shadow-2xl shadow-bg-void/50 border border-white/5 relative overflow-hidden" data-testid="pact-slots-display">
             {/* Header */}
             <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="flex items-center gap-2">
                     <Bolt size={18} className="text-purp-bright" />
-                    <h3 className="font-display text-sm text-parchment tracking-wider uppercase">Pact Magic</h3>
+                    <h3 className="font-display text-sm text-parchment tracking-wider uppercase">
+                        Pact Magic
+                        {slots.length > 0 && slots[0].max > 0 && (
+                            <span className="ml-2 text-purp-bright opacity-80 font-mono">
+                                ({slots[0].max - slots[0].used}/{slots[0].max})
+                            </span>
+                        )}
+                    </h3>
                 </div>
                 {primedSlot !== null && (
                     <button
@@ -60,6 +67,7 @@ export function PactMagicSlots({ slots, onUseSlot, onRestoreSlot }: PactMagicSlo
                                     <button
                                         key={i}
                                         onClick={() => handleSlotClick(slot.level, isAvailable)}
+                                        data-testid={`pact-slot-orb-${i}`}
                                         disabled={isUsed && primedSlot !== slot.level}
                                         className={`
                                             relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300

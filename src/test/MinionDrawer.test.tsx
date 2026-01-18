@@ -107,7 +107,7 @@ describe('MinionDrawer', () => {
       />
     );
 
-    const skeletonButton = screen.getByText('Raise Skeleton');
+    const skeletonButton = screen.getByText('Skeleton');
     await user.click(skeletonButton);
 
     const state = store.getState();

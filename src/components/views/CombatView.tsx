@@ -15,20 +15,7 @@ const QUICK_CONDITIONS = [
     'Restrained', 'Invisible', 'Stunned', 'Paralyzed'
 ];
 
-function extractToHit(desc: string): number | null {
-    const m = desc.match(/\+\s*(\d+)\s*to hit/i);
-    if (!m) return null;
-    const n = Number.parseInt(m[1], 10);
-    return Number.isFinite(n) ? n : null;
-}
-
-function extractDamageFormula(desc: string): string | null {
-    const paren = desc.match(/Hit:\s*[^()]*\(([^)]+)\)/i);
-    if (paren?.[1]) return paren[1].replace(/\s+/g, '');
-    const inline = desc.match(/Hit:\s*([0-9]+d[0-9]+(?:\s*[+-]\s*\d+)*)/i);
-    if (inline?.[1]) return inline[1].replace(/\s+/g, '');
-    return null;
-}
+import { extractToHit, extractDamageFormula } from '../../utils/actionParsers';
 
 export function CombatView() {
     const dispatch = useAppDispatch();
@@ -123,7 +110,10 @@ export function CombatView() {
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                         <Swords size={18} className="text-white" />
-                        <h3 className="font-display text-sm text-parchment tracking-wider">Combat Mode</h3>
+                        <div>
+                            <h3 className="font-display text-sm text-parchment tracking-wider uppercase">Combat Mode</h3>
+                            <div className="text-[10px] font-japanese text-muted -mt-1 opacity-50 tracking-widest">戦闘モード</div>
+                        </div>
                     </div>
                 </div>
 
@@ -203,7 +193,10 @@ export function CombatView() {
             <div className="card-parchment p-4 space-y-3">
                 <div className="flex items-center gap-2">
                     <ShieldAlert size={18} className="text-white" />
-                    <h3 className="font-display text-sm text-parchment tracking-wider">Conditions</h3>
+                    <div>
+                        <h3 className="font-display text-sm text-parchment tracking-wider uppercase">Conditions</h3>
+                        <div className="text-[10px] font-japanese text-muted -mt-1 opacity-50 tracking-widest">状態</div>
+                    </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {combat.conditions.map(c => (
@@ -224,7 +217,7 @@ export function CombatView() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {QUICK_CONDITIONS.map(c => (
-                        <button key={c} onClick={() => handleAddCondition(c)} className="px-3 py-1 rounded-full text-[10px] uppercase tracking-wider bg-white/5 text-muted border border-white/10 hover:border-white/30">
+                        <button key={c} onClick={() => handleAddCondition(c)} className="px-3 py-3 rounded-full text-[10px] uppercase tracking-wider bg-white/5 text-muted border border-white/10 hover:border-white/30 flex items-center justify-center min-h-[48px]">
                             {c}
                         </button>
                     ))}
@@ -242,7 +235,10 @@ export function CombatView() {
                 <div className="card-parchment p-4 space-y-3">
                     <div className="flex items-center gap-2">
                         <Bolt size={18} className="text-white" />
-                        <h3 className="font-display text-sm text-parchment tracking-wider">Action Economy</h3>
+                        <div>
+                            <h3 className="font-display text-sm text-parchment tracking-wider uppercase">Action Economy</h3>
+                            <div className="text-[10px] font-japanese text-muted -mt-1 opacity-50 tracking-widest">行動数</div>
+                        </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                         <button
@@ -265,7 +261,10 @@ export function CombatView() {
             <div className="card-parchment p-4 space-y-3">
                 <div className="flex items-center gap-2">
                     <Bolt size={18} className="text-white" />
-                    <h3 className="font-display text-sm text-parchment tracking-wider">Combat Log</h3>
+                    <div>
+                        <h3 className="font-display text-sm text-parchment tracking-wider uppercase">Combat Log</h3>
+                        <div className="text-[10px] font-japanese text-muted -mt-1 opacity-50 tracking-widest">戦闘記録</div>
+                    </div>
                 </div>
                 <div className="flex gap-2">
                     <input type="text" placeholder="Quick note" className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white" value={noteInput} onChange={e => setNoteInput(e.target.value)} />
@@ -274,7 +273,7 @@ export function CombatView() {
                     }}>Log</button>
                 </div>
                 <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {combat.log.map(entry => (
+                    {combat.log.slice(0, 50).map(entry => (
                         <div key={entry.id} className="bg-card-elevated/70 border border-white/10 rounded-lg p-3">
                             <div className="text-[10px] text-muted uppercase tracking-wider">{new Date(entry.timestamp).toLocaleTimeString()}</div>
                             <div className="text-sm text-parchment-light">{entry.title}</div>
@@ -289,7 +288,10 @@ export function CombatView() {
                 <div className="flex justify-between items-center mb-4 relative z-10">
                     <div className="flex items-center gap-2">
                         <Users size={18} className="text-white" />
-                        <h3 className="font-display text-sm text-parchment tracking-wider">Undead Horde</h3>
+                        <div>
+                            <h3 className="font-display text-sm text-parchment tracking-wider uppercase">Undead Horde</h3>
+                            <div className="text-[10px] font-japanese text-muted -mt-1 opacity-50 tracking-widest">不死の軍勢</div>
+                        </div>
                     </div>
                     <span className="text-xs text-white font-display">{minions.length} Active</span>
                 </div>
@@ -305,7 +307,7 @@ export function CombatView() {
                             <Info size={12} className="text-white" />
                         </div>
                         <div className="relative w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                            <img src="/assets/minion-bubble.png" alt="" className="absolute inset-0 w-full h-full object-contain opacity-80" />
+                            <img src={`${import.meta.env.BASE_URL}assets/minion-bubble.png`} alt="" className="absolute inset-0 w-full h-full object-contain opacity-80" />
                             <Skull size={20} className="relative z-10 text-parchment group-hover:text-white transition-colors" />
                         </div>
                         <div className="text-2xl font-display text-parchment-light mb-1">{skeletonCount}</div>
@@ -322,7 +324,7 @@ export function CombatView() {
                             <Info size={12} className="text-white" />
                         </div>
                         <div className="relative w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                            <img src="/assets/minion-bubble.png" alt="" className="absolute inset-0 w-full h-full object-contain opacity-80" />
+                            <img src={`${import.meta.env.BASE_URL}assets/minion-bubble.png`} alt="" className="absolute inset-0 w-full h-full object-contain opacity-80" />
                             <Biohazard size={20} className="relative z-10 text-parchment group-hover:text-white transition-colors" />
                         </div>
                         <div className="text-2xl font-display text-parchment-light mb-1">{zombieCount}</div>
@@ -345,7 +347,10 @@ export function CombatView() {
                 <button className="flex items-center justify-between w-full mb-2" onClick={() => setShowSummons(!showSummons)}>
                     <div className="flex items-center gap-2">
                         <Bone size={18} className="text-white" />
-                        <h3 className="font-display text-sm text-parchment tracking-wider">Summon Undead</h3>
+                        <div>
+                            <h3 className="font-display text-sm text-parchment tracking-wider uppercase">Summon Undead</h3>
+                            <div className="text-[10px] font-japanese text-muted -mt-1 opacity-50 tracking-widest">アンデッド召喚</div>
+                        </div>
                     </div>
                     {showSummons ? <ChevronUp size={16} className="text-muted" /> : <ChevronDown size={16} className="text-muted" />}
                 </button>

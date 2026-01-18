@@ -45,7 +45,7 @@ test.describe('Inventory Management', () => {
         await expect(itemCard).toContainText('5 / 5');
 
         // Click Cast Fireball
-        await itemCard.getByTestId(`cast-spell-${spellName}`).click();
+        await itemCard.getByTestId(`cast-spell-${spellName.replace(/\s+/g, '-')}`).click();
 
         // Check charge consumed
         await expect(itemCard).toContainText('4 / 5');

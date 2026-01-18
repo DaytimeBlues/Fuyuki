@@ -8,6 +8,7 @@ import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
 import characterReducer from './slices/characterSlice';
 import spellbookReducer from './slices/spellbookSlice';
 import combatReducer from './slices/combatSlice';
+import uiReducer from './slices/uiSlice';
 import { persistenceMiddleware } from './slices/persistenceMiddleware';
 import { open5eApi } from './api/open5eApi';
 // import concentrationMiddleware from './middleware/concentrationMiddleware';
@@ -18,6 +19,7 @@ const listenerMiddleware = createListenerMiddleware();
 
 export const store = configureStore({
     reducer: {
+        ui: uiReducer,
         character: characterReducer,
         spellbook: spellbookReducer,
         combat: combatReducer,
@@ -28,7 +30,7 @@ export const store = configureStore({
             .prepend(listenerMiddleware.middleware)
             .concat(persistenceMiddleware)
             .concat(open5eApi.middleware)
-            // .concat(concentrationMiddleware), // TODO: Enable after fixing circular type reference
+    // .concat(concentrationMiddleware), // TODO: Enable after fixing circular type reference
 });
 
 export type RootState = ReturnType<typeof store.getState>;

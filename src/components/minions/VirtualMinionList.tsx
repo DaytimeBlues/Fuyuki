@@ -91,7 +91,7 @@ function MinionItem({ minion, onUpdateMinion, onRemoveMinion }: {
                 <button
                     onClick={() => onRemoveMinion(minion.id)}
                     className="p-2 hover:bg-red-500/10 text-muted hover:text-red-400 rounded-lg transition-colors"
-                    data-testid="remove-minion-btn"
+                    data-testid="minion-remove-btn"
                 >
                     <Trash2 size={18} />
                 </button>

@@ -43,8 +43,18 @@ export function MinionDrawer({
             return desc.match(/\d+d\d+(?:\s*[+-]\s*\d+)?/)?.[0] || "1d4";
         };
 
-        // Parse HP/AC. For spirits "30 + 10/Level (40)", we take the value in parens as default (Level 3)
         const parseValue = (val: string) => {
+            // Try to parse the first number
+            const firstPart = val.split('(')[0].trim();
+            const firstNum = parseInt(firstPart);
+
+            // If the first part is just a number (like "13" or "22"), use it.
+            // If it's a formula like "30 + 10/Level", look inside parens.
+            if (!isNaN(firstNum) && !firstPart.includes('+') && !firstPart.includes('d')) {
+                return firstNum;
+            }
+
+            // Otherwise, look inside parens
             if (val.includes('(')) {
                 return parseInt(val.split('(')[1]) || 10;
             }
@@ -55,7 +65,7 @@ export function MinionDrawer({
             id: crypto.randomUUID(),
             name: `${type} Spirit ${count}`,
             type: minionType,
-            form: isSpirit ? type.toLowerCase() as any : undefined,
+            form: isSpirit ? (type.toLowerCase() as 'ghostly' | 'putrid' | 'skeletal') : undefined,
             hp: parseValue(stats.hp),
             maxHp: parseValue(stats.hp),
             ac: parseValue(stats.ac),

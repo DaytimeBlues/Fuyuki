@@ -4,6 +4,7 @@ test.describe('Health Management', () => {
     test.beforeEach(async ({ homePage }) => {
         await homePage.goto();
         await homePage.waitForAppReady();
+        await homePage.navigateTo('stats');
     });
 
     test('should increase and decrease current HP', async ({ homePage }) => {

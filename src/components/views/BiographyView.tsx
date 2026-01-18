@@ -7,7 +7,7 @@ export function BiographyView() {
             {/* Hero Image */}
             <div className="relative h-56 rounded-xl overflow-hidden mb-6 border border-white/20 shadow-2xl shadow-white/5">
                 <img
-                    src="/assets/fuyuki-portrait.png"
+                    src={`${import.meta.env.BASE_URL}assets/fuyuki-portrait.png`}
                     alt="Fuyuki"
                     className="w-full h-full object-cover object-center"
                 />
@@ -49,7 +49,7 @@ export function BiographyView() {
             <div className="mb-8">
                 <div className="relative h-28 rounded-xl overflow-hidden mb-4 border border-white/20">
                     <img
-                        src="/assets/aramancia-shield.jpg"
+                        src={`${import.meta.env.BASE_URL}assets/aramancia-shield.jpg`}
                         alt="Aramancia Defending"
                         className="w-full h-full object-cover object-top"
                     />

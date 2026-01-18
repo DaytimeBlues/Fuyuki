@@ -3,8 +3,18 @@ import type { AppDispatch, RootState } from '../index';
 import { slotExpended } from './spellbookSlice';
 import type { Minion, MinionAttack, CombatLogEntry } from '../../types';
 
-// Re-export for consumers that need it
 export type { Minion, MinionAttack };
+
+
+// RNN Context Record
+export interface ActionRecord {
+    round: number;
+    actor: 'player' | 'minion' | 'enemy';
+    actionType: 'attack' | 'spell' | 'dodge' | 'disengage' | 'help' | 'other';
+    spellName?: string;
+    targetId?: string;
+    outcome: 'hit' | 'miss' | 'save' | 'fail' | 'partial';
+}
 
 
 // Concentration state
@@ -63,6 +73,10 @@ export interface CombatState {
     bonusActionAvailable: boolean;
     inCombat: boolean;
     stable: boolean;
+
+    // ML/RNN Context (Sequence History)
+    hexTarget: string | null;           // Current Hex target ID
+    recentActions: ActionRecord[];      // Rolling window of recent actions for pattern analysis
 }
 
 const initialState: CombatState = {
@@ -91,6 +105,9 @@ const initialState: CombatState = {
     bonusActionAvailable: true,
     inCombat: false,
     stable: false,
+
+    hexTarget: null,
+    recentActions: [],
 };
 
 export const combatSlice = createSlice({
@@ -180,6 +197,9 @@ export const combatSlice = createSlice({
             state.phase = 'idle';
             state.currentRound = 1;
             state.currentTurnIndex = 0;
+            // Reset context
+            state.hexTarget = null;
+            state.recentActions = [];
         },
 
         turnAdvanced: (state) => {
@@ -199,6 +219,8 @@ export const combatSlice = createSlice({
             state.currentTurnIndex = 0;
             state.activeConcentration = null;
             state.concentrationCheckDC = null;
+            state.hexTarget = null;
+            state.recentActions = [];
         },
 
         // === Casting State Machine ===
