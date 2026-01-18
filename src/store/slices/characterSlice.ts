@@ -43,7 +43,33 @@ export const characterSlice = createSlice({
     initialState,
     reducers: {
         hydrate: (state, action: PayloadAction<{ characterData: CharacterData }>) => {
-            Object.assign(state, action.payload.characterData);
+            // Explicitly copy each property to ensure proper Immer mutability
+            state.hp = action.payload.characterData.hp;
+            state.baseAC = action.payload.characterData.baseAC;
+            state.dc = action.payload.characterData.dc;
+            state.profBonus = action.payload.characterData.profBonus;
+            state.level = action.payload.characterData.level;
+            state.savingThrowProficiencies = action.payload.characterData.savingThrowProficiencies;
+            state.deathSaves = action.payload.characterData.deathSaves;
+            state.abilities = action.payload.characterData.abilities;
+            state.abilityMods = action.payload.characterData.abilityMods;
+            state.skills = action.payload.characterData.skills;
+            state.concentration = action.payload.characterData.concentration;
+            state.attunement = action.payload.characterData.attunement;
+            state.inventory = action.payload.characterData.inventory || [];
+            state.preparedSpells = action.payload.characterData.preparedSpells;
+            state.slots = action.payload.characterData.slots;
+            state.mageArmour = action.payload.characterData.mageArmour;
+            state.shield = action.payload.characterData.shield;
+            state.transformed = action.payload.characterData.transformed;
+            state.pactSlots = action.payload.characterData.pactSlots;
+            state.spellsKnown = action.payload.characterData.spellsKnown;
+            state.cantripsKnown = action.payload.characterData.cantripsKnown;
+            state.arcanum = action.payload.characterData.arcanum;
+            state.invocations = action.payload.characterData.invocations;
+            state.pactBoon = action.payload.characterData.pactBoon;
+            state.patron = action.payload.characterData.patron;
+            state.defaultMinion = action.payload.characterData.defaultMinion;
         },
 
         // --- HP ACTIONS ---
