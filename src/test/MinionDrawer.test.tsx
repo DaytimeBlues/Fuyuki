@@ -43,6 +43,9 @@ function renderWithStore(
         bonusActionAvailable: true,
         inCombat: false,
         stable: false,
+        // ML/RNN Context
+        hexTarget: null,
+        recentActions: [],
         casting: {
           step: 'idle' as const,
           spellId: null,

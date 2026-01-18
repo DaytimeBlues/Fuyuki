@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateEmbedding, compareEmbeddings, CharacterEmbedding } from '../engine/characterEmbedding';
+import { generateEmbedding, compareEmbeddings } from '../engine/characterEmbedding';
 import { createWarlockRulesGraph } from '../engine/rulesGraph';
 import { CharacterData } from '../types';
 

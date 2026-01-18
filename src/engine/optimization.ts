@@ -41,7 +41,7 @@ export const BalancedObjective: ObjectiveFunction = {
         versatility: 0.2
     },
 
-    evaluate(embedding: CharacterEmbedding, results: SimulationResult[]): number {
+    evaluate(_embedding: CharacterEmbedding, results: SimulationResult[]): number {
         if (results.length === 0) return 0;
 
         const totalDamage = results.reduce((sum, r) => sum + r.damageDealt, 0);
