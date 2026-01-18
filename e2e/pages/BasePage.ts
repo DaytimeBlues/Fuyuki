@@ -52,12 +52,11 @@ export class BasePage {
         if (hasStartBtn || hasNewBtn || hasTitle) {
             // Session picker is showing
             console.log('Session picker is visible, handling it...');
+
             if (hasStartBtn) {
                 // No existing sessions, can click "Start Session" directly
                 console.log('Clicking "Start Session" button');
                 await startSessionBtn.click();
-                // Wait for click to process
-                await this.page.waitForTimeout(500);
             } else if (hasNewBtn) {
                 // There are existing sessions, need to click "New Session" first
                 console.log('Clicking "New Session" button');
@@ -66,11 +65,21 @@ export class BasePage {
                 await this.page.waitForTimeout(500);
                 const startBtn = this.page.getByText('Start Session');
                 await startBtn.click();
-                await this.page.waitForTimeout(500);
             }
 
-            // Wait for session picker overlay to disappear
+            // Wait for session picker overlay to completely disappear
             console.log('Waiting for session picker to disappear...');
+            const overlay = this.page.locator('.fixed').filter({ hasText: /Sessions/i });
+
+            // Wait for overlay to be hidden
+            try {
+                await expect(overlay).not.toBeVisible({ timeout: 5000 });
+                console.log('Session picker overlay is hidden');
+            } catch (e) {
+                console.log('Overlay still visible after click, continuing anyway');
+            }
+
+            // Give React time to re-render
             await this.page.waitForTimeout(1000);
         }
 
