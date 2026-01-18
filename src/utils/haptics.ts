@@ -2,32 +2,55 @@
  * haptics.ts
  *
  * WHY: Centralized haptic feedback for all tactile interactions.
- * Works on both web (no-op) and Android (via Capacitor).
+ * Uses the Web Vibration API for browser support, fallback to no-op.
  */
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics';
 
-export async function hapticImpact(style: ImpactStyle.Heavy | ImpactStyle.Medium | ImpactStyle.Light): Promise<void> {
+// Haptic style intensities mapped to vibration durations (ms)
+export const ImpactStyle = {
+    Light: 'Light',
+    Medium: 'Medium',
+    Heavy: 'Heavy',
+} as const;
+
+export const NotificationType = {
+    Success: 'Success',
+    Warning: 'Warning',
+} as const;
+
+type ImpactStyleType = (typeof ImpactStyle)[keyof typeof ImpactStyle];
+type NotificationTypeType = (typeof NotificationType)[keyof typeof NotificationType];
+
+const VIBRATION_DURATIONS: Record<ImpactStyleType, number> = {
+    Light: 10,
+    Medium: 25,
+    Heavy: 50,
+};
+
+const NOTIFICATION_PATTERNS: Record<NotificationTypeType, number[]> = {
+    Success: [20, 50, 20],
+    Warning: [50, 30, 50],
+};
+
+function vibrate(pattern: number | number[]): void {
     try {
-        await Haptics.impact({ style });
-    } catch (error) {
-        console.debug('Haptics not available:', error);
+        if ('vibrate' in navigator) {
+            navigator.vibrate(pattern);
+        }
+    } catch {
+        // Vibration API not available or blocked
     }
 }
 
-export async function hapticNotification(type: NotificationType.Success | NotificationType.Warning): Promise<void> {
-    try {
-        await Haptics.notification({ type });
-    } catch (error) {
-        console.debug('Haptics not available:', error);
-    }
+export async function hapticImpact(style: ImpactStyleType): Promise<void> {
+    vibrate(VIBRATION_DURATIONS[style] ?? 25);
+}
+
+export async function hapticNotification(type: NotificationTypeType): Promise<void> {
+    vibrate(NOTIFICATION_PATTERNS[type] ?? [25]);
 }
 
 export async function hapticSelectionChanged(): Promise<void> {
-    try {
-        await Haptics.selectionChanged();
-    } catch (error) {
-        console.debug('Haptics not available:', error);
-    }
+    vibrate(5);
 }
 
 // Presets for common game actions
@@ -44,4 +67,3 @@ export const HapticPresets = {
     },
     buttonPress: () => hapticSelectionChanged(),
 };
-
