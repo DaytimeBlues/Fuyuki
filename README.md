@@ -36,9 +36,17 @@ npm run test
 # Build for production
 npm run build
 
-# Preflight checks (before merge)
+# Preflight checks (manual)
 ./preflight.sh
+
+# Finish phase (Automated: Preflight -> Commit -> Push)
+./finish.sh "feat(ui): your message here"
 ```
+
+## CI/CD & Deployment
+
+- **GitHub Actions**: Automated linting, testing, and deployment to GitHub Pages.
+- **Workflow**: Pushes to `master` automatically trigger the `Deploy to GitHub Pages` workflow.
 
 ## D&D 5e Warlock Rules (SRD 5.1)
 
