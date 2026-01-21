@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppSelector } from '../../../store/hooks';
-import { selectSpellSaveDC, selectSpellAttackBonus, selectAbilityModifier } from '../../../store/slices/characterSlice';
+import { selectSpellSaveDC, selectSpellAttackBonus, selectAbilityModifier } from '../../../store/selectors';
 import { Zap, Shield, Award, Brain } from 'lucide-react';
 
 interface StatBlockProps {
@@ -53,7 +53,7 @@ export const MathStrip: React.FC = () => {
     const spellAttackBonus = useAppSelector(selectSpellAttackBonus);
     const spellSaveDC = useAppSelector(selectSpellSaveDC);
     const intMod = useAppSelector(state => selectAbilityModifier(state, 'int'));
-    const profBonus = useAppSelector(state => state.character.profBonus);
+    const profBonus = useAppSelector(state => state.stats.profBonus);
 
     return (
         <div className="bg-stone-950/80 backdrop-blur-md border-b border-stone-800 p-3">

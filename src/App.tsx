@@ -16,23 +16,35 @@ import { VoiceCommandButton } from './components/widgets/VoiceCommandButton';
 import { SessionPicker } from './components/SessionPicker';
 import { getActiveSession } from './utils/sessionStorage';
 import type { Session, CharacterData, AbilityKey } from './types';
-import { useAppDispatch, useAppSelector } from './store/hooks';
 import {
-  selectCharacter,
-  selectToast,
+  showToast,
+  clearToast,
+} from './store/slices/uiSlice';
+import {
   hpChanged,
   tempHpSet,
   deathSaveChanged,
   hitDiceSpent,
-  shortRestCompleted,
-  longRestCompleted,
+  hydrateHealth,
+  longRestHealth,
+} from './store/slices/healthSlice';
+import {
+  hydrateStats,
   levelChanged,
   abilityScoreChanged,
+} from './store/slices/statSlice';
+import {
+  hydrateInventory,
   itemAttuned,
   itemUnattuned,
-  toastCleared,
-  hydrate,
-} from './store/slices/characterSlice';
+} from './store/slices/inventorySlice';
+import {
+  hydrateWarlock,
+  shortRestWarlock,
+  longRestWarlock,
+} from './store/slices/warlockSlice';
+
+import { useAppDispatch, useAppSelector } from './store/hooks';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -41,13 +53,24 @@ function App() {
     return !getActiveSession();
   });
 
-  const character = useAppSelector(selectCharacter);
-  const toast = useAppSelector(selectToast);
+  const stats = useAppSelector(state => state.stats);
+  const health = useAppSelector(state => state.health);
+  const warlock = useAppSelector(state => state.warlock);
+  const inventory = useAppSelector(state => state.inventory);
+
+  const character = useMemo(() => ({
+    ...stats,
+    ...health,
+    ...warlock,
+    ...inventory
+  }), [stats, health, warlock, inventory]);
+
+  const toast = useAppSelector(state => state.ui.toast);
 
   // Auto-clear toasts
   useEffect(() => {
     if (toast) {
-      const timer = setTimeout(() => dispatch(toastCleared()), 2000);
+      const timer = setTimeout(() => dispatch(clearToast()), 2000);
       return () => clearTimeout(timer);
     }
   }, [toast, dispatch]);
@@ -55,7 +78,10 @@ function App() {
   const handleSessionSelected = useCallback((session: Session) => {
     console.log('App: handleSessionSelected called', session);
     try {
-      dispatch(hydrate({ characterData: session.characterData }));
+      dispatch(hydrateStats(session.characterData));
+      dispatch(hydrateHealth(session.characterData));
+      dispatch(hydrateWarlock(session.characterData));
+      dispatch(hydrateInventory(session.characterData));
       setShowSessionPicker(false);
       window.scrollTo(0, 0);
       console.log('App: Session picker hidden');
@@ -72,11 +98,14 @@ function App() {
     updateDeathSaves: (type: 'successes' | 'failures', value: number) => dispatch(deathSaveChanged({ type, value })),
     handleSpendHitDie: (healed: number, diceSpent: number) => dispatch(hitDiceSpent({ count: diceSpent, healed })),
     handleShortRest: () => {
-      dispatch(shortRestCompleted());
+      dispatch(shortRestWarlock());
+      dispatch(showToast("Short Rest Completed"));
       setActiveTab('stats');
     },
     handleLongRest: () => {
-      dispatch(longRestCompleted());
+      dispatch(longRestHealth());
+      dispatch(longRestWarlock());
+      dispatch(showToast("Long Rest Completed"));
       setActiveTab('stats');
     },
     handleLevelChange: (newLevel: number) => dispatch(levelChanged(newLevel)),

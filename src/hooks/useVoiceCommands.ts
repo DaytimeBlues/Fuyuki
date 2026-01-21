@@ -3,11 +3,14 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { voiceService } from '../services/voiceCommandService';
 import {
   hpChanged,
-  longRestCompleted,
-  shortRestCompleted,
   concentrationSet,
-  selectCharacter,
-} from '../store/slices/characterSlice';
+  longRestHealth,
+} from '../store/slices/healthSlice';
+import {
+  longRestWarlock,
+  shortRestWarlock
+} from '../store/slices/warlockSlice';
+import { selectCharacter } from '../store/selectors';
 
 export function useVoiceCommands() {
   const dispatch = useAppDispatch();
@@ -22,11 +25,12 @@ export function useVoiceCommands() {
     voiceService.clearCommands();
 
     voiceService.registerCommand(/long rest/, () => {
-      dispatch(longRestCompleted());
+      dispatch(longRestHealth());
+      dispatch(longRestWarlock());
     });
 
     voiceService.registerCommand(/short rest/, () => {
-      dispatch(shortRestCompleted());
+      dispatch(shortRestWarlock());
     });
 
     voiceService.registerCommand(/take (\d+) damage/, ([amount]) => {

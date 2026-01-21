@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface UIState {
     viewMode: 'COMBAT' | 'ROLEPLAY';
     isMenuOpen: boolean;
+    toast: string | null;
 }
 
 const initialState: UIState = {
-    viewMode: 'ROLEPLAY', // Default to Roleplay ("Roleplay First")
+    viewMode: 'ROLEPLAY',
     isMenuOpen: false,
+    toast: null,
 };
 
 const uiSlice = createSlice({
@@ -29,8 +31,22 @@ const uiSlice = createSlice({
         toggleMenu: (state) => {
             state.isMenuOpen = !state.isMenuOpen;
         },
+        showToast: (state, action: PayloadAction<string>) => {
+            state.toast = action.payload;
+        },
+        clearToast: (state) => {
+            state.toast = null;
+        },
     },
 });
 
-export const { setViewMode, toggleViewMode, openMenu, closeMenu, toggleMenu } = uiSlice.actions;
+export const {
+    setViewMode,
+    toggleViewMode,
+    openMenu,
+    closeMenu,
+    toggleMenu,
+    showToast,
+    clearToast
+} = uiSlice.actions;
 export default uiSlice.reducer;

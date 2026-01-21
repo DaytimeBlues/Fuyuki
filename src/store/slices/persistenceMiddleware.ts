@@ -1,50 +1,43 @@
-/**
- * persistenceMiddleware.ts
- * 
- * WHY: Automatically persists character state to sessionStorage on every action.
- * This eliminates the manual useEffect + debounce pattern in App.tsx.
- * 
- * The middleware intercepts actions dispatched to the 'character' slice
- * and saves the updated state to the active session in sessionStorage.
- */
 import { Middleware } from '@reduxjs/toolkit';
 import { updateActiveSession } from '../../utils/sessionStorage';
-import { CharacterState } from './characterSlice';
+import { RootState } from '../index';
 
 // Actions that should NOT trigger persistence (ephemeral)
-const EPHEMERAL_ACTIONS = ['character/toastCleared', 'character/toastShown'];
+const EPHEMERAL_ACTIONS = ['ui/toastCleared', 'ui/toastShown'];
+
+const CHARACTER_SLICE_PREFIXES = ['health/', 'warlock/', 'stats/', 'inventory/'];
 
 export const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
     const result = next(action);
 
-    // Only persist on character actions, and skip ephemeral ones
-    if (
-        typeof action === 'object' &&
+    // Check if the action belongs to one of our modular character slices
+    const isCharacterAction = typeof action === 'object' &&
         action !== null &&
         'type' in action &&
-        typeof action.type === 'string' &&
-        action.type.startsWith('character/') &&
-        !EPHEMERAL_ACTIONS.includes(action.type)
-    ) {
-        const state = store.getState();
-        const character: CharacterState = state.character;
+        typeof (action as any).type === 'string' &&
+        CHARACTER_SLICE_PREFIXES.some(prefix => (action as any).type.startsWith(prefix));
 
-        // Get minions from combat slice
-        const minions = state.combat.minions;
+    if (isCharacterAction && !EPHEMERAL_ACTIONS.includes((action as any).type)) {
+        const state = store.getState() as RootState;
 
-        // Extract CharacterData for session storage (exclude toast, it's ephemeral)
-        const { toast, ...characterData } = character; // eslint-disable-line @typescript-eslint/no-unused-vars
+        // Reconstruct CharacterData from modular slices
+        const characterData = {
+            ...state.stats,
+            ...state.health,
+            ...state.warlock,
+            ...state.inventory,
+        };
 
-        // Save to sessionStorage (debounced internally if needed, but let's keep it simple)
-        // Using requestIdleCallback for better performance on rapid updates
+        const minions = Object.values(state.combat.minions.entities) as any[];
+
+        // Save to sessionStorage using requestIdleCallback for performance
         if (typeof requestIdleCallback === 'function') {
             requestIdleCallback(() => {
-                updateActiveSession(characterData, minions);
+                updateActiveSession(characterData as any, minions);
             });
         } else {
-            // Fallback for browsers without requestIdleCallback
             setTimeout(() => {
-                updateActiveSession(characterData, minions);
+                updateActiveSession(characterData as any, minions);
             }, 0);
         }
     }

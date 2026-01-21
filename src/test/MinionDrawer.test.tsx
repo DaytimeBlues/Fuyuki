@@ -5,7 +5,10 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MinionDrawer } from '../components/minions/MinionDrawer';
 import combatReducer from '../store/slices/combatSlice';
-import characterReducer from '../store/slices/characterSlice';
+import healthReducer from '../store/slices/healthSlice';
+import warlockReducer from '../store/slices/warlockSlice';
+import statReducer from '../store/slices/statSlice';
+import inventoryReducer from '../store/slices/inventorySlice';
 import spellbookReducer from '../store/slices/spellbookSlice';
 import type { Minion } from '../types';
 
@@ -22,7 +25,10 @@ function renderWithStore(
 
   const store = configureStore({
     reducer: {
-      character: characterReducer,
+      health: healthReducer,
+      warlock: warlockReducer,
+      stats: statReducer,
+      inventory: inventoryReducer,
       spellbook: spellbookReducer,
       combat: combatReducer,
     },

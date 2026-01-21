@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { pactSlotUsed, pactSlotRestored, selectPactSlots } from '../../store/slices/characterSlice';
+import { pactSlotUsed, pactSlotRestored } from '../../store/slices/warlockSlice';
+import { selectPactSlots } from '../../store/selectors';
 import { Wand2, Info } from 'lucide-react';
 
 export const PactSlotsWidget: React.FC = () => {

@@ -4,7 +4,7 @@ import { ArcanumWidget } from '../widgets/ArcanumWidget';
 import { ConcentrationWidget } from '../widgets/ConcentrationWidget';
 import { DeathSavesWidget } from '../widgets/DeathSavesWidget';
 import { useAppDispatch } from '../../store/hooks';
-import { concentrationSet } from '../../store/slices/characterSlice';
+import { concentrationSet } from '../../store/slices/healthSlice';
 import { getRequiredLevelForSpell } from '../../utils/spellRules';
 import { spells } from '../../data/spells';
 

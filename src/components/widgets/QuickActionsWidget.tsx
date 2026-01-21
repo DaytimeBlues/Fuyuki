@@ -1,15 +1,18 @@
 import { Dice1, RefreshCw, Heart, Shield, Zap } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { hpChanged, shortRestCompleted, levelChanged, longRestCompleted } from '../../store/slices/characterSlice';
+import { hpChanged, longRestHealth } from '../../store/slices/healthSlice';
+import { shortRestWarlock, longRestWarlock } from '../../store/slices/warlockSlice';
+import { levelChanged } from '../../store/slices/statSlice';
+import { showToast } from '../../store/slices/uiSlice';
 import { HapticPresets } from '../../utils/haptics';
 import { useState } from 'react';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 
 export function QuickActionsWidget() {
     const dispatch = useAppDispatch();
-    const hp = useAppSelector(state => state.character.hp);
-    const concentration = useAppSelector(state => state.character.concentration);
-    const level = useAppSelector(state => state.character.level);
+    const hp = useAppSelector(state => state.health.hp);
+    const concentration = useAppSelector(state => state.health.concentration);
+    const level = useAppSelector(state => state.stats.level);
 
     // Dialog State
     const [dialogConfig, setDialogConfig] = useState<{
@@ -43,7 +46,8 @@ export function QuickActionsWidget() {
     };
 
     const handleShortRest = () => {
-        dispatch(shortRestCompleted());
+        dispatch(shortRestWarlock());
+        dispatch(showToast("Short Rest Completed"));
         HapticPresets.healing();
     };
 
@@ -55,7 +59,9 @@ export function QuickActionsWidget() {
             message: 'Take a Long Rest? This will restore all hit points, spell slots, and ability uses. Current concentration will be broken.',
             confirmLabel: 'Rest',
             onConfirm: () => {
-                dispatch(longRestCompleted());
+                dispatch(longRestHealth());
+                dispatch(longRestWarlock());
+                dispatch(showToast("Long Rest Completed"));
                 HapticPresets.levelUp(); // Heavy haptic for long rest
                 closeDialog();
             }

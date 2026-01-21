@@ -6,8 +6,8 @@ import {
     wildShapeEnded,
     wildShapeDamageTaken,
     wildShapeHpChanged,
-    slotsUpdated
-} from '../../store/slices/characterSlice';
+} from '../../store/slices/healthSlice';
+import { slotsUpdated } from '../../store/slices/statSlice';
 import { InitiativeWidget } from '../widgets/InitiativeWidget';
 import { ProficiencyWidget } from '../widgets/ProficiencyWidget';
 import { SavingThrowsWidget } from '../widgets/SavingThrowsWidget';

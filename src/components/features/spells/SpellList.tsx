@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { initialSpellsV3 } from '../../../data/spellsV3';
 import { SpellCard } from './SpellCard';
 import { spellPrepared, spellUnprepared, slotExpended } from '../../../store/slices/spellbookSlice';
-import { concentrationSet } from '../../../store/slices/characterSlice';
+import { concentrationSet } from '../../../store/slices/healthSlice';
 import { CastModal } from './CastModal';
 import { SpellV3 } from '../../../schemas/spellSchema';
 import { SpellInfoModal } from './SpellInfoModal';
@@ -89,7 +89,7 @@ export const SpellList: React.FC = () => {
     };
 
     // Helper to check if currently concentrating (for the warning in CastModal)
-    const currentConcentration = useAppSelector(state => state.character.concentration);
+    const currentConcentration = useAppSelector(state => state.health.concentration);
 
     return (
         <div className="space-y-6">

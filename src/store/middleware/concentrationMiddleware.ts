@@ -14,12 +14,12 @@ const concentrationMiddleware: Middleware<object, RootState> = (store) => (next)
     const nextState = store.getState();
 
     // Check if HP changed (damage taken)
-    const prevHP = prevState.character.hp.current;
-    const nextHP = nextState.character.hp.current;
+    const prevHP = prevState.health.hp.current;
+    const nextHP = nextState.health.hp.current;
     const hpDecreased = nextHP < prevHP;
 
     // Check if concentrating
-    const hasConcentration = nextState.character.concentration !== null;
+    const hasConcentration = nextState.health.concentration !== null;
 
     // Trigger concentration check if damage taken while concentrating
     // Note: The characterSlice already handles concentration checks in hpChanged action

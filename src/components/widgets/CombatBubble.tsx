@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAppSelector } from '../../store/hooks';
-import { selectSpellAttackBonus, selectSpellSaveDC, selectCurrentAC, selectCharacter } from '../../store/slices/characterSlice';
+import { selectSpellAttackBonus, selectSpellSaveDC, selectCurrentAC, selectCharacter } from '../../store/selectors';
 import { Swords, Shield, Target, Zap, Swords as SwordsIcon } from 'lucide-react';
 
 export function CombatBubble() {

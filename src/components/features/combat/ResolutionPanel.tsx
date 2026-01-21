@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppSelector } from '../../../store/hooks';
-import { selectSpellSaveDC, selectSpellAttackBonus } from '../../../store/slices/characterSlice';
+import { selectSpellSaveDC, selectSpellAttackBonus } from '../../../store/selectors';
 import { SpellV3 } from '../../../schemas/spellSchema';
 import { Crosshair, Shield, Sparkles, Check, X } from 'lucide-react';
 
@@ -275,12 +275,12 @@ export const ResolutionPanel: React.FC<ResolutionPanelProps> = ({
             </div>
 
             {/* Footer / Cancel */}
-            <div className="px-4 py-3 border-t border-white/10 bg-card-elevated/40">
+            <div className="px-4 py-4 border-t border-white/10 bg-card-elevated/40">
                 <button
                     onClick={onCancel}
-                    className="w-full text-center text-muted hover:text-white text-sm font-bold uppercase tracking-wider transition-colors"
+                    className="w-full text-center text-muted hover:text-white text-sm font-bold uppercase tracking-widest transition-colors py-2 active:scale-95"
                 >
-                    Cancel
+                    Cancel Selection
                 </button>
             </div>
         </div>

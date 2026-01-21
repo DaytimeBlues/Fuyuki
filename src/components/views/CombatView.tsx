@@ -2,8 +2,9 @@ import { useState, useMemo } from 'react';
 import { Bone, Bolt, Info, ShieldAlert, Skull, Swords, Timer, Users, X, Ghost, Biohazard, ChevronUp, ChevronDown } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { minionSelectors, conditionAdded, conditionRemoved, combatLogAdded, reactionToggled, bonusActionToggled } from '../../store/slices/combatSlice';
-import { hpChanged, tempHpSet, slotExpended, slotRestored } from '../../store/slices/characterSlice';
-import { selectCharacter } from '../../store/slices/characterSlice';
+import { hpChanged, tempHpSet } from '../../store/slices/healthSlice';
+import { slotExpended, slotRestored } from '../../store/slices/statSlice';
+import { selectCharacter, selectCurrentAC } from '../../store/selectors';
 import { MinionDrawer } from '../minions/MinionDrawer';
 import { MathStrip } from '../features/combat/MathStrip';
 import { PactMagicSlots } from '../combat/PactMagicSlots';
@@ -20,6 +21,7 @@ import { extractToHit, extractDamageFormula } from '../../utils/actionParsers';
 export function CombatView() {
     const dispatch = useAppDispatch();
     const character = useAppSelector(selectCharacter);
+    const currentAC = useAppSelector(selectCurrentAC);
     const combat = useAppSelector(state => state.combat);
     const minions = useAppSelector(state => minionSelectors.selectAll(state.combat.minions));
 
@@ -145,7 +147,7 @@ export function CombatView() {
                     </div>
                     <div className="bg-card-elevated/80 p-3 rounded-lg border border-white/10">
                         <div className="text-[10px] text-muted uppercase tracking-wider">AC</div>
-                        <div className="text-lg font-display text-white">{character.baseAC + character.abilityMods.dex + (character.mageArmour ? 3 : 0) + (character.shield ? 5 : 0)}</div>
+                        <div className="text-lg font-display text-white">{currentAC}</div>
                     </div>
                 </div>
 

@@ -1,6 +1,7 @@
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { Eye, X } from 'lucide-react';
-import { selectConcentration, concentrationSet } from '../../store/slices/characterSlice';
+import { selectConcentration } from '../../store/selectors';
+import { concentrationSet } from '../../store/slices/healthSlice';
 
 export function ConcentrationFloatingBubble() {
     const dispatch = useAppDispatch();

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { arcanumUsed, arcanumRestored, selectArcanum, selectCharacter } from '../../store/slices/characterSlice';
+import { arcanumUsed, arcanumRestored } from '../../store/slices/warlockSlice';
+import { selectArcanum, selectCharacter } from '../../store/selectors';
 import { Sparkles } from 'lucide-react';
 
 export const ArcanumWidget: React.FC = () => {

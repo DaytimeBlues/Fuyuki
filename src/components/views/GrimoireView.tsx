@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { selectCharacter, invocationToggled } from '../../store/slices/characterSlice';
+import { invocationToggled } from '../../store/slices/warlockSlice';
+import { selectCharacter } from '../../store/selectors';
 import { PACT_BOONS } from '../../data/warlockData';
 import { Book, Swords, Flame, Sparkles, Check } from 'lucide-react';
 
@@ -109,8 +110,8 @@ export function GrimoireView() {
                                 <button
                                     onClick={() => handleToggleInvocation(inv.id)}
                                     className={`ml-4 w-10 h-10 rounded border flex items-center justify-center transition-all ${inv.active
-                                            ? 'bg-accent border-accent text-bg-dark'
-                                            : 'border-white/10 text-white/20 hover:border-white/30'
+                                        ? 'bg-accent border-accent text-bg-dark'
+                                        : 'border-white/10 text-white/20 hover:border-white/30'
                                         }`}
                                 >
                                     {inv.active ? <Check size={18} strokeWidth={3} /> : <div className="w-1.5 h-1.5 rounded-full bg-current" />}

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { inventoryItemAdded, inventoryItemRemoved, itemChargeConsumed, toastShown, itemEquipped } from '../../store/slices/characterSlice';
+import {
+    inventoryItemAdded,
+    inventoryItemRemoved,
+    itemChargeConsumed,
+    itemEquipped
+} from '../../store/slices/inventorySlice';
+import { showToast as toastShown } from '../../store/slices/uiSlice';
 import { castingStarted, slotConfirmed } from '../../store/slices/combatSlice';
 import { InventoryItem } from '../../types';
 import { Backpack, Trash2, Plus, Zap, Wand2, Swords as SwordsIcon, Shield } from 'lucide-react';
@@ -8,7 +14,7 @@ import { spells } from '../../data/spells';
 
 export const InventoryView: React.FC = () => {
     const dispatch = useAppDispatch();
-    const inventory = useAppSelector(state => state.character.inventory);
+    const inventory = useAppSelector(state => state.inventory.inventory);
     const [isAdding, setIsAdding] = useState(false);
     const [newItemName, setNewItemName] = useState('');
     const [newItemDesc, setNewItemDesc] = useState('');
