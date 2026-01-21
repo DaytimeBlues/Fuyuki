@@ -8,6 +8,7 @@ export interface TabsProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function Tabs({ defaultValue, value, onValueChange, children, className, ...props }: TabsProps) {
   return (
     <div
