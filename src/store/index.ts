@@ -6,6 +6,7 @@ import inventoryReducer from './slices/inventorySlice';
 import spellbookReducer from './slices/spellbookSlice';
 import combatReducer from './slices/combatSlice';
 import uiReducer from './slices/uiSlice';
+import widgetReducer from './slices/widgetSlice';
 import { persistenceMiddleware } from './slices/persistenceMiddleware';
 import { open5eApi } from './api/open5eApi';
 
@@ -14,6 +15,7 @@ const listenerMiddleware = createListenerMiddleware();
 export const store = configureStore({
     reducer: {
         ui: uiReducer,
+        widget: widgetReducer,
         health: healthReducer,
         warlock: warlockReducer,
         stats: statReducer,

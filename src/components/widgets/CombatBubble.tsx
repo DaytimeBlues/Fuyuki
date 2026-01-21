@@ -1,12 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppSelector } from '../../store/hooks';
 import { selectSpellAttackBonus, selectSpellSaveDC, selectCurrentAC, selectCharacter } from '../../store/selectors';
 import { Swords, Shield, Target, Zap, Swords as SwordsIcon } from 'lucide-react';
+import { useDraggableWidget } from '../../hooks/useDraggableWidget';
 
 export function CombatBubble() {
     const [isExpanded, setIsExpanded] = useState(false);
-    const [isLongPressing, setIsLongPressing] = useState(false);
-    const longPressTimer = useRef<number | null>(null);
+    const { isDragging, bind } = useDraggableWidget({ id: 'combat' });
 
     const character = useAppSelector(selectCharacter);
     const spellSaveDC = useAppSelector(selectSpellSaveDC);
@@ -15,32 +15,13 @@ export function CombatBubble() {
 
     const equippedWeapons = character.inventory.filter(item => item.type === 'weapon' && item.equipped);
 
-    const handleTouchStart = () => {
-        longPressTimer.current = window.setTimeout(() => {
-            setIsLongPressing(true);
-            setIsExpanded(false);
-        }, 800);
-    };
-
-    const handleTouchEnd = () => {
-        if (longPressTimer.current) {
-            clearTimeout(longPressTimer.current);
-            longPressTimer.current = null;
-        }
-        if (isLongPressing) {
-            setIsLongPressing(false);
-        } else if (!isExpanded) {
-            setIsExpanded(true);
-        }
-    };
-
     const handleClick = () => {
-        if (!isLongPressing) {
+        if (!isDragging) {
             setIsExpanded(!isExpanded);
         }
     };
 
-    // Auto-collapse after 5 seconds of inactivity if expanded
+    // Auto-collapse after 8 seconds of inactivity if expanded
     useEffect(() => {
         if (isExpanded) {
             const timer = setTimeout(() => setIsExpanded(false), 8000);
@@ -49,11 +30,14 @@ export function CombatBubble() {
     }, [isExpanded]);
 
     return (
-        <div className="fixed bottom-24 right-6 z-[60] flex flex-col items-end gap-3 pointer-events-none">
+        <div
+            {...bind}
+            className="flex flex-col items-end gap-3 pointer-events-auto"
+        >
             {/* Sprouting Stats */}
             <div className={`flex flex-col gap-2 transition-all duration-500 origin-bottom ${isExpanded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-10 pointer-events-none'}`}>
                 {/* AC Sprout */}
-                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-xl border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl pointer-events-auto">
+                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-xl border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
                     <Shield size={14} className="text-blue-400" />
                     <div className="flex flex-col">
                         <span className="text-[8px] uppercase tracking-tighter text-muted">Armor Class</span>
@@ -62,7 +46,7 @@ export function CombatBubble() {
                 </div>
 
                 {/* DC Sprout */}
-                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-xl border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl pointer-events-auto">
+                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-xl border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
                     <Target size={14} className="text-purple-400" />
                     <div className="flex flex-col">
                         <span className="text-[8px] uppercase tracking-tighter text-muted">Spell DC</span>
@@ -72,7 +56,7 @@ export function CombatBubble() {
 
                 {/* Weapons Sprout */}
                 {equippedWeapons.map((weapon, idx) => (
-                    <div key={idx} className="flex items-center gap-3 bg-bg-dark/95 backdrop-blur-xl border border-accent/40 rounded-full pl-3 pr-4 py-2 shadow-2xl pointer-events-auto ring-1 ring-accent/20">
+                    <div key={idx} className="flex items-center gap-3 bg-bg-dark/95 backdrop-blur-xl border border-accent/40 rounded-full pl-3 pr-4 py-2 shadow-2xl ring-1 ring-accent/20">
                         <SwordsIcon size={14} className="text-accent" />
                         <div className="flex flex-col">
                             <span className="text-[8px] uppercase tracking-tighter text-accent/80">{weapon.name}</span>
@@ -93,7 +77,7 @@ export function CombatBubble() {
 
                 {/* Concentration State */}
                 {character.concentration && (
-                    <div className="flex items-center gap-3 bg-accent/10 backdrop-blur-xl border border-accent/60 rounded-full pl-3 pr-4 py-2 shadow-2xl pointer-events-auto animate-pulse">
+                    <div className="flex items-center gap-3 bg-accent/10 backdrop-blur-xl border border-accent/60 rounded-full pl-3 pr-4 py-2 shadow-2xl animate-pulse">
                         <Zap size={14} className="text-accent" />
                         <div className="flex flex-col">
                             <span className="text-[8px] uppercase tracking-tighter text-accent">Concentrating</span>
@@ -107,22 +91,17 @@ export function CombatBubble() {
 
             {/* Core Bubble */}
             <button
-                onMouseDown={handleTouchStart}
-                onMouseUp={handleTouchEnd}
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
                 onClick={handleClick}
-                className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 pointer-events-auto relative ${isExpanded
-                    ? 'bg-accent text-bg-dark scale-90 rotate-45 shadow-accent-lg'
-                    : 'bg-card-elevated text-white border-2 border-white/20 shadow-xl hover:border-white/40 hover:scale-105 active:scale-95'
-                    }`}
+                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 relative
+                    bg-black/40 backdrop-blur-xl border border-white/10 shadow-xl
+                    ${isExpanded
+                        ? 'bg-accent text-bg-dark scale-90 rotate-45 shadow-accent-lg'
+                        : 'text-white hover:border-white/40 hover:scale-105 active:scale-95'
+                    }
+                    ${isDragging ? 'scale-110 shadow-2xl shadow-accent/30 ring-2 ring-accent/50' : ''}
+                `}
             >
-                <Swords size={24} className={isLongPressing ? 'animate-ping' : ''} />
-
-                {/* Visual Feedback for long press */}
-                {isLongPressing && (
-                    <div className="absolute inset-0 rounded-full border-2 border-red-500 animate-ping" />
-                )}
+                <Swords size={24} />
             </button>
         </div>
     );

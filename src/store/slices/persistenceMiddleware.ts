@@ -1,4 +1,4 @@
-import { Middleware, UnknownAction } from '@reduxjs/toolkit';
+import { Middleware } from '@reduxjs/toolkit';
 import { updateActiveSession } from '../../utils/sessionStorage';
 import { RootState } from '../index';
 import { CharacterData, Minion } from '../../types';
@@ -8,7 +8,7 @@ const EPHEMERAL_ACTIONS = ['ui/toastCleared', 'ui/toastShown'];
 
 const CHARACTER_SLICE_PREFIXES = ['health/', 'warlock/', 'stats/', 'inventory/'];
 
-export const persistenceMiddleware: Middleware = (store) => (next) => (action: UnknownAction) => {
+export const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
     const result = next(action);
 
     // Check if the action belongs to one of our modular character slices
