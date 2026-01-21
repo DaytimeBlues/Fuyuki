@@ -147,53 +147,7 @@ export function TabRouter({
                                 >
                                     ← Back to Menu
                                 </button>
-                                <WeaponsView />
-                            </div>
-                        );
-                    case 'settings':
-                        return (
-                            <div className="animate-fade-in">
-                                <button
-                                    onClick={() => onNavigate('more')}
-                                    className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
-                                >
-                                    ← Back to Menu
-                                </button>
-                                <CharacterEditor
-                                    data={character}
-                                    onLevelChange={handleLevelChange}
-                                    onAbilityChange={handleAbilityChange}
-                                />
-                                <InitiativeWidget
-                                    dexMod={character.abilityMods.dex}
-                                    profBonus={character.profBonus}
-                                />
-                                <ProficiencyWidget
-                                    profBonus={character.profBonus}
-                                    level={character.level}
-                                />
-                                <SavingThrowsWidget
-                                    abilityMods={character.abilityMods}
-                                    profBonus={character.profBonus}
-                                    savingThrowProficiencies={character.savingThrowProficiencies}
-                                />
-                                <div className="mt-8 border-t border-white/5 pt-8">
-                                    <RestView
-                                        hitDice={character.hitDice}
-                                        conMod={character.abilityMods.con}
-                                        currentHP={character.hp.current}
-                                        maxHP={character.hp.max}
-                                        onSpendHitDie={handleSpendHitDie}
-                                        onShortRest={handleShortRest}
-                                        onLongRest={handleLongRest}
-                                    />
-                                </div>
-                                <div className="mt-8 border-t border-white/5 pt-8">
-                                    <MulticlassSpellSlotsWidget
-                                        currentSlots={character.slots}
-                                        onSlotsCalculated={(slots) => dispatch(slotsUpdated(slots))}
-                                    />
-                                </div>
+                                <InventoryView />
                             </div>
                         );
                     default:
@@ -203,4 +157,3 @@ export function TabRouter({
         </Suspense>
     );
 }
-
