@@ -543,7 +543,7 @@ npx cap open android
 
 **Next Steps:**
 1. Build production build
-2. Deploy PWA to GitHub Pages (you'll set up Azure)
+2. Deploy PWA to GitHub Pages
 3. Build release APK
 4. Test on Nothing Phone (2a)
 5. Update docs with final instructions
@@ -555,7 +555,7 @@ npx cap open android
 ### Known Limitations
 
 **Deployment Platforms:**
-- PWA will be deployed to GitHub Pages (not Azure)
+- PWA will be deployed to GitHub Pages
 - Android APK needs manual installation on Nothing Phone (2a)
 - No automated App Store release planned
 
@@ -615,7 +615,7 @@ npx cap open android
 
 **Status:** ✅ **PRODUCTION-READY**
 
-The Fuyuki Warlock Tracker is production-ready for deployment to GitHub Pages (you will handle Azure deployment) and Android APK distribution.
+The Fuyuki Warlock Tracker is production-ready for deployment to GitHub Pages and Android APK distribution.
 
 **Build:** Latest build successful
 **Bundle Size:** ~788KB (gzipped: 210KB)
@@ -633,19 +633,12 @@ The Fuyuki Warlock Tracker is production-ready for deployment to GitHub Pages (y
 2. Automatic action triggers GitHub Pages deployment
 3. PWA available at `https://daytimeblues.github.io/fuyuki/`
 
-### Option B: Azure Blob Storage
-1. Update `vite.config.ts` for Azure deployment
-2. Modify `src/utils/sessionStorage.ts` to use Azure instead of localStorage
-3. Deploy to Azure Blob
-4. Update PWA manifest and cache strategy
-5. Test offline mode
-
-### Option C: Play Store
+### Option B: Play Store
 1. Setup Play Store listing
 2. Configure Capacitor Store with Play Store
 3. Update deployment workflow
 
-**Option D: APK Distribution**
+### Option C: APK Distribution
 1. Build signed APK
 2. Test APK thoroughly
 3. Upload to GitHub Releases
@@ -653,12 +646,12 @@ The Fuyuki Warlock Tracker is production-ready for deployment to GitHub Pages (y
 5. Document signing process
 6. Distribute APK via GitHub Releases or direct file sharing
 
-**Priority: Option A (PWA) - Low** 
-- Option B (Azure) - Medium
-- Option C (Play Store) - High
-- Option D (APK) - High
+**Priority:** 
+- Option A (PWA) - Low
+- Option B (Play Store) - High
+- Option C (APK) - High
 
-**Recommended: GitHub Pages for PWA** (Azure will handle deployment)
+**Recommended: GitHub Pages for PWA**
 
 ---
 
@@ -669,4 +662,4 @@ The Fuyuki Warlock Tracker is production-ready for deployment to GitHub Pages (y
 All code is production-ready. Build passes, tests pass, Android configured. Deployment guides created.
 
 **Next Action:**
-Execute Phase 7.1 (PWA to GitHub Pages) or your preferred Azure platform
+Execute Phase 7.1 (PWA to GitHub Pages)
