@@ -1,6 +1,7 @@
 import { Shield, Wand2, Swords, User, Menu, Feather } from 'lucide-react';
 // Background removed - using static image or CSS for battery optimization
 import { ConcentrationFloatingBubble } from '../ui/ConcentrationFloatingBubble';
+import { FamiliarBubble } from '../widgets/FamiliarBubble';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { ModeToggle } from '../ui/ModeToggle';
 
@@ -221,6 +222,7 @@ export function AppShell({
 
                 {/* Global Overlays */}
                 <ConcentrationFloatingBubble />
+                <FamiliarBubble />
 
                 {/* App ready indicator for E2E tests - always visible element */}
                 <div data-testid="app-ready" style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} />

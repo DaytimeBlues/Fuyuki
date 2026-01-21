@@ -17,7 +17,14 @@ export function CombatBubble() {
 
     const handleClick = () => {
         if (!isDragging) {
-            setIsExpanded(!isExpanded);
+            // On tap weapon, navigate to inventory/weapons view
+            if (equippedWeapons.length > 0 && !isDragging) {
+                // Find parent navigation function or emit event
+                // For now, just expand the bubble
+                setIsExpanded(!isExpanded);
+            } else {
+                setIsExpanded(!isExpanded);
+            }
         }
     };
 

@@ -31,6 +31,7 @@ export const InventoryView: React.FC = () => {
             .filter(Boolean);
 
         const item: InventoryItem = {
+            id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Auto-generate ID
             name: newItemName,
             description: newItemDesc,
             spells: parsedSpells.length > 0 ? parsedSpells : undefined,

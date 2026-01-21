@@ -17,13 +17,14 @@ import { RestView } from '../views/RestView';
 import { CharacterEditor } from '../widgets/CharacterEditor';
 
 const DashboardView = lazy(() => import('../views/DashboardView').then(m => ({ default: m.DashboardView })));
-const SpellsView = lazy(() => import('../views/SpellsView'));
+const SpellsView = lazy(() => import('../views/SpellsView')));
 const CombatView = lazy(() => import('../views/CombatView').then(m => ({ default: m.CombatView })));
 const CharacterHubView = lazy(() => import('../views/CharacterHubView').then(m => ({ default: m.CharacterHubView })));
 const MoreView = lazy(() => import('../views/MoreView').then(m => ({ default: m.MoreView })));
 const InventoryView = lazy(() => import('../views/InventoryView').then(m => ({ default: m.InventoryView })));
 const PatronView = lazy(() => import('../views/PatronView').then(m => ({ default: m.PatronView })));
 const GrimoireView = lazy(() => import('../views/GrimoireView').then(m => ({ default: m.GrimoireView })));
+const WeaponsView = lazy(() => import('../views/WeaponsView').then(m => ({ default: m.WeaponsView })));
 
 function ViewFallback() {
     return (
@@ -146,7 +147,7 @@ export function TabRouter({
                                 >
                                     ← Back to Menu
                                 </button>
-                                <InventoryView />
+                                <WeaponsView />
                             </div>
                         );
                     case 'settings':
