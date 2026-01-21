@@ -33,7 +33,7 @@ export function DraggableContainer({
                 // Base sizing
                 'w-14 h-14 rounded-2xl',
                 // Glassmorphism
-                'bg-black/40 backdrop-blur-xl border border-white/10',
+                'bg-black/40 backdrop-blur-md border border-white/10',
                 // Flex centering
                 'flex items-center justify-center',
                 // Shadow

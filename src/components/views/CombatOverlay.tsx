@@ -78,7 +78,7 @@ export const CombatOverlay: React.FC = () => {
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-bg-void/90 backdrop-blur-xl transition-all duration-300"
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-bg-void/90 backdrop-blur-sm transition-all duration-300"
             data-testid="combat-overlay"
         >
             {/* Kyoto Decorative Elements */}

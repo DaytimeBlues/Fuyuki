@@ -10,8 +10,6 @@ interface AppShellProps {
     onTabChange: (tab: string) => void;
     toast?: string | null;
     clearToast?: () => void;
-    showSessionPicker?: boolean;
-    renderSessionPicker?: () => React.ReactNode;
 }
 
 const navItems = [
@@ -26,9 +24,7 @@ export function AppShell({
     children,
     activeTab,
     onTabChange,
-    toast,
-    showSessionPicker,
-    renderSessionPicker
+    toast
 }: AppShellProps) {
     const isTablet = useMediaQuery('(min-width: 768px)');
 
@@ -242,8 +238,6 @@ export function AppShell({
                     </div>
                 )}
 
-                {/* Session Picker Modal */}
-                {showSessionPicker && renderSessionPicker && renderSessionPicker()}
             </div>
 
             {/* Hide scrollbar but keep functionality */}

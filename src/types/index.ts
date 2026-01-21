@@ -3,6 +3,77 @@ export type AbilityKey = 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha';
 export type AbilityScores = Record<AbilityKey, number>;
 export type AbilityMods = Record<AbilityKey, number>;
 
+// === EQUIPMENT & ARMOR TYPES ===
+
+export type ArmorSlot = 'head' | 'cloak' | 'chest' | 'hands' | 'feet' | 'ring1' | 'ring2' | 'amulet' | 'mainHand' | 'offHand';
+
+export interface EquipmentSlots {
+    head?: EquippedItem | null;
+    cloak?: EquippedItem | null;
+    chest?: EquippedItem | null;
+    hands?: EquippedItem | null;
+    feet?: EquippedItem | null;
+    ring1?: EquippedItem | null;
+    ring2?: EquippedItem | null;
+    amulet?: EquippedItem | null;
+    mainHand?: EquippedItem | null;
+    offHand?: EquippedItem | null;
+}
+
+export interface EquippedItem {
+    itemId: string;
+    name: string;
+    description?: string;
+    cosmeticOnly: boolean;
+    modifiers: StatModifier[];
+}
+
+export interface StatModifier {
+    stat: 'ac' | 'attackBonus' | 'damageBonus' | 'saveDC' | 'speed' | 'initiative' | AbilityKey;
+    value: number;
+    type: 'bonus' | 'set';
+}
+
+// === WEAPON TYPES (SRD-Compliant) ===
+
+export type WeaponProperty =
+    | 'finesse'      // Use STR or DEX
+    | 'versatile'    // One or two-handed
+    | 'two-handed'   // Requires two hands
+    | 'light'        // Dual-wield eligible
+    | 'heavy'        // Disadvantage for Small creatures
+    | 'reach'        // +5 ft reach
+    | 'thrown'       // Can be thrown
+    | 'loading'      // One attack per action
+    | 'ammunition'   // Requires ammo
+    | 'special';     // See weapon description
+
+export interface WeaponStats {
+    damage: string;             // e.g., "1d8"
+    versatileDamage?: string;   // e.g., "1d10" (two-handed)
+    damageType: string;         // e.g., "slashing"
+    bonus: number;              // Magical bonus (+1, +2, etc.)
+    properties: WeaponProperty[];
+    range?: { normal: number; long: number }; // For ranged/thrown
+    isPactWeapon?: boolean;
+}
+
+// === FAMILAR TYPES ===
+
+export interface Familiar {
+    id: string;
+    name: string;
+    type: 'imp' | 'pseudodragon' | 'quasit' | 'sprite' | 'custom';
+    hp: number;
+    maxHp: number;
+    ac: number;
+    speed: number;
+    flySpeed?: number;
+    isInvisible: boolean;
+    traits: string[];         // e.g., ["Devil's Sight", "Magic Resistance"]
+    attacks: MinionAttack[];
+}
+
 export interface Skill {
     name: string;
     attr: AbilityKey;
@@ -87,6 +158,7 @@ export interface CombatLogEntry {
 
 // === INVENTORY TYPES ===
 export interface InventoryItem {
+    id: string; // Unique ID for equipment slot mapping (migration: auto-generated if missing)
     name: string;
     spells?: string[];
     charges?: {
@@ -96,13 +168,7 @@ export interface InventoryItem {
     description?: string;
     type?: 'weapon' | 'armor' | 'item';
     equipped?: boolean;
-    weaponStats?: {
-        damage: string;
-        damageType: string;
-        bonus?: number;
-        properties?: string[];
-        isPactWeapon?: boolean;
-    };
+    weaponStats?: WeaponStats;
     armorStats?: {
         baseAC: number;
         dexCap?: number;
@@ -214,6 +280,10 @@ export interface CharacterData {
     pactBoon: PactBoon;
     patron: Patron;
 
+    // === EQUIPMENT & FAMILIAR ===
+    equipmentSlots?: EquipmentSlots;
+    familiar?: Familiar;
+
     // Legacy or Config
     defaultMinion?: { [key: string]: MinionStats };
 }
@@ -227,4 +297,5 @@ export interface Session {
     minions?: Minion[]; // Minions persisted with session
     lastModified: string;
     version: number;
+    migrationVersion?: number; // Track which migrations ran
 }

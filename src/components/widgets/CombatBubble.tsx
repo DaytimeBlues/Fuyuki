@@ -37,7 +37,7 @@ export function CombatBubble() {
             {/* Sprouting Stats */}
             <div className={`flex flex-col gap-2 transition-all duration-500 origin-bottom ${isExpanded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-10 pointer-events-none'}`}>
                 {/* AC Sprout */}
-                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-xl border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
+                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-md border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
                     <Shield size={14} className="text-blue-400" />
                     <div className="flex flex-col">
                         <span className="text-[8px] uppercase tracking-tighter text-muted">Armor Class</span>
@@ -46,7 +46,7 @@ export function CombatBubble() {
                 </div>
 
                 {/* DC Sprout */}
-                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-xl border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
+                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-md border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
                     <Target size={14} className="text-purple-400" />
                     <div className="flex flex-col">
                         <span className="text-[8px] uppercase tracking-tighter text-muted">Spell DC</span>
@@ -56,7 +56,7 @@ export function CombatBubble() {
 
                 {/* Weapons Sprout */}
                 {equippedWeapons.map((weapon, idx) => (
-                    <div key={idx} className="flex items-center gap-3 bg-bg-dark/95 backdrop-blur-xl border border-accent/40 rounded-full pl-3 pr-4 py-2 shadow-2xl ring-1 ring-accent/20">
+                    <div key={idx} className="flex items-center gap-3 bg-bg-dark/95 backdrop-blur-md border border-accent/40 rounded-full pl-3 pr-4 py-2 shadow-2xl ring-1 ring-accent/20">
                         <SwordsIcon size={14} className="text-accent" />
                         <div className="flex flex-col">
                             <span className="text-[8px] uppercase tracking-tighter text-accent/80">{weapon.name}</span>
@@ -77,7 +77,7 @@ export function CombatBubble() {
 
                 {/* Concentration State */}
                 {character.concentration && (
-                    <div className="flex items-center gap-3 bg-accent/10 backdrop-blur-xl border border-accent/60 rounded-full pl-3 pr-4 py-2 shadow-2xl animate-pulse">
+                    <div className="flex items-center gap-3 bg-accent/10 backdrop-blur-md border border-accent/60 rounded-full pl-3 pr-4 py-2 shadow-2xl animate-pulse">
                         <Zap size={14} className="text-accent" />
                         <div className="flex flex-col">
                             <span className="text-[8px] uppercase tracking-tighter text-accent">Concentrating</span>
@@ -93,7 +93,7 @@ export function CombatBubble() {
             <button
                 onClick={handleClick}
                 className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 relative
-                    bg-black/40 backdrop-blur-xl border border-white/10 shadow-xl
+                    bg-black/40 backdrop-blur-md border border-white/10 shadow-xl
                     ${isExpanded
                         ? 'bg-accent text-bg-dark scale-90 rotate-45 shadow-accent-lg'
                         : 'text-white hover:border-white/40 hover:scale-105 active:scale-95'

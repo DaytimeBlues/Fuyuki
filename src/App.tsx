@@ -6,16 +6,17 @@
  * - AppShell: Layout, Navigation, Global Overlays (Toasts, SessionPicker)
  * - TabRouter: View-specific routing and state mapping
  */
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { AppShell } from './components/layout/AppShell';
 import { TabRouter } from './components/layout/TabRouter';
 import { CombatOverlay } from './components/views/CombatOverlay';
 import { CombatBubble } from './components/widgets/CombatBubble';
 import { VoiceCommandButton } from './components/widgets/VoiceCommandButton';
-import { SessionPicker } from './components/SessionPicker';
-import { getActiveSession } from './utils/sessionStorage';
-import type { Session, CharacterData, AbilityKey } from './types';
+import { ensureActiveSession } from './utils/sessionStorage';
+import { migrateSessionToV3, createSessionBackup } from './utils/sessionMigration';
+import { validateSessionForMigration } from './utils/migrationValidator';
+import type { CharacterData, AbilityKey } from './types';
 import {
   showToast,
   clearToast,
@@ -43,15 +44,15 @@ import {
   shortRestWarlock,
   longRestWarlock,
 } from './store/slices/warlockSlice';
+import { hydrateEquipment } from './store/slices/equipmentSlice';
+import { hydrateFamiliar } from './store/slices/familiarSlice';
 
 import { useAppDispatch, useAppSelector } from './store/hooks';
 
 function App() {
   const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState('stats');
-  const [showSessionPicker, setShowSessionPicker] = useState<boolean>(() => {
-    return !getActiveSession();
-  });
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const stats = useAppSelector(state => state.stats);
   const health = useAppSelector(state => state.health);
@@ -75,20 +76,76 @@ function App() {
     }
   }, [toast, dispatch]);
 
-  const handleSessionSelected = useCallback((session: Session) => {
-    console.log('App: handleSessionSelected called', session);
-    try {
-      dispatch(hydrateStats(session.characterData));
-      dispatch(hydrateHealth(session.characterData));
-      dispatch(hydrateWarlock(session.characterData));
-      dispatch(hydrateInventory(session.characterData));
-      setShowSessionPicker(false);
-      window.scrollTo(0, 0);
-      console.log('App: Session picker hidden');
-    } catch (error) {
-      console.error('App: Error in handleSessionSelected', error);
+  // Auto-load (or create) session on startup
+  useEffect(() => {
+    const session = ensureActiveSession();
+
+    // Run migration if needed
+    if (session.migrationVersion !== 3) { // Target migration version
+      console.log('App: Running migration from version', session.migrationVersion, 'to 3');
+
+      // Validate before migration
+      const validation = validateSessionForMigration(session);
+      if (!validation.isValid) {
+        console.error('App: Session validation failed:', validation.errors);
+        // Load without migration to prevent data corruption
+        dispatch(hydrateFromSession(session));
+        setIsInitialized(true);
+        return;
+      }
+
+      // Warn if needed
+      if (validation.warnings.length > 0) {
+        console.warn('App: Migration warnings:', validation.warnings);
+      }
+
+      try {
+        // Create backup before migration
+        createSessionBackup(session);
+
+        // Run migration
+        const migrated = migrateSessionToV3(session);
+
+        // Update session in localStorage (persistence will pick it up)
+        const sessions = localStorage.getItem('fuyuki-sessions');
+        if (sessions) {
+          const parsed = JSON.parse(sessions);
+          const index = parsed.findIndex((s: any) => s.id === session.id);
+          if (index !== -1) {
+            parsed[index] = migrated;
+            localStorage.setItem('fuyuki-sessions', JSON.stringify(parsed));
+          }
+        }
+
+        // Load migrated session
+        dispatch(hydrateFromSession(migrated));
+      } catch (error) {
+        console.error('App: Migration failed, loading original session:', error);
+        dispatch(hydrateFromSession(session));
+      }
+    } else {
+      // No migration needed, load as-is
+      dispatch(hydrateFromSession(session));
     }
+
+    window.scrollTo(0, 0);
+    console.log('App: Session auto-loaded', session.id);
+    setIsInitialized(true);
   }, [dispatch]);
+
+  // Helper to hydrate all slices
+  const hydrateFromSession = (session: any) => {
+    dispatch(hydrateStats(session.characterData));
+    dispatch(hydrateHealth(session.characterData));
+    dispatch(hydrateWarlock(session.characterData));
+    dispatch(hydrateInventory(session.characterData));
+    if (session.characterData.equipmentSlots) {
+      dispatch(hydrateEquipment(session.characterData.equipmentSlots));
+    }
+    if (session.characterData.familiar) {
+      dispatch(hydrateFamiliar(session.characterData.familiar));
+    }
+  };
 
   // --- ACTIONS ---
   // Memoize actions to prevent unnecessary re-renders of TabRouter
@@ -116,6 +173,14 @@ function App() {
 
   const navTab = activeTab === 'inventory' || activeTab === 'settings' ? 'more' : activeTab;
 
+  if (!isInitialized) {
+    return (
+      <div className="fixed inset-0 bg-bg-void flex items-center justify-center">
+        <div className="text-parchment font-display">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <AppShell
       activeTab={navTab}
@@ -127,8 +192,6 @@ function App() {
         }
       }}
       toast={toast}
-      showSessionPicker={showSessionPicker}
-      renderSessionPicker={() => <SessionPicker onSessionSelected={handleSessionSelected} />}
     >
       <TabRouter
         activeTab={activeTab}

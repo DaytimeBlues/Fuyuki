@@ -24,7 +24,7 @@ export function ConcentrationFloatingBubble() {
         >
             <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-                <div className={`relative flex items-center gap-2 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-2 shadow-2xl
+                <div className={`relative flex items-center gap-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2 shadow-2xl
                     ${isDragging ? 'scale-110 ring-2 ring-accent/50' : ''}
                 `}>
                     <div className="relative">

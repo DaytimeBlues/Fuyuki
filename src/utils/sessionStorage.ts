@@ -201,3 +201,34 @@ export function continueSession(id: string): Session | null {
     }
     return null;
 }
+
+/**
+ * Auto-persistent session: Returns active session or creates default one.
+ * Removes friction of session picker - app seamlessly loads or creates session.
+ */
+export function ensureActiveSession(): Session {
+    const existing = getActiveSession();
+    if (existing) {
+        return existing;
+    }
+
+    // Create default session for first run
+    const defaultSession: Session = {
+        id: generateSessionId(),
+        sessionNumber: 1,
+        date: new Date().toISOString(),
+        label: 'Default Campaign',
+        characterData: { ...initialCharacterData },
+        minions: [],
+        lastModified: new Date().toISOString(),
+        version: SCHEMA_VERSION,
+    };
+
+    const sessions = getSessions();
+    sessions.push(defaultSession);
+    saveSessions(sessions);
+    setActiveSessionId(defaultSession.id);
+
+    console.log('Created default session:', defaultSession.id);
+    return defaultSession;
+}
