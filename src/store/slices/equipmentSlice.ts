@@ -26,13 +26,16 @@ export const equipmentSlice = createSlice({
     reducers: {
         hydrateEquipment: (state, action: PayloadAction<EquipmentSlots>) => {
             state.equipped = action.payload || initialState.equipped;
+            return state;
         },
         equipItem: (state, action: PayloadAction<{ slot: ArmorSlot; item: EquippedItem }>) => {
             const { slot, item } = action.payload;
             (state.equipped as any)[slot] = item;
+            return state;
         },
         unequipItem: (state, action: PayloadAction<ArmorSlot>) => {
             (state.equipped as any)[action.payload] = null;
+            return state;
         },
         toggleCosmeticOnly: (state, action: PayloadAction<ArmorSlot>) => {
             const slot = action.payload;
@@ -40,6 +43,7 @@ export const equipmentSlice = createSlice({
             if (item) {
                 item.cosmeticOnly = !item.cosmeticOnly;
             }
+            return state;
         },
         updateItemModifiers: (
             state,
@@ -50,9 +54,11 @@ export const equipmentSlice = createSlice({
             if (item) {
                 item.modifiers = modifiers;
             }
+            return state;
         },
         clearAllEquipment: (state) => {
             state.equipped = { ...initialState.equipped };
+            return state;
         },
     },
 });
