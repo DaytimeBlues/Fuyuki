@@ -133,19 +133,19 @@ function App() {
     setIsInitialized(true);
   }, [dispatch]);
 
-  // Helper to hydrate all slices
-  const hydrateFromSession = (session: any) => {
-    dispatch(hydrateStats(session.characterData));
-    dispatch(hydrateHealth(session.characterData));
-    dispatch(hydrateWarlock(session.characterData));
-    dispatch(hydrateInventory(session.characterData));
-    if (session.characterData.equipmentSlots) {
-      dispatch(hydrateEquipment(session.characterData.equipmentSlots));
-    }
-    if (session.characterData.familiar) {
-      dispatch(hydrateFamiliar(session.characterData.familiar));
-    }
-  };
+    // Helper to hydrate all slices
+    const hydrateFromSession = (session: any): any => {
+        dispatch(hydrateStats(session.characterData));
+        dispatch(hydrateHealth(session.characterData));
+        dispatch(hydrateWarlock(session.characterData));
+        dispatch(hydrateInventory(session.characterData));
+        if (session.characterData.equipmentSlots) {
+            dispatch(hydrateEquipment(session.characterData.equipmentSlots));
+        }
+        if (session.characterData.familiar) {
+            dispatch(hydrateFamiliar(session.characterData.familiar));
+        }
+    };
 
   // --- ACTIONS ---
   // Memoize actions to prevent unnecessary re-renders of TabRouter

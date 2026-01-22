@@ -68,8 +68,8 @@ export function ArmorView() {
     };
 
     // Helper to update modifiers
-    const handleModifierChange = (index: number, field: 'stat' | 'value' | 'type', value: any) => {
-        if (!editorItem.modifiers) return;
+    const handleModifierChange = (index: number, field: 'stat' | 'value' | 'type', value: StatModifier['stat'] | number | 'bonus' | 'set') => {
+        if (!editorItem?.modifiers) return;
         const newModifiers = [...editorItem.modifiers];
         newModifiers[index] = { ...newModifiers[index], [field]: value };
         setEditorItem({ ...editorItem, modifiers: newModifiers });
@@ -362,7 +362,7 @@ export function ArmorView() {
                                         <div key={idx} className="flex gap-2">
                                             <select
                                                 value={mod.stat}
-                                                onChange={e => handleModifierChange(idx, 'stat', e.target.value)}
+                                                onChange={e => handleModifierChange(idx, 'stat', e.target.value as StatModifier['stat'])}
                                                 className="flex-1 bg-bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-parchment text-sm focus:border-gold-dim/40 focus:outline-none"
                                             >
                                                 <option value="ac">Armor Class (AC)</option>
@@ -380,7 +380,7 @@ export function ArmorView() {
                                             </select>
                                             <select
                                                 value={mod.type}
-                                                onChange={e => handleModifierChange(idx, 'type', e.target.value)}
+                                                onChange={e => handleModifierChange(idx, 'type', e.target.value as 'bonus' | 'set')}
                                                 className="w-24 bg-bg-dark/50 border border-white/10 rounded-lg px-3 py-2 text-parchment text-sm focus:border-gold-dim/40 focus:outline-none"
                                             >
                                                 <option value="bonus">Bonus (+/-)</option>
@@ -409,7 +409,7 @@ export function ArmorView() {
                                     <button
                                         onClick={() => {
                                             if (editorItem) {
-                                                const newMods = [...(editorItem.modifiers || []), { stat: 'ac', value: 0, type: 'bonus' }];
+                                                const newMods: StatModifier[] = [...(editorItem.modifiers || []), { stat: 'ac', value: 0, type: 'bonus' }];
                                                 setEditorItem({ ...editorItem, modifiers: newMods });
                                             }
                                         }}

@@ -21,16 +21,16 @@ function parseInventoryInput(input: string): InventoryItem {
             .split(',')
             .map(s => s.trim())
             .filter(Boolean);
-        return { name: `Wand (${spells.join(', ')})`, spells: spells.length > 0 ? spells : undefined };
+        return { id: crypto.randomUUID(), name: `Wand (${spells.join(', ')})`, spells: spells.length > 0 ? spells : undefined };
     }
 
     const wandOfMatch = trimmed.match(/^wand of\s+(.+)$/i);
     if (wandOfMatch) {
         const spellName = wandOfMatch[1].trim();
-        return { name: trimmed, spells: spellName ? [spellName] : undefined };
+        return { id: crypto.randomUUID(), name: trimmed, spells: spellName ? [spellName] : undefined };
     }
 
-    return { name: trimmed };
+    return { id: crypto.randomUUID(), name: trimmed };
 }
 
 export function InventoryWidget({ items, onAdd, onRemove, onCastSpell }: InventoryWidgetProps) {

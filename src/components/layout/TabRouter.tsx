@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import type { CharacterData, AbilityKey } from '../../types';
+import type { CharacterData } from '../../types';
 import type { AppDispatch } from '../../store';
 import {
     wildShapeStarted,
@@ -7,24 +7,16 @@ import {
     wildShapeDamageTaken,
     wildShapeHpChanged,
 } from '../../store/slices/healthSlice';
-import { slotsUpdated } from '../../store/slices/statSlice';
-import { InitiativeWidget } from '../widgets/InitiativeWidget';
-import { ProficiencyWidget } from '../widgets/ProficiencyWidget';
-import { SavingThrowsWidget } from '../widgets/SavingThrowsWidget';
 import { WildShapeWidget } from '../widgets/WildShapeWidget';
-import { MulticlassSpellSlotsWidget } from '../widgets/MulticlassSpellSlotsWidget';
-import { RestView } from '../views/RestView';
-import { CharacterEditor } from '../widgets/CharacterEditor';
 
 const DashboardView = lazy(() => import('../views/DashboardView').then(m => ({ default: m.DashboardView })));
-const SpellsView = lazy(() => import('../views/SpellsView')));
+const SpellsView = lazy(() => import('../views/SpellsView'));
 const CombatView = lazy(() => import('../views/CombatView').then(m => ({ default: m.CombatView })));
 const CharacterHubView = lazy(() => import('../views/CharacterHubView').then(m => ({ default: m.CharacterHubView })));
 const MoreView = lazy(() => import('../views/MoreView').then(m => ({ default: m.MoreView })));
 const InventoryView = lazy(() => import('../views/InventoryView').then(m => ({ default: m.InventoryView })));
 const PatronView = lazy(() => import('../views/PatronView').then(m => ({ default: m.PatronView })));
 const GrimoireView = lazy(() => import('../views/GrimoireView').then(m => ({ default: m.GrimoireView })));
-const WeaponsView = lazy(() => import('../views/WeaponsView').then(m => ({ default: m.WeaponsView })));
 
 function ViewFallback() {
     return (
@@ -43,11 +35,6 @@ interface TabRouterProps {
     updateHealth: (hp: number) => void;
     updateTempHP: (hp: number) => void;
     updateDeathSaves: (type: 'successes' | 'failures', value: number) => void;
-    handleSpendHitDie: (healed: number, diceSpent: number) => void;
-    handleShortRest: () => void;
-    handleLongRest: () => void;
-    handleLevelChange: (level: number) => void;
-    handleAbilityChange: (ability: AbilityKey, score: number) => void;
     itemAttuned: (itemName: string) => void;
     itemUnattuned: (index: number) => void;
 }
@@ -60,11 +47,6 @@ export function TabRouter({
     updateHealth,
     updateTempHP,
     updateDeathSaves,
-    handleSpendHitDie,
-    handleShortRest,
-    handleLongRest,
-    handleLevelChange,
-    handleAbilityChange,
     itemAttuned,
     itemUnattuned
 }: TabRouterProps) {

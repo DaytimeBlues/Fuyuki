@@ -4,7 +4,6 @@ import { selectFamiliar } from '../../store/selectors';
 import {
     familiarHpChanged,
     toggleInvisibility,
-    setInvisibility,
     clearFamiliar
 } from '../../store/slices/familiarSlice';
 import { GRINDLETTE } from '../../data/familiarsData';

@@ -7,7 +7,6 @@ import { Swords, Shield, Trash2, Plus, X, Target, Move } from 'lucide-react';
 
 type InventoryTab = 'items' | 'armor' | 'weapons';
 
-const WeaponsView = lazy(() => import('./WeaponsView').then(m => ({ default: m.WeaponsView })));
 const ArmorView = lazy(() => import('./ArmorView').then(m => ({ default: m.ArmorView })));
 
 export function WeaponsView() {

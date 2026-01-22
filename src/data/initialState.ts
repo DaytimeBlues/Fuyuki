@@ -54,6 +54,7 @@ export const initialCharacterData: CharacterData = {
     attunement: [],
     inventory: [
         {
+            id: 'pact-rapier-1',
             name: 'Pact Rapier',
             type: 'weapon',
             equipped: true,
@@ -61,12 +62,13 @@ export const initialCharacterData: CharacterData = {
                 damage: '1d8',
                 damageType: 'Piercing',
                 bonus: 1,
-                properties: ['Finesse'],
+                properties: ['finesse'],
                 isPactWeapon: true
             },
             description: 'A sleek black rod that transforms into a rapier of shadow.'
         },
         {
+            id: 'studded-leather-1',
             name: 'Studded Leather',
             type: 'armor',
             equipped: true,
@@ -75,7 +77,7 @@ export const initialCharacterData: CharacterData = {
             },
             description: 'Reinforced leather armor with dark steel studs.'
         },
-        { name: "Dungeoneer's Pack" }
+        { id: 'dungeon-pack-1', name: "Dungeoneer's Pack" }
     ],
     preparedSpells: [],
     slots: {
