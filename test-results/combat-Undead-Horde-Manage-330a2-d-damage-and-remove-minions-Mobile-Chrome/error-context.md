@@ -1,0 +1,271 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - generic: ウォーロック
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e9]
+          - generic [ref=e14]:
+            - generic [ref=e15]:
+              - heading "Fuyuki" [level=1] [ref=e16]
+              - generic [ref=e17]: 冬木
+            - paragraph [ref=e18]: Warlock Tracker
+        - generic [ref=e19]:
+          - button "Switch to Combat Mode" [ref=e20]:
+            - img [ref=e22]
+            - generic:
+              - generic: RP
+              - generic: CMBT
+          - img "Fuyuki" [ref=e26]
+    - main [ref=e27]:
+      - generic [ref=e29]:
+        - generic [ref=e32]:
+          - button "+6 Spell Atk" [ref=e34] [cursor=pointer]:
+            - img [ref=e36]
+            - generic [ref=e38]: "+6"
+            - generic [ref=e39]: Spell Atk
+          - button "+14 Save DC" [ref=e42] [cursor=pointer]:
+            - img [ref=e44]
+            - generic [ref=e46]: "+14"
+            - generic [ref=e47]: Save DC
+          - button "+3 Prof" [ref=e50]:
+            - img [ref=e52]
+            - generic [ref=e55]: "+3"
+            - generic [ref=e56]: Prof
+          - button "+0 INT" [ref=e59]:
+            - img [ref=e61]
+            - generic [ref=e69]: "+0"
+            - generic [ref=e70]: INT
+        - generic [ref=e71]:
+          - generic [ref=e73]:
+            - img [ref=e74]
+            - generic [ref=e83]:
+              - heading "Combat Mode" [level=3] [ref=e84]
+              - generic [ref=e85]: 戦闘モード
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - generic [ref=e88]: Round
+              - generic [ref=e89]:
+                - img [ref=e90]
+                - generic [ref=e93]: "1"
+            - generic [ref=e94]:
+              - generic [ref=e95]: Turn
+              - generic [ref=e96]: "0"
+        - generic [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - generic [ref=e100]: HP
+              - generic [ref=e101]: 38/38
+            - generic [ref=e102]:
+              - generic [ref=e103]: Temp
+              - generic [ref=e104]: "0"
+            - generic [ref=e105]:
+              - generic [ref=e106]: AC
+              - generic [ref=e107]: "15"
+          - generic [ref=e108]:
+            - generic [ref=e109]:
+              - spinbutton [ref=e110]
+              - button "Take" [ref=e111]
+            - generic [ref=e112]:
+              - spinbutton [ref=e113]
+              - button "Heal" [ref=e114]
+            - generic [ref=e115]:
+              - spinbutton [ref=e116]
+              - button "Set" [ref=e117]
+        - generic [ref=e118]:
+          - generic [ref=e119]:
+            - img [ref=e120]
+            - generic [ref=e122]:
+              - heading "Conditions" [level=3] [ref=e123]
+              - generic [ref=e124]: 状態
+          - generic [ref=e125]:
+            - textbox "Custom Condition" [ref=e126]
+            - button "Add" [ref=e127]
+          - generic [ref=e128]:
+            - button "Prone" [ref=e129]
+            - button "Poisoned" [ref=e130]
+            - button "Frightened" [ref=e131]
+            - button "Grappled" [ref=e132]
+            - button "Restrained" [ref=e133]
+            - button "Invisible" [ref=e134]
+            - button "Stunned" [ref=e135]
+            - button "Paralyzed" [ref=e136]
+        - generic [ref=e137]:
+          - generic [ref=e138]:
+            - generic [ref=e140]:
+              - img [ref=e141]
+              - heading "Pact Magic" [level=3] [ref=e144]
+            - generic [ref=e145]:
+              - generic [ref=e147]:
+                - generic [ref=e148]: Level 1
+                - generic [ref=e149]: 呪文枠
+              - generic [ref=e151]:
+                - generic [ref=e152]: Level 2
+                - generic [ref=e153]: 呪文枠
+              - generic [ref=e155]:
+                - generic [ref=e156]: Level 3
+                - generic [ref=e157]: 呪文枠
+              - generic [ref=e159]:
+                - generic [ref=e160]: Level 4
+                - generic [ref=e161]: 呪文枠
+              - generic [ref=e163]:
+                - generic [ref=e164]: Level 5
+                - generic [ref=e165]: 呪文枠
+              - generic [ref=e167]:
+                - generic [ref=e168]: Level 6
+                - generic [ref=e169]: 呪文枠
+              - generic [ref=e171]:
+                - generic [ref=e172]: Level 7
+                - generic [ref=e173]: 呪文枠
+              - generic [ref=e175]:
+                - generic [ref=e176]: Level 8
+                - generic [ref=e177]: 呪文枠
+              - generic [ref=e179]:
+                - generic [ref=e180]: Level 9
+                - generic [ref=e181]: 呪文枠
+          - generic [ref=e182]:
+            - generic [ref=e183]:
+              - img [ref=e184]
+              - generic [ref=e187]:
+                - heading "Action Economy" [level=3] [ref=e188]
+                - generic [ref=e189]: 行動数
+            - generic [ref=e190]:
+              - button "Reaction Ready" [ref=e191]
+              - button "Bonus Ready" [ref=e192]
+        - generic [ref=e193]:
+          - generic [ref=e194]:
+            - img [ref=e195]
+            - generic [ref=e198]:
+              - heading "Combat Log" [level=3] [ref=e199]
+              - generic [ref=e200]: 戦闘記録
+          - generic [ref=e201]:
+            - textbox "Quick note" [ref=e202]
+            - button "Log" [ref=e203]
+        - generic [ref=e204]:
+          - generic [ref=e205]:
+            - generic [ref=e206]:
+              - img [ref=e207]
+              - generic [ref=e212]:
+                - heading "Undead Horde" [level=3] [ref=e213]
+                - generic [ref=e214]: 不死の軍勢
+            - generic [ref=e215]: 1 Active
+          - generic [ref=e216]:
+            - generic [ref=e217] [cursor=pointer]:
+              - img [ref=e219]
+              - img [ref=e222]
+              - generic [ref=e227]: "0"
+              - generic [ref=e228]: Skeletons
+            - generic [ref=e229] [cursor=pointer]:
+              - img [ref=e231]
+              - img [ref=e234]
+              - generic [ref=e244]: "1"
+              - generic [ref=e245]: Zombies
+          - button "Manage Horde" [ref=e246]:
+            - img [ref=e247]
+            - text: Manage Horde
+        - button "Summon Undead アンデッド召喚" [ref=e253]:
+          - generic [ref=e254]:
+            - img [ref=e255]
+            - generic [ref=e257]:
+              - heading "Summon Undead" [level=3] [ref=e258]
+              - generic [ref=e259]: アンデッド召喚
+          - img [ref=e260]
+        - generic [ref=e263]:
+          - generic [ref=e266]:
+            - generic [ref=e267]:
+              - img [ref=e268]
+              - heading "Minion Manager" [level=2] [ref=e273]
+              - generic [ref=e274]: 1 Active
+            - generic [ref=e275]:
+              - button "Release All" [ref=e276]
+              - button "Close drawer" [ref=e277]:
+                - img [ref=e278]
+          - generic [ref=e281]:
+            - heading "Animate Dead" [level=3] [ref=e282]
+            - generic [ref=e283]:
+              - button "Skeleton" [ref=e284]:
+                - img [ref=e285]
+                - generic [ref=e290]: Skeleton
+              - button "Zombie" [ref=e291]:
+                - img [ref=e292]
+                - generic [ref=e302]: Zombie
+            - heading "Summon Undead (Tasha's)" [level=3] [ref=e303]
+            - generic [ref=e304]:
+              - button "Ghostly" [ref=e305]:
+                - img [ref=e306]
+                - generic [ref=e311]: Ghostly
+              - button "Putrid" [ref=e312]:
+                - img [ref=e313]
+                - generic [ref=e323]: Putrid
+              - button "Skeletal" [ref=e324]:
+                - img [ref=e325]
+                - generic [ref=e330]: Skeletal
+            - generic [ref=e332]:
+              - generic [ref=e333]:
+                - generic [ref=e334]:
+                  - img [ref=e335]
+                  - generic [ref=e345]: Zombie Spirit 1
+                  - generic [ref=e346]: AC 8
+                - paragraph [ref=e347]: Undead Fortitude
+              - generic [ref=e348]:
+                - generic [ref=e349]:
+                  - button [active] [ref=e350]:
+                    - img [ref=e351]
+                  - spinbutton [ref=e352]: "21"
+                  - button [ref=e353]:
+                    - img [ref=e354]
+                - button [ref=e355]:
+                  - img [ref=e356]
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - generic: Armor Class
+              - generic: "15"
+          - generic:
+            - img
+            - generic:
+              - generic: Spell DC
+              - generic: "14"
+        - button [ref=e360]:
+          - img [ref=e361]
+    - navigation:
+      - generic [ref=e371]:
+        - button "Stats" [ref=e372]:
+          - img [ref=e373]
+          - generic [ref=e375]: Stats
+          - generic: ステータス
+        - button "Spells" [ref=e376]:
+          - img [ref=e377]
+          - generic [ref=e380]: Spells
+          - generic: 呪文
+        - button "Combat" [ref=e381]:
+          - img [ref=e382]
+          - generic [ref=e391]: Combat
+          - generic: 戦闘
+        - button "Profile" [ref=e393]:
+          - img [ref=e394]
+          - generic [ref=e397]: Profile
+          - generic: 人物
+        - button "Menu" [ref=e398]:
+          - img [ref=e399]
+          - generic [ref=e400]: Menu
+          - generic: 目録
+    - generic [ref=e401]:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - heading "No Familiar" [level=3]
+              - paragraph: 使い魔
+          - button:
+            - img
+      - button [ref=e403]:
+        - img [ref=e404]
+```

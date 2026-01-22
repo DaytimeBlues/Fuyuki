@@ -118,14 +118,14 @@ function App() {
         }
 
         // Load migrated session
-        dispatch(hydrateFromSession(migrated));
+        hydrateFromSession(migrated);
       } catch (error) {
         console.error('App: Migration failed, loading original session:', error);
-        dispatch(hydrateFromSession(session));
+        hydrateFromSession(session);
       }
     } else {
       // No migration needed, load as-is
-      dispatch(hydrateFromSession(session));
+      hydrateFromSession(session);
     }
 
     window.scrollTo(0, 0);
@@ -135,15 +135,17 @@ function App() {
 
     // Helper to hydrate all slices
     const hydrateFromSession = (session: any): any => {
-        dispatch(hydrateStats(session.characterData));
-        dispatch(hydrateHealth(session.characterData));
-        dispatch(hydrateWarlock(session.characterData));
-        dispatch(hydrateInventory(session.characterData));
-        if (session.characterData.equipmentSlots) {
-            dispatch(hydrateEquipment(session.characterData.equipmentSlots));
+        const data = JSON.parse(JSON.stringify(session.characterData));
+        console.log('App: Hydrating from session', session.id);
+        dispatch(hydrateStats(data));
+        dispatch(hydrateHealth(data));
+        dispatch(hydrateWarlock(data));
+        dispatch(hydrateInventory(data));
+        if (data.equipmentSlots) {
+            dispatch(hydrateEquipment(data.equipmentSlots));
         }
-        if (session.characterData.familiar) {
-            dispatch(hydrateFamiliar(session.characterData.familiar));
+        if (data.familiar) {
+            dispatch(hydrateFamiliar(data.familiar));
         }
     };
 

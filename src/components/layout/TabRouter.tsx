@@ -132,6 +132,21 @@ export function TabRouter({
                                 <InventoryView />
                             </div>
                         );
+                    case 'settings':
+                        return (
+                            <div className="animate-fade-in">
+                                <button
+                                    onClick={() => onNavigate('more')}
+                                    className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
+                                >
+                                    ← Back to Menu
+                                </button>
+                                <CharacterHubView
+                                    character={character}
+                                    actions={{ itemAttuned, itemUnattuned }}
+                                />
+                            </div>
+                        );
                     default:
                         return null;
                 }

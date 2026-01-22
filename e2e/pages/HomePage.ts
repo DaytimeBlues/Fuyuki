@@ -25,11 +25,11 @@ export class HomePage extends BasePage {
 
     async usePactSlot(index: number) {
         // First click to Prime (Pulse)
-        await this.page.getByTestId(`pact-slot-orb-${index}`).click();
+        await this.page.getByTestId(`pact-slot-btn-${index}`).click();
         // Brief delay for animation anticipation
         await this.page.waitForTimeout(300);
         // Second click to Cast (Expend)
-        await this.page.getByTestId(`pact-slot-orb-${index}`).click();
+        await this.page.getByTestId(`pact-slot-btn-${index}`).click();
     }
 
     async useArcanum(level: number) {

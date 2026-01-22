@@ -39,10 +39,10 @@ export function CombatBubble() {
     return (
         <div
             {...bind}
-            className="flex flex-col items-end gap-3 pointer-events-auto"
+            className={`flex flex-col items-end gap-3 pointer-events-none fixed bottom-24 right-4 z-50 ${isExpanded ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
             {/* Sprouting Stats */}
-            <div className={`flex flex-col gap-2 transition-all duration-500 origin-bottom ${isExpanded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-10 pointer-events-none'}`}>
+            <div className={`flex flex-col gap-2 transition-all duration-500 origin-bottom pointer-events-auto ${isExpanded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-10 pointer-events-none'}`}>
                 {/* AC Sprout */}
                 <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-md border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
                     <Shield size={14} className="text-blue-400" />
@@ -99,7 +99,7 @@ export function CombatBubble() {
             {/* Core Bubble */}
             <button
                 onClick={handleClick}
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 relative
+                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 relative pointer-events-auto
                     bg-black/40 backdrop-blur-md border border-white/10 shadow-xl
                     ${isExpanded
                         ? 'bg-accent text-bg-dark scale-90 rotate-45 shadow-accent-lg'
@@ -108,7 +108,7 @@ export function CombatBubble() {
                     ${isDragging ? 'scale-110 shadow-2xl shadow-accent/30 ring-2 ring-accent/50' : ''}
                 `}
             >
-                <Swords size={24} />
+                <Swords size={24} className={isExpanded ? '-rotate-45' : ''} />
             </button>
         </div>
     );

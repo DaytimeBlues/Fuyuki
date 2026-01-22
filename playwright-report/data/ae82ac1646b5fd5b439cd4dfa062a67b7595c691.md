@@ -1,0 +1,118 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - generic: ウォーロック
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - complementary [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]:
+            - img [ref=e9]
+            - generic [ref=e12]:
+              - heading "Fuyuki" [level=1] [ref=e13]
+              - paragraph [ref=e14]: Warlock Tracker
+          - button "Switch to Combat Mode" [ref=e16]:
+            - img [ref=e18]
+            - generic:
+              - generic: RP
+              - generic: CMBT
+          - navigation [ref=e21]:
+            - button "Stats" [ref=e22]:
+              - img [ref=e23]
+              - generic [ref=e26]: Stats
+            - button "Spells" [ref=e27]:
+              - img [ref=e28]
+              - generic [ref=e32]: Spells
+            - button "Combat" [ref=e33]:
+              - img [ref=e34]
+              - generic [ref=e44]: Combat
+            - button "Profile" [ref=e45]:
+              - img [ref=e46]
+              - generic [ref=e50]: Profile
+            - button "Menu" [ref=e51]:
+              - img [ref=e52]
+              - generic [ref=e54]: Menu
+        - generic [ref=e56]:
+          - img "Fuyuki" [ref=e58]
+          - generic [ref=e59]:
+            - paragraph [ref=e60]: Level 5
+            - paragraph [ref=e61]: 狐の妖術師
+      - main [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]:
+            - button "← Back to Menu" [ref=e65]
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - button "Biography" [ref=e68]:
+                  - img [ref=e69]
+                  - text: Biography
+                - button "Attributes" [ref=e72]:
+                  - img [ref=e73]
+                  - text: Attributes
+                - button "Grimoire" [ref=e81]:
+                  - img [ref=e82]
+                  - text: Grimoire
+              - generic [ref=e85]:
+                - generic [ref=e86]:
+                  - generic [ref=e87]:
+                    - img "Fuyuki" [ref=e88]
+                    - generic [ref=e90]:
+                      - heading "Fuyuki" [level=2] [ref=e91]
+                      - paragraph [ref=e92]: Kitsune Warlock
+                  - generic [ref=e95]:
+                    - generic [ref=e96]:
+                      - img [ref=e97]
+                      - heading "Chronicles" [level=3] [ref=e99]
+                    - generic [ref=e101]:
+                      - heading "Chronicle" [level=4] [ref=e102]:
+                        - img [ref=e103]
+                        - text: Chronicle
+                      - paragraph [ref=e106]: write bio here
+                  - generic [ref=e108]:
+                    - img "Aramancia Defending" [ref=e109]
+                    - generic [ref=e111]:
+                      - img [ref=e112]
+                      - heading "Allies & Kin" [level=3] [ref=e114]
+                  - generic [ref=e119]:
+                    - img [ref=e120]
+                    - heading "Enemies" [level=3] [ref=e125]
+                - generic [ref=e128]:
+                  - generic [ref=e129]:
+                    - generic [ref=e130]:
+                      - img [ref=e131]
+                      - heading "Attunement" [level=3] [ref=e134]
+                    - generic [ref=e135]: 0/3
+                  - paragraph [ref=e137]: No attuned items
+                  - generic [ref=e139]:
+                    - textbox "Add magic item..." [ref=e140]
+                    - button [disabled] [ref=e141]:
+                      - img [ref=e142]
+          - generic:
+            - generic:
+              - generic:
+                - img
+                - generic:
+                  - generic: Armor Class
+                  - generic: "15"
+              - generic:
+                - img
+                - generic:
+                  - generic: Spell DC
+                  - generic: "14"
+            - button [ref=e143]:
+              - img [ref=e144]
+    - generic [ref=e153]:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - heading "No Familiar" [level=3]
+              - paragraph: 使い魔
+          - button:
+            - img
+      - button [ref=e155]:
+        - img [ref=e156]
+```
