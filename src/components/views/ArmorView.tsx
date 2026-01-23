@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectEquipment } from '../../store/selectors';
 import { equipItem, unequipItem, toggleCosmeticOnly } from '../../store/slices/equipmentSlice';
 import { ArmorSlot, EquippedItem, StatModifier } from '../../types';
-import { Shield, Sword, Crown, Gem, X, Check, Eye, Lock, HelpCircle } from 'lucide-react';
+import { Shield, Sword, Crown, Gem, X, Check, Eye, Lock, HelpCircle, type LucideIcon } from 'lucide-react';
 
 type ArmorTab = 'doll' | 'list';
 
-const SLOT_LABELS: Record<ArmorSlot, { label: string; icon: any; ja: string }> = {
+const SLOT_LABELS: Record<ArmorSlot, { label: string; icon: LucideIcon; ja: string }> = {
     head: { label: 'Head', icon: Crown, ja: '頭' },
     cloak: { label: 'Cloak', icon: Shield, ja: 'マント' },
     chest: { label: 'Chest', icon: Shield, ja: '胸部' },
@@ -26,10 +26,24 @@ export function ArmorView() {
     const [activeTab, setActiveTab] = useState<ArmorTab>('doll');
     const [editingSlot, setEditingSlot] = useState<ArmorSlot | null>(null);
     const [editorItem, setEditorItem] = useState<Partial<EquippedItem> | null>(null);
+    const customItemCounter = useRef(0);
 
     const handleSlotClick = (slot: ArmorSlot) => {
         const equipped = equipment[slot];
-        setEditorItem(equipped || { itemId: `custom_${Date.now()}`, name: '', cosmeticOnly: false, modifiers: [] });
+        if (equipped) {
+            setEditorItem(equipped);
+            setEditingSlot(slot);
+            return;
+        }
+
+        customItemCounter.current += 1;
+        const newItem: EquippedItem = {
+            itemId: `custom_${customItemCounter.current}`,
+            name: '',
+            cosmeticOnly: false,
+            modifiers: [],
+        };
+        setEditorItem(newItem);
         setEditingSlot(slot);
     };
 

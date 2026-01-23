@@ -35,7 +35,7 @@ export function migrateSessionToV3(session: Session): Session {
     if (migrated.characterData.inventory) {
         migrated.characterData.inventory = migrated.characterData.inventory.map((item, index) => ({
             ...item,
-            id: (item as any).id || generateItemId(index),
+            id: item.id ?? generateItemId(index),
         }));
     }
 
@@ -52,7 +52,7 @@ export function migrateSessionToV3(session: Session): Session {
             amulet: null,
             mainHand: null,
             offHand: null,
-        } as EquipmentSlots;
+        } satisfies EquipmentSlots;
     }
 
     // Step 3: Migrate existing equipped weapons to equipment slots
@@ -61,11 +61,12 @@ export function migrateSessionToV3(session: Session): Session {
     );
 
     if (equippedWeapons.length > 0 && migrated.characterData.equipmentSlots) {
+        const equipmentSlots = migrated.characterData.equipmentSlots;
         // First equipped weapon goes to main hand
         const mainWeapon = equippedWeapons[0];
-        if ((mainWeapon as any).id) {
-            (migrated.characterData.equipmentSlots as any).mainHand = {
-                itemId: (mainWeapon as any).id,
+        if (mainWeapon.id) {
+            equipmentSlots.mainHand = {
+                itemId: mainWeapon.id,
                 name: mainWeapon.name,
                 cosmeticOnly: false,
                 modifiers: [], // Initialize with empty modifiers
@@ -78,9 +79,9 @@ export function migrateSessionToV3(session: Session): Session {
         // Second equipped weapon (if any) goes to off hand
         if (equippedWeapons[1]) {
             const offWeapon = equippedWeapons[1];
-            if ((offWeapon as any).id) {
-                (migrated.characterData.equipmentSlots as any).offHand = {
-                    itemId: (offWeapon as any).id,
+            if (offWeapon.id) {
+                equipmentSlots.offHand = {
+                    itemId: offWeapon.id,
                     name: offWeapon.name,
                     cosmeticOnly: false,
                     modifiers: [],

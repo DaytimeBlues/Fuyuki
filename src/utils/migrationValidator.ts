@@ -34,7 +34,7 @@ export function validateSessionForMigration(session: Session): MigrationValidati
     }
 
     // Warning: Check for existing equipment state
-    if ((session.characterData as any)?.equipmentSlots) {
+    if (session.characterData.equipmentSlots) {
         warnings.push('Session already has equipmentSlots - skipping migration');
     }
 

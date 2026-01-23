@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setWidgetPosition, WidgetPosition } from '../store/slices/widgetSlice';
 
@@ -30,20 +30,15 @@ export function useDraggableWidget(
     const savedPosition = useAppSelector((state) => state.widget.positions[id]);
 
     const [dragState, setDragState] = useState<DragState>('IDLE');
-    const [currentPosition, setCurrentPosition] = useState<WidgetPosition>(
-        savedPosition || { x: 90, y: 75 }
-    );
+    const [dragPosition, setDragPosition] = useState<WidgetPosition | null>(null);
 
     const pendingTimer = useRef<number | null>(null);
     const startPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
     const frameRef = useRef<number | null>(null);
 
-    // Sync with Redux state
-    useEffect(() => {
-        if (savedPosition) {
-            setCurrentPosition(savedPosition);
-        }
-    }, [savedPosition]);
+    const fallbackPosition: WidgetPosition = { x: 90, y: 75 };
+    const basePosition = savedPosition ?? fallbackPosition;
+    const currentPosition = dragPosition ?? basePosition;
 
     const clampPosition = useCallback(
         (x: number, y: number): WidgetPosition => {
@@ -108,7 +103,7 @@ export function useDraggableWidget(
                 const vh = window.innerHeight;
                 const newX = (e.clientX / vw) * 100;
                 const newY = (e.clientY / vh) * 100;
-                setCurrentPosition(clampPosition(newX, newY));
+                setDragPosition(clampPosition(newX, newY));
             });
         },
         [dragState, clampPosition]
@@ -136,6 +131,7 @@ export function useDraggableWidget(
                 dispatch(setWidgetPosition({ id, position: currentPosition }));
             }
 
+            setDragPosition(null);
             setDragState('IDLE');
         },
         [dragState, currentPosition, dispatch, id]
