@@ -3,6 +3,7 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectFamiliar } from '../../store/selectors';
 import {
     familiarHpChanged,
+    setFamiliar,
     toggleInvisibility,
     clearFamiliar
 } from '../../store/slices/familiarSlice';
@@ -19,7 +20,7 @@ export function FamiliarBubble() {
     // Auto-add Grindlette if no familiar is set
     const handleAddFamiliar = () => {
         if (!familiar) {
-            dispatch({ type: 'familiar/setFamiliar', payload: GRINDLETTE } as any);
+            dispatch(setFamiliar(GRINDLETTE));
         }
     };
 

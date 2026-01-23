@@ -30,16 +30,16 @@ export const equipmentSlice = createSlice({
         },
         equipItem: (state, action: PayloadAction<{ slot: ArmorSlot; item: EquippedItem }>) => {
             const { slot, item } = action.payload;
-            (state.equipped as any)[slot] = item;
+            state.equipped[slot] = item;
             return state;
         },
         unequipItem: (state, action: PayloadAction<ArmorSlot>) => {
-            (state.equipped as any)[action.payload] = null;
+            state.equipped[action.payload] = null;
             return state;
         },
         toggleCosmeticOnly: (state, action: PayloadAction<ArmorSlot>) => {
             const slot = action.payload;
-            const item = (state.equipped as any)[slot];
+            const item = state.equipped[slot];
             if (item) {
                 item.cosmeticOnly = !item.cosmeticOnly;
             }
@@ -50,7 +50,7 @@ export const equipmentSlice = createSlice({
             action: PayloadAction<{ slot: ArmorSlot; modifiers: StatModifier[] }>
         ) => {
             const { slot, modifiers } = action.payload;
-            const item = (state.equipped as any)[slot];
+            const item = state.equipped[slot];
             if (item) {
                 item.modifiers = modifiers;
             }

@@ -6,7 +6,7 @@
  * - AppShell: Layout, Navigation, Global Overlays (Toasts, SessionPicker)
  * - TabRouter: View-specific routing and state mapping
  */
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 
 import { AppShell } from './components/layout/AppShell';
 import { TabRouter } from './components/layout/TabRouter';
@@ -16,10 +16,11 @@ import { VoiceCommandButton } from './components/widgets/VoiceCommandButton';
 import { ensureActiveSession } from './utils/sessionStorage';
 import { migrateSessionToV3, createSessionBackup } from './utils/sessionMigration';
 import { validateSessionForMigration } from './utils/migrationValidator';
-import type { CharacterData, AbilityKey } from './types';
+import type { CharacterData, AbilityKey, Session } from './types';
 import {
   showToast,
   clearToast,
+  setInitialized,
 } from './store/slices/uiSlice';
 import {
   hpChanged,
@@ -52,12 +53,12 @@ import { useAppDispatch, useAppSelector } from './store/hooks';
 function App() {
   const dispatch = useAppDispatch();
   const [activeTab, setActiveTab] = useState('stats');
-  const [isInitialized, setIsInitialized] = useState(false);
 
   const stats = useAppSelector(state => state.stats);
   const health = useAppSelector(state => state.health);
   const warlock = useAppSelector(state => state.warlock);
   const inventory = useAppSelector(state => state.inventory);
+  const isInitialized = useAppSelector(state => state.ui.isInitialized);
 
   const character = useMemo(() => ({
     ...stats,
@@ -67,6 +68,22 @@ function App() {
   }), [stats, health, warlock, inventory]);
 
   const toast = useAppSelector(state => state.ui.toast);
+
+  // Helper to hydrate all slices
+  const hydrateFromSession = useCallback((session: Session): void => {
+    const data = JSON.parse(JSON.stringify(session.characterData)) as CharacterData;
+    console.log('App: Hydrating from session', session.id);
+    dispatch(hydrateStats(data));
+    dispatch(hydrateHealth(data));
+    dispatch(hydrateWarlock(data));
+    dispatch(hydrateInventory(data));
+    if (data.equipmentSlots) {
+      dispatch(hydrateEquipment(data.equipmentSlots));
+    }
+    if (data.familiar) {
+      dispatch(hydrateFamiliar(data.familiar));
+    }
+  }, [dispatch]);
 
   // Auto-clear toasts
   useEffect(() => {
@@ -89,8 +106,8 @@ function App() {
       if (!validation.isValid) {
         console.error('App: Session validation failed:', validation.errors);
         // Load without migration to prevent data corruption
-        dispatch(hydrateFromSession(session));
-        setIsInitialized(true);
+        hydrateFromSession(session);
+        dispatch(setInitialized(true));
         return;
       }
 
@@ -109,8 +126,8 @@ function App() {
         // Update session in localStorage (persistence will pick it up)
         const sessions = localStorage.getItem('fuyuki-sessions');
         if (sessions) {
-          const parsed = JSON.parse(sessions);
-          const index = parsed.findIndex((s: any) => s.id === session.id);
+          const parsed = JSON.parse(sessions) as Session[];
+          const index = parsed.findIndex((storedSession) => storedSession.id === session.id);
           if (index !== -1) {
             parsed[index] = migrated;
             localStorage.setItem('fuyuki-sessions', JSON.stringify(parsed));
@@ -130,24 +147,8 @@ function App() {
 
     window.scrollTo(0, 0);
     console.log('App: Session auto-loaded', session.id);
-    setIsInitialized(true);
-  }, [dispatch]);
-
-    // Helper to hydrate all slices
-    const hydrateFromSession = (session: any): any => {
-        const data = JSON.parse(JSON.stringify(session.characterData));
-        console.log('App: Hydrating from session', session.id);
-        dispatch(hydrateStats(data));
-        dispatch(hydrateHealth(data));
-        dispatch(hydrateWarlock(data));
-        dispatch(hydrateInventory(data));
-        if (data.equipmentSlots) {
-            dispatch(hydrateEquipment(data.equipmentSlots));
-        }
-        if (data.familiar) {
-            dispatch(hydrateFamiliar(data.familiar));
-        }
-    };
+    dispatch(setInitialized(true));
+  }, [dispatch, hydrateFromSession]);
 
   // --- ACTIONS ---
   // Memoize actions to prevent unnecessary re-renders of TabRouter

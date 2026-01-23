@@ -4,12 +4,14 @@ interface UIState {
     viewMode: 'COMBAT' | 'ROLEPLAY';
     isMenuOpen: boolean;
     toast: string | null;
+    isInitialized: boolean;
 }
 
 const initialState: UIState = {
     viewMode: 'ROLEPLAY',
     isMenuOpen: false,
     toast: null,
+    isInitialized: false,
 };
 
 const uiSlice = createSlice({
@@ -37,6 +39,9 @@ const uiSlice = createSlice({
         clearToast: (state) => {
             state.toast = null;
         },
+        setInitialized: (state, action: PayloadAction<boolean>) => {
+            state.isInitialized = action.payload;
+        },
     },
 });
 
@@ -47,6 +52,7 @@ export const {
     closeMenu,
     toggleMenu,
     showToast,
-    clearToast
+    clearToast,
+    setInitialized,
 } = uiSlice.actions;
 export default uiSlice.reducer;
