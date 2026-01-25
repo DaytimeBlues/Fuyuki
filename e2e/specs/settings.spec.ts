@@ -16,6 +16,6 @@ test.describe('Settings View', () => {
     test('should show biography and grimoire sections', async ({ page }) => {
         await expect(page.getByText('Chronicles')).toBeVisible();
         await page.getByRole('button', { name: 'Grimoire' }).click();
-        await expect(page.getByRole('button', { name: 'Invocations' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Invocations', exact: true })).toBeVisible();
     });
 });

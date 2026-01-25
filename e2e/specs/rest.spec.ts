@@ -1,6 +1,6 @@
 import { test, expect } from '../fixtures/testFixtures';
 
-test.describe.skip('Rest & Recovery', () => {
+test.describe('Rest & Recovery', () => {
     test.beforeEach(async ({ homePage }) => {
         await homePage.goto();
         await homePage.waitForAppReady();

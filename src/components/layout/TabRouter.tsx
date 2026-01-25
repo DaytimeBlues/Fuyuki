@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import type { CharacterData } from '../../types';
+import type { CharacterData, AbilityKey } from '../../types';
 import type { AppDispatch } from '../../store';
 import {
     wildShapeStarted,
@@ -36,6 +36,11 @@ interface TabRouterProps {
     updateHealth: (hp: number) => void;
     updateTempHP: (hp: number) => void;
     updateDeathSaves: (type: 'successes' | 'failures', value: number) => void;
+    onLevelChange: (level: number) => void;
+    onAbilityChange: (ability: AbilityKey, score: number) => void;
+    onSpendHitDie: (healed: number, diceSpent: number) => void;
+    onShortRest: () => void;
+    onLongRest: () => void;
     itemAttuned: (itemName: string) => void;
     itemUnattuned: (index: number) => void;
 }
@@ -48,6 +53,11 @@ export function TabRouter({
     updateHealth,
     updateTempHP,
     updateDeathSaves,
+    onLevelChange,
+    onAbilityChange,
+    onSpendHitDie,
+    onShortRest,
+    onLongRest,
     itemAttuned,
     itemUnattuned
 }: TabRouterProps) {
@@ -137,9 +147,12 @@ export function TabRouter({
                         return (
                             <SettingsView
                                 character={character}
-                                dispatch={dispatch}
-                                onNavigate={onNavigate}
                                 actions={{ itemAttuned, itemUnattuned }}
+                                onLevelChange={onLevelChange}
+                                onAbilityChange={onAbilityChange}
+                                onSpendHitDie={onSpendHitDie}
+                                onShortRest={onShortRest}
+                                onLongRest={onLongRest}
                             />
                         );
                     default:

@@ -152,24 +152,23 @@ function App() {
   }, [dispatch, hydrateFromSession]);
 
   // --- ACTIONS ---
-  // Memoize actions to prevent unnecessary re-renders of TabRouter
-  const actions = useMemo(() => ({
+  const actions = {
     updateHealth: (newCurrent: number) => dispatch(hpChanged(newCurrent)),
     updateTempHP: (newTemp: number) => dispatch(tempHpSet(newTemp)),
     updateDeathSaves: (type: 'successes' | 'failures', value: number) => dispatch(deathSaveChanged({ type, value })),
-    handleSpendHitDie: (healed: number, diceSpent: number) => dispatch(hitDiceSpent({ count: diceSpent, healed })),
-    handleShortRest: () => {
+    onSpendHitDie: (healed: number, diceSpent: number) => dispatch(hitDiceSpent({ count: diceSpent, healed })),
+    onShortRest: () => {
       dispatch(shortRestWarlock());
       dispatch(showToast("Short Rest Completed"));
       setActiveTab('stats');
     },
-    handleLongRest: () => {
+    onLongRest: () => {
       dispatch(longRestHealth());
       dispatch(longRestWarlock());
       dispatch(showToast("Long Rest Completed"));
       setActiveTab('stats');
     },
-    handleLevelChange: (newLevel: number) => {
+    onLevelChange: (newLevel: number) => {
       dispatch(levelChanged(newLevel));
       const nextAbilities = { ...stats.abilities };
       const nextAbilityMods = {
@@ -202,7 +201,7 @@ function App() {
         hitDice: { ...health.hitDice, max: Math.max(1, newLevel) },
       }));
     },
-    handleAbilityChange: (ability: AbilityKey, newScore: number) => {
+    onAbilityChange: (ability: AbilityKey, newScore: number) => {
       dispatch(abilityScoreChanged({ ability, newScore }));
       const nextAbilities = { ...stats.abilities, [ability]: newScore };
       const nextAbilityMods = {
@@ -233,7 +232,7 @@ function App() {
     },
     itemAttuned: (itemName: string) => dispatch(itemAttuned(itemName)),
     itemUnattuned: (index: number) => dispatch(itemUnattuned(index)),
-  }), [dispatch]);
+  };
 
   const navTab = activeTab === 'inventory' || activeTab === 'settings' ? 'more' : activeTab;
 
