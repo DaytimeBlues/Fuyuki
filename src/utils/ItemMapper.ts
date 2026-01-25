@@ -1,5 +1,5 @@
 
-import { InventoryItem, WeaponProperty, WeaponStats, StatModifier } from '../types';
+import { InventoryItem, WeaponProperty, WeaponStats } from '../types';
 import { Open5eWeapon, Open5eMagicItem, Open5eArmor } from '../services/SRDSearchService';
 import { v4 as uuidv4 } from 'uuid';
 

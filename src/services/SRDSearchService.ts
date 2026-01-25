@@ -51,11 +51,15 @@ export type SRDResult =
     | { type: 'armor'; data: Open5eArmor }
     | { type: 'condition'; data: Open5eCondition };
 
+interface Open5eAPIResponse<T> {
+    results: T[];
+}
+
 export class SRDSearchService {
-    private static weapons = (weaponsData as any).results as Open5eWeapon[];
-    private static magicItems = (magicItemsData as any).results as Open5eMagicItem[];
-    private static armor = (armorData as any).results as Open5eArmor[];
-    private static conditions = (conditionsData as any).results as Open5eCondition[];
+    private static weapons = (weaponsData as Open5eAPIResponse<Open5eWeapon>).results;
+    private static magicItems = (magicItemsData as Open5eAPIResponse<Open5eMagicItem>).results;
+    private static armor = (armorData as Open5eAPIResponse<Open5eArmor>).results;
+    private static conditions = (conditionsData as Open5eAPIResponse<Open5eCondition>).results;
 
     public static search(query: string): SRDResult[] {
         const q = query.toLowerCase();
@@ -94,18 +98,22 @@ export class SRDSearchService {
 
     public static getBySlug(slug: string, type: SRDResult['type']): SRDResult | null {
         switch (type) {
-            case 'weapon':
+            case 'weapon': {
                 const w = this.weapons.find(i => i.slug === slug);
                 return w ? { type: 'weapon', data: w } : null;
-            case 'magicitem':
+            }
+            case 'magicitem': {
                 const mi = this.magicItems.find(i => i.slug === slug);
                 return mi ? { type: 'magicitem', data: mi } : null;
-            case 'armor':
+            }
+            case 'armor': {
                 const a = this.armor.find(i => i.slug === slug);
                 return a ? { type: 'armor', data: a } : null;
-            case 'condition':
+            }
+            case 'condition': {
                 const c = this.conditions.find(i => i.slug === slug);
                 return c ? { type: 'condition', data: c } : null;
+            }
             default:
                 return null;
         }

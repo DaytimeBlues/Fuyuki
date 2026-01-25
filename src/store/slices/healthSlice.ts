@@ -36,14 +36,14 @@ export const healthSlice = createSlice({
     name: 'health',
     initialState,
     reducers: {
-        hydrateHealth: (state, action: PayloadAction<Pick<CharacterData, 'hp' | 'deathSaves' | 'hitDice' | 'concentration' | 'transformed'>>) => {
+        hydrateHealth: (state, action: PayloadAction<Pick<CharacterData, 'hp' | 'deathSaves' | 'hitDice' | 'concentration' | 'transformed' | 'conditions'>>) => {
             console.log('Hydrating Health:', action.payload.hp);
             state.hp = action.payload.hp;
             state.deathSaves = action.payload.deathSaves;
             state.hitDice = action.payload.hitDice;
             state.concentration = action.payload.concentration;
             state.transformed = action.payload.transformed;
-            state.conditions = (action.payload as any).conditions || [];
+            state.conditions = action.payload.conditions || [];
         },
         hpChanged: (state, action: PayloadAction<number>) => {
             const delta = action.payload - state.hp.current;

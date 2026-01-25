@@ -1,5 +1,5 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
-import type { RootState, AppDispatch } from '../index';
+import type { RootState } from '../index';
 import { itemEquipped } from '../slices/inventorySlice';
 import { equipItem, unequipItem } from '../slices/equipmentSlice';
 import { ArmorSlot, EquippedItem } from '../../types';
