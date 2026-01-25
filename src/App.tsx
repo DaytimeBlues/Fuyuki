@@ -34,6 +34,7 @@ import {
   hydrateStats,
   levelChanged,
   abilityScoreChanged,
+  updateDerivedStats,
 } from './store/slices/statSlice';
 import {
   hydrateInventory,
@@ -183,9 +184,9 @@ function App() {
       const nextMaxHP = (() => {
         const clampedLevel = Math.max(1, Math.min(20, newLevel));
         const conMod = nextAbilityMods.con;
-        const firstLevelHP = stats.hitDice.size + conMod;
+        const firstLevelHP = health.hitDice.size + conMod;
         if (clampedLevel === 1) return Math.max(1, firstLevelHP);
-        const avgHitDie = Math.floor(stats.hitDice.size / 2) + 1;
+        const avgHitDie = Math.floor(health.hitDice.size / 2) + 1;
         const totalHP = firstLevelHP + (clampedLevel - 1) * (avgHitDie + conMod);
         return Math.max(clampedLevel, totalHP);
       })();
@@ -193,6 +194,7 @@ function App() {
         abilityMods: nextAbilityMods,
         profBonus: nextProfBonus,
         dc: 8 + nextProfBonus + nextAbilityMods.cha,
+        level: newLevel,
       }));
       dispatch(hydrateHealth({
         ...character,
@@ -214,9 +216,9 @@ function App() {
       const nextMaxHP = (() => {
         const clampedLevel = Math.max(1, Math.min(20, stats.level));
         const conMod = nextAbilityMods.con;
-        const firstLevelHP = stats.hitDice.size + conMod;
+        const firstLevelHP = health.hitDice.size + conMod;
         if (clampedLevel === 1) return Math.max(1, firstLevelHP);
-        const avgHitDie = Math.floor(stats.hitDice.size / 2) + 1;
+        const avgHitDie = Math.floor(health.hitDice.size / 2) + 1;
         const totalHP = firstLevelHP + (clampedLevel - 1) * (avgHitDie + conMod);
         return Math.max(clampedLevel, totalHP);
       })();
