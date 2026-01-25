@@ -17,6 +17,8 @@ const listenerMiddleware = createListenerMiddleware();
 
 import { inventoryEquipmentListener } from './listeners/inventoryEquipmentBridge';
 import { tacticalListener } from './listeners/tacticalListener';
+import { hapticListener } from './listeners/hapticListener';
+import { combatHapticListener } from './listeners/combatHapticListener';
 
 export const store = configureStore({
     reducer: {
@@ -38,6 +40,8 @@ export const store = configureStore({
             .prepend(listenerMiddleware.middleware)
             .prepend(inventoryEquipmentListener.middleware)
             .prepend(tacticalListener.middleware)
+            .prepend(hapticListener.middleware)
+            .prepend(combatHapticListener.middleware)
             .concat(persistenceMiddleware)
             .concat(open5eApi.middleware)
 });
