@@ -107,6 +107,8 @@ export function CombatBubble() {
                     }
                     ${isDragging ? 'scale-110 shadow-2xl shadow-accent/30 ring-2 ring-accent/50' : ''}
                 `}
+                aria-label={isExpanded ? 'Collapse combat quick stats' : 'Expand combat quick stats'}
+                aria-expanded={isExpanded}
             >
                 <Swords size={24} className={isExpanded ? '-rotate-45' : ''} />
             </button>

@@ -6,6 +6,7 @@ import {
     wildShapeEnded,
     wildShapeDamageTaken,
     wildShapeHpChanged,
+    conditionRemoved,
 } from '../../store/slices/healthSlice';
 import { WildShapeWidget } from '../widgets/WildShapeWidget';
 
@@ -114,7 +115,11 @@ export function TabRouter({
                         return (
                             <CharacterHubView
                                 character={character}
-                                actions={{ itemAttuned, itemUnattuned }}
+                                actions={{
+                                    itemAttuned,
+                                    itemUnattuned,
+                                    conditionRemoved: (condition: string) => dispatch(conditionRemoved(condition))
+                                }}
                             />
                         );
                     case 'more':

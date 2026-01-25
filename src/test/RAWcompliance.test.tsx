@@ -1,4 +1,9 @@
 import { describe, it, expect } from 'vitest';
+import { configureStore } from '@reduxjs/toolkit';
+import healthReducer, { longRestHealth } from '../store/slices/healthSlice';
+import warlockReducer, { pactSlotUsed, shortRestWarlock, longRestWarlock } from '../store/slices/warlockSlice';
+import type { HealthState } from '../store/slices/healthSlice';
+import type { WarlockState } from '../store/slices/warlockSlice';
 
 describe('RAW Compliance Tests', () => {
   describe('Concentration DC Calculation', () => {
@@ -95,6 +100,81 @@ describe('RAW Compliance Tests', () => {
       
       // From non-zero to non-zero: keep
       expect(checkDeathSaveReset(5, 10)).toEqual({ successes: 2, failures: 2 });
+    });
+  });
+
+  describe('Rest Flow (Reducers)', () => {
+    it('short rest refills pact slots', () => {
+      const store = configureStore({ reducer: { warlock: warlockReducer } });
+
+      store.dispatch(pactSlotUsed());
+      store.dispatch(pactSlotUsed());
+
+      expect(store.getState().warlock.pactSlots.current).toBe(0);
+
+      store.dispatch(shortRestWarlock());
+
+      const state = store.getState().warlock;
+      expect(state.pactSlots.current).toBe(state.pactSlots.max);
+    });
+
+    it('long rest restores pact slots, arcanum, and invocation uses', () => {
+      const preloadedWarlock: WarlockState = {
+        pactSlots: { current: 0, max: 2, level: 3 },
+        spellsKnown: [],
+        cantripsKnown: [],
+        arcanum: {
+          6: { spellName: 'Mass Suggestion', used: true },
+        },
+        invocations: [
+          {
+            id: 'test-invocation',
+            name: 'Test Invocation',
+            description: 'Test',
+            active: true,
+            usesPerLongRest: 1,
+            currentUses: 0,
+          },
+        ],
+        pactBoon: { type: null },
+        patron: { name: 'The Fiend', features: [] },
+      };
+
+      const store = configureStore({
+        reducer: { warlock: warlockReducer },
+        preloadedState: { warlock: preloadedWarlock },
+      });
+
+      store.dispatch(longRestWarlock());
+
+      const state = store.getState().warlock;
+      expect(state.pactSlots.current).toBe(state.pactSlots.max);
+      expect(state.arcanum[6]?.used).toBe(false);
+      expect(state.invocations[0]?.currentUses).toBe(1);
+    });
+
+    it('long rest restores HP, hit dice, and clears concentration/death saves', () => {
+      const preloadedHealth: HealthState = {
+        hp: { current: 10, max: 38, temp: 5 },
+        deathSaves: { successes: 1, failures: 2 },
+        hitDice: { current: 0, max: 5, size: 8 },
+        concentration: 'Hex',
+        transformed: null,
+      };
+
+      const store = configureStore({
+        reducer: { health: healthReducer },
+        preloadedState: { health: preloadedHealth },
+      });
+
+      store.dispatch(longRestHealth());
+
+      const state = store.getState().health;
+      expect(state.hp.current).toBe(state.hp.max);
+      expect(state.hp.temp).toBe(0);
+      expect(state.hitDice.current).toBe(3);
+      expect(state.concentration).toBeNull();
+      expect(state.deathSaves).toEqual({ successes: 0, failures: 0 });
     });
   });
 });

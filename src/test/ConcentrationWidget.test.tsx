@@ -1,7 +1,46 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { configureStore } from '@reduxjs/toolkit';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ConcentrationWidget } from '../components/widgets/ConcentrationWidget';
+import healthReducer, { hpChanged, concentrationSet } from '../store/slices/healthSlice';
+import warlockReducer from '../store/slices/warlockSlice';
+import statReducer from '../store/slices/statSlice';
+import inventoryReducer from '../store/slices/inventorySlice';
+import spellbookReducer from '../store/slices/spellbookSlice';
+import combatReducer from '../store/slices/combatSlice';
+import uiReducer from '../store/slices/uiSlice';
+import widgetReducer from '../store/slices/widgetSlice';
+import equipmentReducer from '../store/slices/equipmentSlice';
+import familiarReducer from '../store/slices/familiarSlice';
+import concentrationMiddleware from '../store/middleware/concentrationMiddleware';
+import { open5eApi } from '../store/api/open5eApi';
+
+const mockConcentrationBreak = vi.hoisted(() => vi.fn());
+
+vi.mock('../utils/haptics', () => ({
+  HapticPresets: {
+    concentrationBreak: mockConcentrationBreak,
+  },
+}));
+
+const createStore = () =>
+  configureStore({
+    reducer: {
+      ui: uiReducer,
+      widget: widgetReducer,
+      health: healthReducer,
+      warlock: warlockReducer,
+      stats: statReducer,
+      inventory: inventoryReducer,
+      spellbook: spellbookReducer,
+      combat: combatReducer,
+      equipment: equipmentReducer,
+      familiar: familiarReducer,
+      [open5eApi.reducerPath]: open5eApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(concentrationMiddleware),
+  });
 
 describe('ConcentrationWidget', () => {
   it('renders without active concentration', () => {
@@ -63,5 +102,38 @@ describe('ConcentrationWidget', () => {
     await user.click(blessButton);
 
     expect(handleSet).toHaveBeenCalledWith('Bless');
+  });
+});
+
+describe('concentrationMiddleware', () => {
+  beforeEach(() => {
+    mockConcentrationBreak.mockClear();
+  });
+
+  it('triggers haptic feedback when taking damage while concentrating and alive', () => {
+    const store = createStore();
+
+    store.dispatch(concentrationSet('Hex'));
+    store.dispatch(hpChanged(30));
+
+    expect(mockConcentrationBreak).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not trigger when not concentrating', () => {
+    const store = createStore();
+
+    store.dispatch(concentrationSet(null));
+    store.dispatch(hpChanged(30));
+
+    expect(mockConcentrationBreak).not.toHaveBeenCalled();
+  });
+
+  it('does not trigger when damage drops HP to 0', () => {
+    const store = createStore();
+
+    store.dispatch(concentrationSet('Hex'));
+    store.dispatch(hpChanged(0));
+
+    expect(mockConcentrationBreak).not.toHaveBeenCalled();
   });
 });

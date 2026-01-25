@@ -14,6 +14,8 @@ import { open5eApi } from './api/open5eApi';
 
 const listenerMiddleware = createListenerMiddleware();
 
+import { inventoryEquipmentListener } from './listeners/inventoryEquipmentBridge';
+
 export const store = configureStore({
     reducer: {
         ui: uiReducer,
@@ -31,6 +33,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .prepend(listenerMiddleware.middleware)
+            .prepend(inventoryEquipmentListener.middleware)
             .concat(persistenceMiddleware)
             .concat(open5eApi.middleware)
 });

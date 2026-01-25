@@ -166,8 +166,10 @@ export interface InventoryItem {
         max: number;
     };
     description?: string;
-    type?: 'weapon' | 'armor' | 'item';
+    type?: 'weapon' | 'armor' | 'item' | 'consumable';
+    preferredSlot?: ArmorSlot;
     equipped?: boolean;
+    modifiers?: StatModifier[];
     weaponStats?: WeaponStats;
     armorStats?: {
         baseAC: number;
@@ -283,6 +285,9 @@ export interface CharacterData {
     // === EQUIPMENT & FAMILIAR ===
     equipmentSlots?: EquipmentSlots;
     familiar?: Familiar;
+
+    // === CONDITIONS ===
+    conditions?: string[];
 
     // Legacy or Config
     defaultMinion?: { [key: string]: MinionStats };

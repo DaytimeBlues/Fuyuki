@@ -14,6 +14,7 @@ export interface HealthState {
         hp: { current: number; max: number };
         ac: number;
     } | null;
+    conditions: string[];
 }
 
 const getInitialState = (): HealthState => {
@@ -25,6 +26,7 @@ const getInitialState = (): HealthState => {
         hitDice: data.hitDice,
         concentration: data.concentration,
         transformed: data.transformed,
+        conditions: data.conditions || [],
     };
 };
 
@@ -41,6 +43,7 @@ export const healthSlice = createSlice({
             state.hitDice = action.payload.hitDice;
             state.concentration = action.payload.concentration;
             state.transformed = action.payload.transformed;
+            state.conditions = (action.payload as any).conditions || [];
         },
         hpChanged: (state, action: PayloadAction<number>) => {
             const delta = action.payload - state.hp.current;
@@ -119,6 +122,17 @@ export const healthSlice = createSlice({
             state.hitDice.current = Math.min(state.hitDice.max, state.hitDice.current + recovered);
             state.concentration = null;
             state.deathSaves = { successes: 0, failures: 0 };
+        },
+        conditionAdded: (state, action: PayloadAction<string>) => {
+            if (!state.conditions.includes(action.payload)) {
+                state.conditions.push(action.payload);
+            }
+        },
+        conditionRemoved: (state, action: PayloadAction<string>) => {
+            state.conditions = state.conditions.filter(c => c !== action.payload);
+        },
+        conditionsCleared: (state) => {
+            state.conditions = [];
         }
     },
 });
@@ -134,7 +148,10 @@ export const {
     wildShapeEnded,
     wildShapeHpChanged,
     wildShapeDamageTaken,
-    longRestHealth
+    longRestHealth,
+    conditionAdded,
+    conditionRemoved,
+    conditionsCleared
 } = healthSlice.actions;
 
 export default healthSlice.reducer;

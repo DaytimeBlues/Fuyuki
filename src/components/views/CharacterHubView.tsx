@@ -13,6 +13,7 @@ interface CharacterHubViewProps {
     actions: {
         itemAttuned: (itemName: string) => void;
         itemUnattuned: (index: number) => void;
+        conditionRemoved: (condition: string) => void;
     };
 }
 
@@ -66,6 +67,8 @@ export function CharacterHubView({ character, actions }: CharacterHubViewProps) 
                         skills={character.skills}
                         profBonus={character.profBonus}
                         level={character.level}
+                        conditions={character.conditions || []}
+                        onRemoveCondition={actions.conditionRemoved}
                     />
                 )}
 

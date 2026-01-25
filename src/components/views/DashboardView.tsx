@@ -3,6 +3,7 @@ import { PactSlotsWidget } from '../widgets/PactSlotsWidget';
 import { ArcanumWidget } from '../widgets/ArcanumWidget';
 import { ConcentrationWidget } from '../widgets/ConcentrationWidget';
 import { DeathSavesWidget } from '../widgets/DeathSavesWidget';
+import { TrinketWidget } from '../widgets/TrinketWidget';
 import { useAppDispatch } from '../../store/hooks';
 import { concentrationSet } from '../../store/slices/healthSlice';
 import { getRequiredLevelForSpell } from '../../utils/spellRules';
@@ -77,6 +78,17 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
                     <div className="stagger-5 animate-slide-up">
                         <ArcanumWidget />
                     </div>
+                </div>
+            </section>
+
+            {/* Curiosities Section */}
+            <section>
+                <div className="border-t border-white/5 pt-4">
+                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-1 pl-1">Curiosities</h3>
+                    <div className="text-[10px] font-japanese text-muted opacity-50 mb-3 pl-1 tracking-widest">好奇心</div>
+                </div>
+                <div className="stagger-6 animate-slide-up grid grid-cols-1 gap-4">
+                    <TrinketWidget />
                 </div>
             </section>
         </div>

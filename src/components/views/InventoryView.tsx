@@ -9,13 +9,15 @@ import {
 import { showToast as toastShown } from '../../store/slices/uiSlice';
 import { castingStarted, slotConfirmed } from '../../store/slices/combatSlice';
 import { InventoryItem } from '../../types';
-import { Backpack, Trash2, Plus, Zap, Wand2, Swords as SwordsIcon, Shield } from 'lucide-react';
+import { Backpack, Trash2, Plus, Zap, Wand2, Swords as SwordsIcon, Shield, Search } from 'lucide-react';
 import { spells } from '../../data/spells';
+import { SRDBrowserModal } from '../modals/SRDBrowserModal';
 
 export const InventoryView: React.FC = () => {
     const dispatch = useAppDispatch();
     const inventory = useAppSelector(state => state.inventory.inventory);
     const [isAdding, setIsAdding] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [newItemName, setNewItemName] = useState('');
     const [newItemDesc, setNewItemDesc] = useState('');
     const [newItemMaxCharges, setNewItemMaxCharges] = useState<number | ''>('');
@@ -91,14 +93,24 @@ export const InventoryView: React.FC = () => {
                     <Backpack className="w-6 h-6 text-stone-400" />
                     <h2 className="font-cinzel text-xl text-stone-200">Inventory</h2>
                 </div>
-                <button
-                    onClick={() => setIsAdding(true)}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-stone-800 hover:bg-stone-700 rounded text-stone-300 transition-colors"
-                    data-testid="add-item-btn"
-                >
-                    <Plus className="w-4 h-4" />
-                    <span className="text-sm font-bold">Add Item</span>
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setIsSearchOpen(true)}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-accent/10 hover:bg-accent/20 border border-accent/20 rounded text-accent transition-colors"
+                        data-testid="search-srd-btn"
+                    >
+                        <Search className="w-4 h-4" />
+                        <span className="text-sm font-bold">Search DB</span>
+                    </button>
+                    <button
+                        onClick={() => setIsAdding(true)}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-stone-800 hover:bg-stone-700 rounded text-stone-300 transition-colors"
+                        data-testid="add-item-btn"
+                    >
+                        <Plus className="w-4 h-4" />
+                        <span className="text-sm font-bold">Add Custom</span>
+                    </button>
+                </div>
             </header>
 
             {isAdding && (
@@ -283,6 +295,11 @@ export const InventoryView: React.FC = () => {
                     </div>
                 ))}
             </div>
+
+            <SRDBrowserModal
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+            />
         </div>
     );
 };

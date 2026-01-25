@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
     getProfBonus,
     getAbilityMod,
@@ -7,6 +7,14 @@ import {
     clamp,
 } from '../utils/srdRules';
 import { getPactSlotInfo } from '../utils/warlockRules';
+import {
+    validateAndClampSessionNumber,
+    validateAndClampAbilityScore,
+    validateAndClampLevel,
+    validateHP,
+    isValueValid,
+    formatValidationResult,
+} from '../utils/inputValidationEnhanced';
 
 describe('SRD 5.1 Rules (Hardened)', () => {
     describe('getProfBonus', () => {
@@ -87,6 +95,59 @@ describe('SRD 5.1 Rules (Hardened)', () => {
             expect(clamp(5, 1, 10)).toBe(5);
             expect(clamp(0, 1, 10)).toBe(1);
             expect(clamp(11, 1, 10)).toBe(10);
+        });
+    });
+
+    describe('Input Validation (Enhanced)', () => {
+        it('validates session numbers and returns fallback on invalid', () => {
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+            expect(validateAndClampSessionNumber('5', false)).toBe(5);
+            expect(validateAndClampSessionNumber('10000', false)).toBe(1);
+            expect(validateAndClampSessionNumber('abc', false)).toBe(1);
+
+            warnSpy.mockRestore();
+        });
+
+        it('validates ability scores and returns fallback on invalid', () => {
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+            expect(validateAndClampAbilityScore('str', '16', false)).toBe(16);
+            expect(validateAndClampAbilityScore('str', '40', false)).toBe(10);
+            expect(validateAndClampAbilityScore('cha', 'abc', false)).toBe(10);
+
+            warnSpy.mockRestore();
+        });
+
+        it('validates level and HP inputs with fallbacks', () => {
+            const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+            expect(validateAndClampLevel('5', false)).toBe(5);
+            expect(validateAndClampLevel('25', false)).toBe(1);
+            expect(validateHP('10', 'current')).toBe(10);
+            expect(validateHP('-1', 'temp')).toBe(0);
+            expect(validateHP('0', 'max')).toBe(0);
+
+            warnSpy.mockRestore();
+        });
+
+        it('reports validity and formats validation results', () => {
+            expect(isValueValid('5', 'session')).toBe(true);
+            expect(isValueValid('10000', 'session')).toBe(false);
+            expect(isValueValid('20', 'level')).toBe(true);
+            expect(isValueValid('25', 'level')).toBe(false);
+            expect(isValueValid('-1000', 'hp')).toBe(false);
+
+            expect(formatValidationResult(true, null, 'Level')).toEqual({
+                isValid: true,
+                showWarning: false,
+                message: 'Level is valid',
+            });
+            expect(formatValidationResult(false, 'Invalid input', 'Level')).toEqual({
+                isValid: false,
+                showWarning: true,
+                message: 'Invalid input',
+            });
         });
     });
 });

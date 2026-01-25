@@ -9,6 +9,8 @@ interface StatsViewProps {
     skills: Record<string, Skill>;
     profBonus: number;
     level: number;
+    conditions: string[];
+    onRemoveCondition?: (condition: string) => void;
 }
 
 export function StatsView({
@@ -16,6 +18,8 @@ export function StatsView({
     abilityMods,
     skills,
     profBonus,
+    conditions,
+    onRemoveCondition
 }: StatsViewProps) {
 
     // Map abilities to their display info
@@ -57,6 +61,33 @@ export function StatsView({
                 <h2 className="font-kyoto uppercase text-lg text-parchment tracking-[0.2em]">Attributes</h2>
                 <p className="text-[10px] text-muted uppercase tracking-widest mt-1">Proficiency Bonus: {formatMod(profBonus)}</p>
             </div>
+
+            {/* Active Conditions */}
+            {conditions && conditions.length > 0 && (
+                <div className="card-parchment p-4 mb-4 border-accent/20 bg-accent/5">
+                    <div className="flex items-center gap-2 mb-3">
+                        <Star size={16} className="text-accent animate-pulse-slow" />
+                        <h3 className="font-display text-xs text-accent uppercase tracking-[0.1em]">Active Conditions</h3>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {conditions.map(condition => (
+                            <div
+                                key={condition}
+                                className="px-3 py-1 bg-bg-void/60 border border-accent/30 rounded-full flex items-center gap-2 hover:border-accent group transition-all"
+                            >
+                                <span className="text-[10px] text-parchment uppercase tracking-widest font-bold">{condition}</span>
+                                <button
+                                    onClick={() => onRemoveCondition?.(condition)}
+                                    className="p-0.5 hover:bg-vermillion/20 rounded-full text-muted group-hover:text-vermillion transition-colors"
+                                    title={`Remove ${condition}`}
+                                >
+                                    <X size={10} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
 
 

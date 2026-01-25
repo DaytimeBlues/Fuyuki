@@ -101,11 +101,15 @@ export function MinionDrawer({
         <div
             onClick={onClose}
             className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-50 transition-opacity ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+            aria-hidden={!isOpen}
         >
             <div
                 className={`fixed bottom-0 left-0 right-0 bg-card border-t border-white/20 rounded-t-3xl z-50 transition-transform duration-300 ease-out transform ${isOpen ? 'translate-y-0' : 'translate-y-full'
                     } h-[70vh] flex flex-col shadow-2xl shadow-white/5`}
                 onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Minion manager"
             >
                 {/* Handle / Header */}
                 <div className="p-4 border-b border-white/10 shrink-0">

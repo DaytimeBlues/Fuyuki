@@ -7,6 +7,8 @@ import { Swords, Shield, Trash2, Plus, X, Target, Move } from 'lucide-react';
 
 type InventoryTab = 'items' | 'armor' | 'weapons';
 
+import { SRDBrowserModal } from '../modals/SRDBrowserModal';
+
 const ArmorView = lazy(() => import('./ArmorView').then(m => ({ default: m.ArmorView })));
 
 export function WeaponsView() {
@@ -14,6 +16,7 @@ export function WeaponsView() {
     const inventory = useAppSelector(state => state.inventory.inventory);
     const equipment = useAppSelector(state => state.equipment.equipped);
     const [activeTab, setActiveTab] = useState<InventoryTab>('weapons');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const weaponItems = inventory.filter(item => item.type === 'weapon');
     const mainHandWeapon = equipment.mainHand;
@@ -45,22 +48,26 @@ export function WeaponsView() {
 
     const handleEquipToMainHand = (weapon: InventoryItem) => {
         if (!weapon.id) return;
-        dispatch(equipItem({ slot: 'mainHand', item: {
-            itemId: weapon.id,
-            name: weapon.name,
-            cosmeticOnly: false,
-            modifiers: [],
-        }}));
+        dispatch(equipItem({
+            slot: 'mainHand', item: {
+                itemId: weapon.id,
+                name: weapon.name,
+                cosmeticOnly: false,
+                modifiers: [],
+            }
+        }));
     };
 
     const handleEquipToOffHand = (weapon: InventoryItem) => {
         if (!weapon.id) return;
-        dispatch(equipItem({ slot: 'offHand', item: {
-            itemId: weapon.id,
-            name: weapon.name,
-            cosmeticOnly: false,
-            modifiers: [],
-        }}));
+        dispatch(equipItem({
+            slot: 'offHand', item: {
+                itemId: weapon.id,
+                name: weapon.name,
+                cosmeticOnly: false,
+                modifiers: [],
+            }
+        }));
     };
 
     const handleUnequipSlot = (slot: ArmorSlot) => {
@@ -115,7 +122,7 @@ export function WeaponsView() {
                             className={`p-2 rounded-lg border transition-all ${isInMainHand
                                 ? 'bg-accent text-bg-dark border-accent'
                                 : 'bg-bg-dark/40 border-white/10 hover:border-gold-dim/40 hover:text-gold-bright'
-                            }`}
+                                }`}
                             title="Equip to Main Hand"
                             aria-label="Equip to main hand"
                         >
@@ -127,7 +134,7 @@ export function WeaponsView() {
                                 className={`p-2 rounded-lg border transition-all ${isInOffHand
                                     ? 'bg-accent text-bg-dark border-accent'
                                     : 'bg-bg-dark/40 border-white/10 hover:border-gold-dim/40 hover:text-gold-bright'
-                                }`}
+                                    }`}
                                 title="Equip to Off Hand"
                                 aria-label="Equip to off hand"
                             >
@@ -254,14 +261,22 @@ export function WeaponsView() {
                         {weaponItems.map((weapon, idx) => renderWeaponCard(weapon, idx))}
                     </div>
 
-                    {/* Add Weapon Button */}
-                    <button
-                        onClick={handleAddWeapon}
-                        className="w-full py-3 border-2 border-dashed border-white/20 rounded-xl text-muted hover:text-parchment hover:border-white/40 transition-all flex items-center justify-center gap-2"
-                    >
-                        <Plus size={18} />
-                        <span className="font-display">Add Weapon</span>
-                    </button>
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="flex-1 py-3 border-2 border-dashed border-accent/20 rounded-xl text-accent/60 hover:text-accent hover:border-accent/40 transition-all flex items-center justify-center gap-2"
+                        >
+                            <Target size={18} />
+                            <span className="font-display">Search Database</span>
+                        </button>
+                        <button
+                            onClick={handleAddWeapon}
+                            className="flex-1 py-3 border-2 border-dashed border-white/20 rounded-xl text-muted hover:text-parchment hover:border-white/40 transition-all flex items-center justify-center gap-2"
+                        >
+                            <Plus size={18} />
+                            <span className="font-display">Add Custom</span>
+                        </button>
+                    </div>
                 </div>
             ) : activeTab === 'armor' ? (
                 /* Armor View - delegated to ArmorView component */
@@ -319,6 +334,11 @@ export function WeaponsView() {
                     )}
                 </div>
             )}
+
+            <SRDBrowserModal
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+            />
         </div>
     );
 }

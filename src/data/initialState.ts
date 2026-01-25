@@ -146,5 +146,6 @@ export const initialCharacterData: CharacterData = {
             "Dark One's Own Luck"
         ]
     },
-    transformed: null
+    transformed: null,
+    conditions: []
 };

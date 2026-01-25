@@ -78,7 +78,7 @@ export function AppShell({
                                 </div>
 
                                 {/* Nav Items */}
-                                <nav className="flex flex-col gap-2">
+                                <nav className="flex flex-col gap-2" aria-label="Main navigation">
                                     {navItems.map((item) => {
                                         const { id, icon: Icon, label } = item;
                                         const isActive = activeTab === id;
@@ -167,7 +167,7 @@ export function AppShell({
                         </main>
 
                         {/* Thumb Zone Bottom Nav */}
-                        <nav className="fixed bottom-6 left-0 right-0 z-50 pointer-events-none px-4">
+                        <nav className="fixed bottom-6 left-0 right-0 z-50 pointer-events-none px-4" aria-label="Main navigation">
                             <div className="pointer-events-auto max-w-md mx-auto glass-card rounded-2xl p-2 border border-white/10 shadow-2xl">
                                 <div className="flex items-center justify-between px-2">
                                     {navItems.map((item, index) => {
@@ -232,6 +232,8 @@ export function AppShell({
                     <div
                         className="fixed top-24 left-1/2 -translate-x-1/2 glass-card px-6 py-4 rounded-xl z-[100] animate-slide-down flex items-center gap-3 border-l-4 border-gold-mid"
                         data-testid="toast-message"
+                        role="status"
+                        aria-live="polite"
                     >
                         <div className="w-2 h-2 rounded-full bg-gold-bright animate-pulse" />
                         <span className="font-display text-sm uppercase tracking-widest text-white">

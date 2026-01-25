@@ -864,3 +864,18 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== KYOTO FOCUS - Global Accessibility ===== */
+@layer base {
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    outline: none;
+    @apply ring-2 ring-offset-2 ring-offset-black ring-[#ffd700];
+  }
+}

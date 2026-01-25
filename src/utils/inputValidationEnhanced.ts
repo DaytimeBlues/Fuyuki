@@ -62,6 +62,11 @@ export const AbilityScoreSchema = z.object({
         .max(30, 'Charisma score maximum is 30'),
 });
 
+const AbilityValueSchema = z.number()
+    .int('Ability score must be a whole number')
+    .min(3, 'Ability score minimum is 3 (SRD standard)')
+    .max(30, 'Ability score maximum is 30');
+
 // Level validation
 export const LevelSchema = z.number()
     .int('Level must be a whole number')
@@ -119,13 +124,13 @@ export function validateAndClampAbilityScore(
 ): number {
     try {
         const num = parseInt(String(value)) || 10;
-        const validated = AbilityScoreSchema.parse({ [ability]: num });
+        const validated = AbilityValueSchema.parse(num);
 
         if (showToast) {
             console.warn('Toast would show for invalid ability score');
         }
 
-        return validated[ability];
+        return validated;
     } catch (error) {
         const issue = error instanceof z.ZodError ? 'invalid' : 'required';
         const { message, suggestion } = getValidationError(ability.charAt(0).toUpperCase() + ability.slice(1), issue);
@@ -200,9 +205,8 @@ export function isValueValid(value: unknown, type: 'session' | 'ability' | 'leve
                 return SessionNumberSchema.safeParse(parsed).success;
             }
             case 'ability': {
-                const ability = value as keyof z.infer<typeof AbilityScoreSchema>;
                 const parsed = parseInt(String(value), 10) || 10;
-                return AbilityScoreSchema.safeParse({ [ability]: parsed }).success;
+                return AbilityValueSchema.safeParse(parsed).success;
             }
             case 'level': {
                 const parsed = parseInt(String(value), 10) || 1;
@@ -237,8 +241,7 @@ export function getValidationErrorMessage(
                 return null;
             }
             case 'ability': {
-                const ability = value as keyof z.infer<typeof AbilityScoreSchema>;
-                const result = AbilityScoreSchema.safeParse({ [ability]: parseInt(String(value), 10) || 10 });
+                const result = AbilityValueSchema.safeParse(parseInt(String(value), 10) || 10);
                 if (!result.success) {
                     return result.error.issues[0]?.message;
                 }

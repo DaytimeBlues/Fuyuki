@@ -50,6 +50,7 @@ export function FamiliarBubble() {
                     <button
                         onClick={() => setIsExpanded(false)}
                         className="p-2 hover:bg-white/10 rounded text-muted hover:text-white transition-colors"
+                        aria-label="Close familiar details"
                     >
                         <X size={16} />
                     </button>
@@ -73,6 +74,7 @@ export function FamiliarBubble() {
                                 <button
                                     onClick={() => handleHpChange(-1)}
                                     className="px-2 py-1 bg-bg-dark/40 border border-white/10 rounded hover:border-white/20 text-muted hover:text-white"
+                                    aria-label="Decrease familiar HP"
                                 >
                                     -
                                 </button>
@@ -85,6 +87,7 @@ export function FamiliarBubble() {
                                 <button
                                     onClick={() => handleHpChange(1)}
                                     className="px-2 py-1 bg-bg-dark/40 border border-white/10 rounded hover:border-white/20 text-muted hover:text-white"
+                                    aria-label="Increase familiar HP"
                                 >
                                     +
                                 </button>
@@ -127,6 +130,8 @@ export function FamiliarBubble() {
                                 ? 'bg-purple-500/20 border-purple-500/40 text-purple-300'
                                 : 'bg-bg-dark/30 border-white/10 hover:border-white/20 text-muted'
                             }`}
+                            aria-pressed={familiar.isInvisible}
+                            aria-label="Toggle familiar invisibility"
                         >
                             <div className="flex items-center gap-2">
                                 <Eye size={14} />
@@ -176,6 +181,8 @@ export function FamiliarBubble() {
                         }
                         ${isDragging ? 'scale-110 shadow-2xl shadow-purple-500/30 ring-2 ring-purple-500/50' : ''}
                     `}
+                    aria-label={familiar ? (isExpanded ? 'Collapse familiar details' : 'Expand familiar details') : 'Summon familiar'}
+                    aria-expanded={isExpanded}
                 >
                     {familiar ? <Skull size={24} /> : <Plus size={24} />}
                 </button>
