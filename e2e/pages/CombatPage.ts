@@ -11,15 +11,18 @@ export class CombatPage extends BasePage {
     }
 
     async damageMinion(index: number = 0) {
-        await this.page.getByTestId('minion-damage-btn').nth(index).click();
+        const button = this.page.getByTestId('minion-damage-btn').nth(index);
+        await button.dispatchEvent('click');
     }
 
     async healMinion(index: number = 0) {
-        await this.page.getByTestId('minion-heal-btn').nth(index).click();
+        const button = this.page.getByTestId('minion-heal-btn').nth(index);
+        await button.dispatchEvent('click');
     }
 
     async removeMinion(index: number = 0) {
-        await this.page.getByTestId('minion-remove-btn').nth(index).click();
+        const button = this.page.getByTestId('minion-remove-btn').nth(index);
+        await button.dispatchEvent('click');
     }
 
     async releaseAllMinions() {

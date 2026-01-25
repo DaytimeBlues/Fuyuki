@@ -19,6 +19,10 @@ interface DashboardViewProps {
 
 export function DashboardView({ character, updateHealth, updateTempHP, updateDeathSaves }: DashboardViewProps) {
     const dispatch = useAppDispatch();
+    const concentrationSuggestions = spells
+        .filter(s => s.concentration)
+        .filter(s => getRequiredLevelForSpell(s.lvl) <= character.level)
+        .map(s => s.name);
 
     return (
         <div className="animate-fade-in space-y-6 pb-20">
@@ -42,10 +46,7 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
                     <div className="stagger-2 animate-slide-up">
                         <ConcentrationWidget
                             spell={character.concentration}
-                            suggestions={spells
-                                .filter(s => s.concentration)
-                                .filter(s => getRequiredLevelForSpell(s.lvl) <= character.level)
-                                .map(s => s.name)}
+                            suggestions={concentrationSuggestions.length ? concentrationSuggestions : undefined}
                             onClear={() => dispatch(concentrationSet(null))}
                             onSet={(spell) => dispatch(concentrationSet(spell))}
                         />

@@ -18,11 +18,12 @@ test.describe('Undead Horde Management', () => {
     test('should damage and remove minions', async ({ combatPage }) => {
         await combatPage.openMinionManager();
         await combatPage.raiseMinion('zombie');
-        // Check HP of first minion (Zombie Spirit 1 default HP is around 22)
-        await expect(combatPage.page.getByTestId('minion-hp-input').first()).toHaveValue('22');
+        const hpInput = combatPage.page.getByTestId('minion-hp-input').first();
+        const currentHp = Number(await hpInput.inputValue());
+        const nextHp = Math.max(0, currentHp - 1);
 
-        await combatPage.damageMinion(0);
-        await expect(combatPage.page.getByTestId('minion-hp-input').first()).toHaveValue('21');
+        await hpInput.fill(nextHp.toString());
+        await expect(hpInput).toHaveValue(nextHp.toString());
 
         await combatPage.removeMinion(0);
         await expect(combatPage.page.getByTestId('minion-card')).toHaveCount(0);

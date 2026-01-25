@@ -14,105 +14,35 @@ export class BasePage {
 
     async goto() {
         await this.page.goto('./');
+        await this.page.evaluate(() => {
+            localStorage.clear();
+            sessionStorage.clear();
+        });
+        await this.page.reload();
     }
 
     async waitForAppReady() {
-        console.log('Starting waitForAppReady...');
+        await this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => undefined);
 
-        // Wait for network idle to ensure hydration
-        try {
-            await this.page.waitForLoadState('networkidle', { timeout: 15000 });
-            console.log('Network idle achieved');
-        } catch {
-            console.warn('Network idle timed out after 15s, proceeding anyway');
-        }
+        await this.page.waitForSelector('[data-testid="app-ready"]', { timeout: 15000 });
 
-        // Take initial screenshot for debugging
-        await this.page.screenshot({ path: 'debug-initial-state.png', fullPage: true });
+        const sessionPicker = this.page.getByTestId('session-picker');
+        if (await sessionPicker.isVisible().catch(() => false)) {
+            const startSessionBtn = this.page.getByTestId('start-session-btn');
+            const newSessionBtn = this.page.getByTestId('new-session-btn');
 
-        // Check if session picker is showing
-        const startSessionBtn = this.page.getByText('Start Session');
-        const newSessionBtn = this.page.getByText('New Session');
-        const sessionsTitle = this.page.getByText(/Sessions/i);
-
-        // Wait a bit for app to stabilize
-        await this.page.waitForTimeout(500);
-
-        // Check what's visible
-        const hasStartBtn = await startSessionBtn.isVisible().catch(() => false);
-        const hasNewBtn = await newSessionBtn.isVisible().catch(() => false);
-        const hasTitle = await sessionsTitle.isVisible().catch(() => false);
-
-        console.log('Session picker elements visible:', {
-            hasStartBtn,
-            hasNewBtn,
-            hasTitle
-        });
-
-        if (hasStartBtn || hasNewBtn || hasTitle) {
-            // Session picker is showing
-            console.log('Session picker is visible, handling it...');
-
-            if (hasStartBtn) {
-                // No existing sessions, can click "Start Session" directly
-                console.log('Clicking "Start Session" button');
-                await startSessionBtn.click();
-            } else {
-                // There are existing sessions, need to click "New Session" first
-                console.log('Clicking "New Session" button');
+            if (await newSessionBtn.isVisible().catch(() => false)) {
                 await newSessionBtn.click();
-                // Wait for "Start Session" button to appear
-                await this.page.waitForTimeout(500);
-                const startBtn = this.page.getByText('Start Session');
-                await startBtn.click();
             }
 
-            // Wait for session picker overlay to completely disappear
-            console.log('Waiting for session picker to disappear...');
-            const overlay = this.page.locator('.fixed').filter({ hasText: /Sessions/i });
-
-            // Wait for overlay to be hidden
-            try {
-                await expect(overlay).not.toBeVisible({ timeout: 5000 });
-                console.log('Session picker overlay is hidden');
-            } catch {
-                console.log('Overlay still visible after click, continuing anyway');
+            if (await startSessionBtn.isVisible().catch(() => false)) {
+                await startSessionBtn.click();
             }
 
-            // Give React time to re-render
-            await this.page.waitForTimeout(1000);
+            await sessionPicker.waitFor({ state: 'hidden', timeout: 8000 }).catch(() => undefined);
         }
 
-        // Wait for ANY visible interactive element to be present
-        // Try stats nav, spells nav, or any main content element
-        console.log('Waiting for main app content...');
-        await this.page.waitForTimeout(500);
-
-        try {
-            // Try multiple selectors to find ANY visible element
-            await Promise.race([
-                this.page.getByTestId('nav-tab-stats').isVisible(),
-                this.page.getByTestId('nav-tab-spells').isVisible(),
-                this.page.getByTestId('nav-tab-combat').isVisible(),
-                this.page.getByTestId('nav-tab-character').isVisible(),
-                this.page.getByTestId('nav-tab-more').isVisible(),
-                this.page.locator('main').isVisible()
-            ]);
-
-            console.log('Found main content, continuing to test');
-        } catch {
-            console.error('No main content found after session picker. Page content:');
-            const content = await this.page.content();
-            console.log('Page HTML length:', content.length);
-            console.log('Page HTML preview:', content.substring(0, 1000));
-
-            // Take another screenshot
-            await this.page.screenshot({ path: 'debug-after-session.png', fullPage: true });
-            throw new Error('App failed to initialize after session creation');
-        }
-
-        // Additional wait to ensure full render
-        await this.page.waitForTimeout(500);
+        await this.page.waitForSelector('[data-testid="nav-tab-stats"]', { timeout: 10000 });
     }
 
 

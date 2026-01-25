@@ -46,7 +46,10 @@ export function SessionPicker({ onSessionSelected, onClose }: SessionPickerProps
     };
 
     return (
-        <div className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+        <div
+            className="fixed inset-0 bg-black/95 backdrop-blur-sm z-[70] flex items-center justify-center p-4"
+            data-testid="session-picker"
+        >
             <div className="card-parchment w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl animate-scale-in">
                 {/* Header */}
                 <div className="flex justify-between items-center p-4 border-b border-white/10">
@@ -118,6 +121,7 @@ export function SessionPicker({ onSessionSelected, onClose }: SessionPickerProps
                                 <button
                                     onClick={handleNewSession}
                                     className="btn-primary flex-1 flex items-center justify-center gap-2"
+                                    data-testid="start-session-btn"
                                 >
                                     <Plus size={16} />
                                     Start Session
@@ -130,6 +134,7 @@ export function SessionPicker({ onSessionSelected, onClose }: SessionPickerProps
                             <button
                                 onClick={() => setShowNewForm(true)}
                                 className="w-full btn-primary flex items-center justify-center gap-2 py-3"
+                                data-testid="new-session-btn"
                             >
                                 <Plus size={18} />
                                 New Session

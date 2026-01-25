@@ -24,10 +24,10 @@ test.describe('Health Management', () => {
     });
 
     test('should track death saves', async ({ homePage }) => {
-        // Decrease HP to 0 to make death saves relevant
-        // But the widget is always visible, so we can just interact
+        // Decrease HP to 0 so the widget is rendered
+        await homePage.reduceHpToZero();
+
         await homePage.markDeathSuccess(0);
-        // The class name depends on implementation, but let's assume it changes
         await expect(homePage.page.getByTestId('death-success-0')).toBeVisible();
 
         await homePage.markDeathFailure(0);
