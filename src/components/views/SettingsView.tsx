@@ -1,32 +1,32 @@
 import { CharacterEditor } from '../widgets/CharacterEditor';
 import { RestView } from './RestView';
 import { CharacterHubView } from './CharacterHubView';
-import { CharacterData } from '../../types';
-import { AppDispatch } from '../../store';
-import { levelChanged, abilityScoreChanged } from '../../store/slices/statSlice';
-import { hitDiceSpent, longRestHealth } from '../../store/slices/healthSlice';
-import { shortRestWarlock, longRestWarlock } from '../../store/slices/warlockSlice';
+import { CharacterData, AbilityKey } from '../../types';
 
 interface SettingsViewProps {
     character: CharacterData;
-    dispatch: AppDispatch;
-    onNavigate: (tab: string) => void;
     actions: {
         itemAttuned: (itemName: string) => void;
         itemUnattuned: (index: number) => void;
     };
+    onLevelChange: (level: number) => void;
+    onAbilityChange: (ability: AbilityKey, score: number) => void;
+    onSpendHitDie: (healed: number, diceSpent: number) => void;
+    onShortRest: () => void;
+    onLongRest: () => void;
 }
 
-export function SettingsView({ character, dispatch, onNavigate, actions }: SettingsViewProps) {
+export function SettingsView({
+    character,
+    actions,
+    onLevelChange,
+    onAbilityChange,
+    onSpendHitDie,
+    onShortRest,
+    onLongRest,
+}: SettingsViewProps) {
     return (
         <div className="animate-fade-in space-y-8 pb-24">
-            <button
-                onClick={() => onNavigate('more')}
-                className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
-            >
-                ← Back to Menu
-            </button>
-
             {/* Character Editor Section */}
             <section className="space-y-4">
                 <div className="flex items-center gap-3 px-2">
@@ -37,8 +37,8 @@ export function SettingsView({ character, dispatch, onNavigate, actions }: Setti
                 
                 <CharacterEditor
                     data={character}
-                    onLevelChange={(l) => dispatch(levelChanged(l))}
-                    onAbilityChange={(a, s) => dispatch(abilityScoreChanged({ ability: a, newScore: s }))}
+                    onLevelChange={onLevelChange}
+                    onAbilityChange={onAbilityChange}
                 />
             </section>
 
@@ -57,12 +57,9 @@ export function SettingsView({ character, dispatch, onNavigate, actions }: Setti
                         conMod={character.abilityMods.con}
                         currentHP={character.hp.current}
                         maxHP={character.hp.max}
-                        onSpendHitDie={(healed, diceSpent) => dispatch(hitDiceSpent({ count: diceSpent, healed }))}
-                        onShortRest={() => dispatch(shortRestWarlock())}
-                        onLongRest={() => {
-                            dispatch(longRestHealth());
-                            dispatch(longRestWarlock());
-                        }}
+                        onSpendHitDie={onSpendHitDie}
+                        onShortRest={onShortRest}
+                        onLongRest={onLongRest}
                         compact={true}
                     />
                 </div>

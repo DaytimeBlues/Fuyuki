@@ -168,8 +168,67 @@ function App() {
       dispatch(showToast("Long Rest Completed"));
       setActiveTab('stats');
     },
-    handleLevelChange: (newLevel: number) => dispatch(levelChanged(newLevel)),
-    handleAbilityChange: (ability: AbilityKey, newScore: number) => dispatch(abilityScoreChanged({ ability, newScore })),
+    handleLevelChange: (newLevel: number) => {
+      dispatch(levelChanged(newLevel));
+      const nextAbilities = { ...stats.abilities };
+      const nextAbilityMods = {
+        str: Math.floor((nextAbilities.str - 10) / 2),
+        dex: Math.floor((nextAbilities.dex - 10) / 2),
+        con: Math.floor((nextAbilities.con - 10) / 2),
+        int: Math.floor((nextAbilities.int - 10) / 2),
+        wis: Math.floor((nextAbilities.wis - 10) / 2),
+        cha: Math.floor((nextAbilities.cha - 10) / 2),
+      };
+      const nextProfBonus = Math.floor((Math.max(1, Math.min(20, newLevel)) - 1) / 4) + 2;
+      const nextMaxHP = (() => {
+        const clampedLevel = Math.max(1, Math.min(20, newLevel));
+        const conMod = nextAbilityMods.con;
+        const firstLevelHP = stats.hitDice.size + conMod;
+        if (clampedLevel === 1) return Math.max(1, firstLevelHP);
+        const avgHitDie = Math.floor(stats.hitDice.size / 2) + 1;
+        const totalHP = firstLevelHP + (clampedLevel - 1) * (avgHitDie + conMod);
+        return Math.max(clampedLevel, totalHP);
+      })();
+      dispatch(updateDerivedStats({
+        abilityMods: nextAbilityMods,
+        profBonus: nextProfBonus,
+        dc: 8 + nextProfBonus + nextAbilityMods.cha,
+      }));
+      dispatch(hydrateHealth({
+        ...character,
+        hp: { ...health.hp, max: nextMaxHP, current: Math.min(health.hp.current, nextMaxHP) },
+        hitDice: { ...health.hitDice, max: Math.max(1, newLevel) },
+      }));
+    },
+    handleAbilityChange: (ability: AbilityKey, newScore: number) => {
+      dispatch(abilityScoreChanged({ ability, newScore }));
+      const nextAbilities = { ...stats.abilities, [ability]: newScore };
+      const nextAbilityMods = {
+        str: Math.floor((nextAbilities.str - 10) / 2),
+        dex: Math.floor((nextAbilities.dex - 10) / 2),
+        con: Math.floor((nextAbilities.con - 10) / 2),
+        int: Math.floor((nextAbilities.int - 10) / 2),
+        wis: Math.floor((nextAbilities.wis - 10) / 2),
+        cha: Math.floor((nextAbilities.cha - 10) / 2),
+      };
+      const nextMaxHP = (() => {
+        const clampedLevel = Math.max(1, Math.min(20, stats.level));
+        const conMod = nextAbilityMods.con;
+        const firstLevelHP = stats.hitDice.size + conMod;
+        if (clampedLevel === 1) return Math.max(1, firstLevelHP);
+        const avgHitDie = Math.floor(stats.hitDice.size / 2) + 1;
+        const totalHP = firstLevelHP + (clampedLevel - 1) * (avgHitDie + conMod);
+        return Math.max(clampedLevel, totalHP);
+      })();
+      dispatch(updateDerivedStats({
+        abilityMods: nextAbilityMods,
+        dc: 8 + stats.profBonus + nextAbilityMods.cha,
+      }));
+      dispatch(hydrateHealth({
+        ...character,
+        hp: { ...health.hp, max: nextMaxHP, current: Math.min(health.hp.current, nextMaxHP) },
+      }));
+    },
     itemAttuned: (itemName: string) => dispatch(itemAttuned(itemName)),
     itemUnattuned: (index: number) => dispatch(itemUnattuned(index)),
   }), [dispatch]);
