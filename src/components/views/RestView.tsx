@@ -11,14 +11,15 @@ interface RestViewProps {
     onSpendHitDie: (healed: number, diceSpent: number) => void;
     onShortRest: () => void;
     onLongRest: () => void;
+    compact?: boolean;
 }
 
-export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onShortRest, onLongRest }: RestViewProps) {
+export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onShortRest, onLongRest, compact = false }: RestViewProps) {
     const [showShortRest, setShowShortRest] = useState(false);
 
     if (showShortRest) {
         return (
-            <div className="pb-20">
+            <div className={compact ? "" : "pb-20"}>
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
@@ -81,7 +82,7 @@ export function RestView({ hitDice, conMod, currentHP, maxHP, onSpendHitDie, onS
     }
 
     return (
-        <div className="pb-20 flex flex-col items-center justify-center h-full min-h-[60vh]">
+        <div className={`${compact ? "py-4" : "pb-20 min-h-[60vh]"} flex flex-col items-center justify-center h-full`}>
             <div className="text-center mb-10">
                 <div className="relative inline-block mb-4">
                     <Tent size={48} className="text-parchment" />

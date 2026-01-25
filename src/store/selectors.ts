@@ -86,7 +86,7 @@ export const selectEquippedItems = createSelector(
 export const selectCurrentAC = createSelector(
     [selectStats, selectWarlock, selectEquipment],
     (stats, warlock, equipment) => {
-        let baseAC = stats.baseAC + stats.abilityMods.dex;
+        let baseAC = stats.baseAC;
 
         // Armor of Shadows invocation
         const armorOfShadows = warlock.invocations.find(i => i.id === 'armor-of-shadows' || i.name === 'Armor of Shadows');

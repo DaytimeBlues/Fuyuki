@@ -17,6 +17,7 @@ const MoreView = lazy(() => import('../views/MoreView').then(m => ({ default: m.
 const InventoryView = lazy(() => import('../views/InventoryView').then(m => ({ default: m.InventoryView })));
 const PatronView = lazy(() => import('../views/PatronView').then(m => ({ default: m.PatronView })));
 const GrimoireView = lazy(() => import('../views/GrimoireView').then(m => ({ default: m.GrimoireView })));
+const SettingsView = lazy(() => import('../views/SettingsView').then(m => ({ default: m.SettingsView })));
 
 function ViewFallback() {
     return (
@@ -134,18 +135,12 @@ export function TabRouter({
                         );
                     case 'settings':
                         return (
-                            <div className="animate-fade-in">
-                                <button
-                                    onClick={() => onNavigate('more')}
-                                    className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
-                                >
-                                    ← Back to Menu
-                                </button>
-                                <CharacterHubView
-                                    character={character}
-                                    actions={{ itemAttuned, itemUnattuned }}
-                                />
-                            </div>
+                            <SettingsView
+                                character={character}
+                                dispatch={dispatch}
+                                onNavigate={onNavigate}
+                                actions={{ itemAttuned, itemUnattuned }}
+                            />
                         );
                     default:
                         return null;
