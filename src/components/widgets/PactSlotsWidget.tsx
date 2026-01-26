@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { pactSlotUsed, pactSlotRestored } from '../../store/slices/warlockSlice';
 import { selectPactSlots } from '../../store/selectors';
 import { Wand2, Info } from 'lucide-react';
 
-export const PactSlotsWidget: React.FC = () => {
+export const PactSlotsWidget = memo(function PactSlotsWidget() {
     const dispatch = useAppDispatch();
     const { current, max, level } = useAppSelector(selectPactSlots);
     const [showInfo, setShowInfo] = React.useState(false);
@@ -23,14 +23,14 @@ export const PactSlotsWidget: React.FC = () => {
     };
 
     return (
-        <div className="card-parchment p-4 flex flex-col gap-3 relative">
+        <div className="card-parchment p-4 flex flex-col gap-3 relative animate-fade-in">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-accent">
                     <Wand2 size={18} />
                     <h3 className="text-sm font-kyoto uppercase tracking-widest">Pact Magic</h3>
                     <button
                         onClick={() => setShowInfo(!showInfo)}
-                        className="text-muted hover:text-white transition-colors ml-1"
+                        className="text-parchment/70 hover:text-white transition-colors ml-1"
                         aria-label="Pact Magic Info"
                     >
                         <Info size={12} />
@@ -41,7 +41,7 @@ export const PactSlotsWidget: React.FC = () => {
                         </div>
                     )}
                 </div>
-                <span className="text-xs font-medium text-muted">Level {level}</span>
+                <span className="text-xs font-medium text-parchment/70">Level {level}</span>
             </div>
 
             {/* Fitts's Law: 48px Min Touch Target */}
@@ -67,12 +67,12 @@ export const PactSlotsWidget: React.FC = () => {
 
             <div className="flex items-center justify-between mt-1 px-1">
                 <span className="text-2xl font-display font-bold text-text-bright" data-testid="pact-slots-display">
-                    {current}<span className="text-lg text-muted mx-1">/</span>{max}
+                    {current}<span className="text-lg text-parchment/70 mx-1">/</span>{max}
                 </span>
-                <span className="text-[10px] text-muted uppercase tracking-tighter">
+                <span className="text-[10px] text-parchment/70 uppercase tracking-tighter">
                     {current === 0 ? 'Short Rest needed' : 'Tap orb to cast'}
                 </span>
             </div>
         </div>
     );
-};
+});

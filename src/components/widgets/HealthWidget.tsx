@@ -56,7 +56,7 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                     ヒットポイント
                 </span>
                 {temp > 0 && (
-                    <span className="ml-auto text-xs bg-white/10 text-white px-2 py-0.5 rounded-full border border-white/20" data-testid="hp-temp-display">
+                    <span className="ml-auto text-xs bg-white/10 text-parchment px-2 py-0.5 rounded-full border border-white/20" data-testid="hp-temp-display">
                         +{temp} THP
                     </span>
                 )}
@@ -96,8 +96,8 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                             className="btn-fantasy flex-1 flex flex-col items-center justify-center py-2 h-14 active:bg-red-900/30 active:border-red-500/50 transition-colors"
                             data-testid="hp-decrease-btn"
                         >
-                            <Minus size={20} className="mb-0.5" />
-                            <span className="text-[8px] font-display text-muted uppercase tracking-widest leading-none">Damage</span>
+                        <Minus size={20} className="mb-0.5" />
+                            <span className="text-[8px] font-display text-parchment/70 uppercase tracking-widest leading-none">Damage</span>
                         </button>
                         <button
                             onClick={() => handleHpChange(current + 1)}
@@ -105,17 +105,17 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                             data-testid="hp-increase-btn"
                         >
                             <Plus size={20} className="mb-0.5" />
-                            <span className="text-[8px] font-display text-muted uppercase tracking-widest leading-none">Heal</span>
+                            <span className="text-[8px] font-display text-parchment/70 uppercase tracking-widest leading-none">Heal</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             {/* Temporary HP Section */}
-            <div className="mt-4 pt-3 border-t border-white/10">
+                 <div className="mt-4 pt-3 border-t border-white/10">
                 <div className="flex items-center gap-2">
-                    <Shield size={14} className="text-white/70" />
-                    <span className="text-xs text-muted">Temp HP</span>
+                    <Shield size={14} className="text-parchment/70" />
+                    <span className="text-xs text-parchment/70">Temp HP</span>
                     <input
                         type="number"
                         min="0"
@@ -124,11 +124,13 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                         placeholder={temp.toString()}
                         className="flex-1 bg-card-elevated border border-white/10 rounded px-2 py-1 text-sm text-parchment w-16 text-center focus:outline-none focus:border-white/30"
                         data-testid="hp-temp-input"
+                        aria-label="Temporary HP"
                     />
                     <button
                         onClick={handleAddTemp}
                         className="btn-fantasy text-xs px-2 py-1"
                         data-testid="hp-temp-set-btn"
+                        aria-label="Set Temporary HP"
                     >
                         Set
                     </button>
@@ -137,12 +139,13 @@ export const HealthWidget = memo(function HealthWidget({ current, max, temp, onC
                             onClick={handleClearTemp}
                             className="text-xs text-red-400 hover:text-red-300 border border-red-500/30 px-2 py-1 rounded bg-red-900/20"
                             data-testid="hp-temp-clear-btn"
+                            aria-label="Clear Temporary HP"
                         >
                             Clear
                         </button>
                     )}
                 </div>
-                <p className="text-[10px] text-muted mt-1 opacity-60">
+                <p className="text-[10px] text-parchment/80 mt-1">
                     THP replaces (doesn't stack) • Absorbed before HP
                 </p>
             </div>

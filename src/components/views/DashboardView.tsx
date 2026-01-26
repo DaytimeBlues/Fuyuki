@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { concentrationSet } from '../../store/slices/healthSlice';
 import { getRequiredLevelForSpell } from '../../utils/spellRules';
 import { spells } from '../../data/spells';
+import { memo } from 'react';
 
 import type { CharacterData } from '../../types';
 
@@ -18,7 +19,7 @@ interface DashboardViewProps {
     updateDeathSaves: (type: 'successes' | 'failures', val: number) => void;
 }
 
-export function DashboardView({ character, updateHealth, updateTempHP, updateDeathSaves }: DashboardViewProps) {
+export const DashboardView = memo(function DashboardView({ character, updateHealth, updateTempHP, updateDeathSaves }: DashboardViewProps) {
     const dispatch = useAppDispatch();
     const concentrationSuggestions = spells
         .filter(s => s.concentration)
@@ -30,8 +31,8 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
             {/* Vitals Section */}
             <section>
                 <div>
-                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-1 pl-1">Vitals</h3>
-                    <div className="text-[10px] font-japanese text-muted opacity-50 mb-3 pl-1 tracking-widest">活力</div>
+                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-parchment/70 mb-1 pl-1">Vitals</h3>
+                    <div className="text-[10px] font-japanese text-parchment/80 opacity-50 mb-3 pl-1 tracking-widest">活力</div>
                 </div>
                 <div className="stagger-1 animate-slide-up">
                     <HealthWidget
@@ -68,8 +69,8 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
             {/* Resources Section */}
             <section>
                 <div className="border-t border-white/5 pt-4">
-                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-1 pl-1">Resources</h3>
-                    <div className="text-[10px] font-japanese text-muted opacity-50 mb-3 pl-1 tracking-widest">資源</div>
+                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-parchment/70 mb-1 pl-1">Resources</h3>
+                    <div className="text-[10px] font-japanese text-parchment/80 opacity-50 mb-3 pl-1 tracking-widest">資源</div>
                 </div>
                 <div className="grid grid-cols-1 gap-4">
                     <div className="stagger-4 animate-slide-up">
@@ -84,8 +85,8 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
             {/* Curiosities Section */}
             <section>
                 <div className="border-t border-white/5 pt-4">
-                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-muted mb-1 pl-1">Curiosities</h3>
-                    <div className="text-[10px] font-japanese text-muted opacity-50 mb-3 pl-1 tracking-widest">好奇心</div>
+                    <h3 className="text-xs font-kyoto uppercase tracking-widest text-parchment/70 mb-1 pl-1">Curiosities</h3>
+                    <div className="text-[10px] font-japanese text-parchment/80 opacity-50 mb-3 pl-1 tracking-widest">好奇心</div>
                 </div>
                 <div className="stagger-6 animate-slide-up grid grid-cols-1 gap-4">
                     <TrinketWidget />
@@ -93,4 +94,4 @@ export function DashboardView({ character, updateHealth, updateTempHP, updateDea
             </section>
         </div>
     );
-}
+});

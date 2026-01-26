@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, memo } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectEquipment } from '../../store/selectors';
 import { equipItem, unequipItem, toggleCosmeticOnly } from '../../store/slices/equipmentSlice';
@@ -20,7 +20,7 @@ const SLOT_LABELS: Record<ArmorSlot, { label: string; icon: LucideIcon; ja: stri
     offHand: { label: 'Off Hand', icon: Shield, ja: 'オフハンド' },
 };
 
-export function ArmorView() {
+export const ArmorView = memo(function ArmorView() {
     const dispatch = useAppDispatch();
     const equipment = useAppSelector(selectEquipment);
     const [activeTab, setActiveTab] = useState<ArmorTab>('doll');
@@ -456,4 +456,4 @@ export function ArmorView() {
             )}
         </div>
     );
-}
+});

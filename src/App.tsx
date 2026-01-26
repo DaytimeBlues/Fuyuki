@@ -6,7 +6,7 @@
  * - AppShell: Layout, Navigation, Global Overlays (Toasts, SessionPicker)
  * - TabRouter: View-specific routing and state mapping
  */
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 
 import { AppShell } from './components/layout/AppShell';
 import { TabRouter } from './components/layout/TabRouter';
@@ -272,4 +272,4 @@ function App() {
   );
 }
 
-export default App;
+export default memo(App);

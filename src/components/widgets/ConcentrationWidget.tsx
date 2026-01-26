@@ -1,4 +1,5 @@
 import { Eye, X } from 'lucide-react';
+import { memo } from 'react';
 
 interface ConcentrationWidgetProps {
     spell: string | null;
@@ -13,7 +14,7 @@ const CONCENTRATION_SPELLS = [
     'Invisibility', 'Hold Person', 'Animate Dead', 'Spirit Guardians'
 ];
 
-export function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS, onClear, onSet }: ConcentrationWidgetProps) {
+export const ConcentrationWidget = memo(function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS, onClear, onSet }: ConcentrationWidgetProps) {
     return (
         <div className="card-parchment p-4 mb-4">
             <div className="flex items-center justify-between mb-3">
@@ -44,14 +45,15 @@ export function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS,
                 </div>
             ) : (
                 <div className="space-y-2">
-                    <p className="text-xs text-muted">Not concentrating on any spell</p>
+                    <p className="text-xs text-parchment/80">Not concentrating on any spell</p>
                     <div className="flex flex-wrap gap-1">
                         {suggestions.slice(0, 4).map(s => (
                             <button
                                 key={s}
                                 onClick={() => onSet(s)}
-                                className="text-[10px] px-2 py-1 bg-card-elevated border border-white/10 rounded text-muted hover:text-white hover:border-white/30 transition-colors"
+                                className="text-[10px] px-2 py-1 bg-card-elevated border border-white/10 rounded text-parchment/70 hover:text-white hover:border-white/30 transition-colors"
                                 data-testid={`concentration-set-btn-${s.toLowerCase().replace(/\s+/g, '-')}`}
+                                aria-label={`Set concentration to ${s}`}
                             >
                                 {s}
                             </button>
@@ -61,10 +63,10 @@ export function ConcentrationWidget({ spell, suggestions = CONCENTRATION_SPELLS,
             )}
 
             {spell && (
-                <p className="text-[10px] text-muted mt-2 opacity-60">
+                <p className="text-[10px] text-parchment/80 mt-2">
                     Taking damage requires CON save (DC 10 or ½ damage)
                 </p>
             )}
         </div>
     );
-}
+});

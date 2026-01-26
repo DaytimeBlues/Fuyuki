@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, memo } from 'react';
 import type { CharacterData, AbilityKey } from '../../types';
 import type { AppDispatch } from '../../store';
 import {
@@ -18,14 +18,13 @@ const MoreView = lazy(() => import('../views/MoreView').then(m => ({ default: m.
 const GearView = lazy(() => import('../views/GearView').then(m => ({ default: m.GearView })));
 const SettingsView = lazy(() => import('../views/SettingsView').then(m => ({ default: m.SettingsView })));
 
-
-function ViewFallback() {
+const ViewFallback = memo(function ViewFallback() {
     return (
         <div className="flex items-center justify-center min-h-screen">
-            <div className="animate-pulse text-muted">Loading...</div>
+            <div className="animate-pulse text-parchment/70">Loading...</div>
         </div>
     );
-}
+});
 
 interface TabRouterProps {
     activeTab: string;
@@ -45,7 +44,7 @@ interface TabRouterProps {
     itemUnattuned: (index: number) => void;
 }
 
-export function TabRouter({
+export const TabRouter = memo(function TabRouter({
     activeTab,
     onNavigate,
     character,
@@ -145,4 +144,4 @@ export function TabRouter({
             })()}
         </Suspense>
     );
-}
+});

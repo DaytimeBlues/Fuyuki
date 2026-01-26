@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, memo } from 'react';
 import { Shield, Swords } from 'lucide-react';
 
 const ArmorView = lazy(() => import('./ArmorView').then(m => ({ default: m.ArmorView })));
@@ -6,7 +6,7 @@ const WeaponsView = lazy(() => import('./WeaponsView').then(m => ({ default: m.W
 
 type GearTab = 'armor' | 'weapons';
 
-export function GearView() {
+export const GearView = memo(function GearView() {
     const [activeTab, setActiveTab] = useState<GearTab>('armor');
 
     return (
@@ -44,7 +44,7 @@ export function GearView() {
                 <Suspense fallback={
                     <div className="flex flex-col items-center justify-center pt-20 animate-pulse">
                         <div className="w-12 h-12 border-2 border-gold-dim/20 border-t-gold-bright rounded-full animate-spin mb-4" />
-                        <p className="text-muted font-display uppercase tracking-widest text-[10px]">Loading Armory...</p>
+                        <p className="text-parchment/70 font-display uppercase tracking-widest text-[10px]">Loading Armory...</p>
                     </div>
                 }>
                     {activeTab === 'armor' ? <ArmorView /> : <WeaponsView />}
@@ -52,4 +52,4 @@ export function GearView() {
             </div>
         </div>
     );
-}
+});

@@ -27,23 +27,26 @@ export class ErrorBoundary extends Component<Props, State> {
     public render() {
         if (this.state.hasError) {
             return (
-                <div className="h-full flex flex-col items-center justify-center p-6 text-center">
-                    <AlertTriangle size={48} className="text-red-500 mb-4" />
-                    <h2 className="font-dot text-2xl text-white mb-2">SOMETHING WENT WRONG</h2>
-                    <p className="text-gray-400 mb-4 max-w-xs">
-                        The application encountered an error. Try refreshing the page.
-                    </p>
-                    <div className="bg-red-900/20 border border-red-900/50 p-4 rounded text-left w-full max-w-sm overflow-auto max-h-40">
-                        <code className="text-xs text-red-200 font-mono">
-                            {this.state.error?.message}
-                        </code>
+                <div className="h-full flex flex-col items-center justify-center p-6 text-center bg-bg-void min-h-screen">
+                    <div className="glass-card p-8 rounded-2xl max-w-md w-full animate-scale-in">
+                        <AlertTriangle size={64} className="text-vermillion mb-6 mx-auto animate-pulse-glow" />
+                        <h2 className="font-display text-2xl text-parchment mb-3 tracking-[0.1em] uppercase">System Error</h2>
+                        <p className="text-parchment/70 mb-6 max-w-xs mx-auto leading-relaxed">
+                            The application encountered an unexpected error. Please reload the page.
+                        </p>
+                        <div className="bg-vermillion/10 border border-vermillion/30 p-4 rounded-lg text-left w-full max-w-sm overflow-auto max-h-40 mb-6">
+                            <code className="text-xs text-vermillion-light font-mono break-all">
+                                {this.state.error?.message}
+                            </code>
+                        </div>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="btn-primary-action w-full py-3"
+                            aria-label="Reload application"
+                        >
+                            Reload System
+                        </button>
                     </div>
-                    <button
-                        onClick={() => window.location.reload()}
-                        className="mt-6 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded font-mono text-sm transition-colors"
-                    >
-                        RELOAD SYSTEM
-                    </button>
                 </div>
             );
         }
