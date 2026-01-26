@@ -12,26 +12,29 @@ export function ModeToggle() {
         <button
             onClick={() => dispatch(toggleViewMode())}
             className={`
-                relative w-16 h-8 rounded-full border border-white/10 shadow-inner overflow-hidden transition-colors duration-500
-                ${isCombat ? 'bg-vermillion-ink/50 border-vermillion/30' : 'bg-bg-ink border-gold-dim/20'}
+                relative w-20 h-10 rounded-full border shadow-2xl overflow-hidden transition-all duration-500
+                ${isCombat
+                    ? 'bg-vermillion-ink border-vermillion/40 ring-1 ring-vermillion/20'
+                    : 'bg-stone-900 border-gold-dim/30 ring-1 ring-gold-dim/10'}
             `}
             aria-label={`Switch to ${isCombat ? 'Roleplay' : 'Combat'} Mode`}
         >
             {/* Sliding Thumb */}
             <div
                 className={`
-                    absolute top-1 bottom-1 w-6 rounded-full shadow-lg flex items-center justify-center transition-all duration-500 cubic-bezier(0.68, -0.55, 0.265, 1.55)
-                    ${isCombat ? 'left-[calc(100%-1.75rem)] bg-vermillion text-white' : 'left-1 bg-gold-mid text-bg-dark'}
+                    absolute top-1 bottom-1 w-8 rounded-full shadow-lg flex items-center justify-center transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)
+                    ${isCombat ? 'left-[calc(100%-2.25rem)] bg-vermillion text-white' : 'left-1 bg-gold-mid text-bg-dark'}
                 `}
             >
-                {isCombat ? <Swords size={12} /> : <Feather size={12} />}
+                {isCombat ? <Swords size={14} /> : <Feather size={14} />}
             </div>
 
             {/* Labels (Background) */}
-            <div className="absolute inset-0 flex items-center justify-between px-2 text-[8px] font-display uppercase tracking-widest text-muted/50 pointer-events-none">
-                <span className={isCombat ? 'opacity-50' : 'opacity-0'}>RP</span>
-                <span className={!isCombat ? 'opacity-50' : 'opacity-0'}>CMBT</span>
+            <div className="absolute inset-0 flex items-center justify-between px-3 text-[9px] font-display font-bold uppercase tracking-[0.2em] pointer-events-none">
+                <span className={`transition-opacity duration-300 ${isCombat ? 'text-white/40' : 'text-gold-mid shadow-gold-mid/20'}`}>RP</span>
+                <span className={`transition-opacity duration-300 ${!isCombat ? 'text-white/40' : 'text-white shadow-vermillion/20'}`}>CMBT</span>
             </div>
         </button>
     );
 }
+

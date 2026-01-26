@@ -1,0 +1,143 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - generic: ウォーロック
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e9]
+          - generic [ref=e14]:
+            - generic [ref=e15]:
+              - heading "Fuyuki" [level=1] [ref=e16]
+              - generic [ref=e17]: 冬木
+            - paragraph [ref=e18]: Warlock Tracker
+        - generic [ref=e19]:
+          - button "Switch to Combat Mode" [ref=e20]:
+            - img [ref=e22]
+            - generic:
+              - generic: RP
+              - generic: CMBT
+          - img "Fuyuki" [ref=e26]
+    - main [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - heading "Vitals" [level=3] [ref=e31]
+            - generic [ref=e32]: 活力
+          - generic [ref=e34]:
+            - generic [ref=e35]:
+              - img [ref=e36]
+              - heading "Hit Points" [level=3] [ref=e41]
+              - generic [ref=e42]: ヒットポイント
+            - generic [ref=e43]:
+              - generic [ref=e45]:
+                - text: "38"
+                - generic [ref=e46]: /38
+              - generic [ref=e50]:
+                - button "Damage" [ref=e51]:
+                  - img [ref=e52]
+                  - generic [ref=e53]: Damage
+                - button "Heal" [ref=e54]:
+                  - img [ref=e55]
+                  - generic [ref=e56]: Heal
+            - generic [ref=e57]:
+              - generic [ref=e58]:
+                - img [ref=e59]
+                - generic [ref=e61]: Temp HP
+                - spinbutton [ref=e62]
+                - button "Set" [ref=e63]
+              - paragraph [ref=e64]: THP replaces (doesn't stack) • Absorbed before HP
+          - generic [ref=e67]:
+            - generic [ref=e69]:
+              - img [ref=e70]
+              - heading "Concentration" [level=3] [ref=e73]
+            - generic [ref=e74]:
+              - paragraph [ref=e75]: Not concentrating on any spell
+              - generic [ref=e76]:
+                - button "Detect Magic" [ref=e77]
+                - button "Expeditious Retreat" [ref=e78]
+                - button "Fog Cloud" [ref=e79]
+                - button "Protection from Evil and Good" [ref=e80]
+        - generic [ref=e81]:
+          - generic [ref=e82]:
+            - heading "Resources" [level=3] [ref=e83]
+            - generic [ref=e84]: 資源
+          - generic [ref=e87]:
+            - generic [ref=e88]:
+              - generic [ref=e89]:
+                - img [ref=e90]
+                - heading "Pact Magic" [level=3] [ref=e93]
+                - button "Pact Magic Info" [ref=e94]:
+                  - img [ref=e95]
+              - generic [ref=e97]: Level 3
+            - generic [ref=e98]:
+              - button "Use Pact Slot" [ref=e99]
+              - button "Use Pact Slot" [ref=e101]
+            - generic [ref=e103]:
+              - generic [ref=e104]: 2/2
+              - generic [ref=e105]: Tap orb to cast
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - heading "Curiosities" [level=3] [ref=e108]
+            - generic [ref=e109]: 好奇心
+          - generic [ref=e112]:
+            - generic [ref=e113]:
+              - generic [ref=e114]:
+                - img [ref=e115]
+                - heading "Trinket Roller" [level=3] [ref=e119]
+              - button [ref=e120]:
+                - img [ref=e121]
+            - generic [ref=e127]: Ready to roll...
+            - generic: 小物
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - generic: Armor Class
+              - generic: "13"
+          - generic:
+            - img
+            - generic:
+              - generic: Spell DC
+              - generic: "14"
+        - button "Expand combat quick stats" [ref=e128]:
+          - img [ref=e129]
+    - navigation "Main navigation":
+      - generic [ref=e139]:
+        - button "Stats" [ref=e140]:
+          - img [ref=e141]
+          - generic [ref=e143]: Stats
+          - generic: ステータス
+        - button "Spells" [ref=e145]:
+          - img [ref=e146]
+          - generic [ref=e149]: Spells
+          - generic: 呪文
+        - button "Combat" [ref=e150]:
+          - img [ref=e151]
+          - generic [ref=e160]: Combat
+          - generic: 戦闘
+        - button "Gear" [ref=e161]:
+          - img [ref=e162]
+          - generic [ref=e164]: Gear
+          - generic: 装備
+        - button "Menu" [ref=e165]:
+          - img [ref=e166]
+          - generic [ref=e167]: Menu
+          - generic: 目録
+    - generic [ref=e168]:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - heading "No Familiar" [level=3]
+              - paragraph: 使い魔
+          - button "Close familiar details":
+            - img
+      - button "Summon familiar" [ref=e170]:
+        - img [ref=e171]
+```

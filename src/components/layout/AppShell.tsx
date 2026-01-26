@@ -1,4 +1,4 @@
-import { Shield, Wand2, Swords, User, Menu, Feather } from 'lucide-react';
+import { Shield, Wand2, Swords, Menu, Feather } from 'lucide-react';
 // Background removed - using static image or CSS for battery optimization
 import { ConcentrationFloatingBubble } from '../ui/ConcentrationFloatingBubble';
 import { FamiliarBubble } from '../widgets/FamiliarBubble';
@@ -17,7 +17,7 @@ const navItems = [
     { id: 'stats', icon: Shield, label: 'Stats', ja: 'ステータス' },
     { id: 'spells', icon: Wand2, label: 'Spells', ja: '呪文' },
     { id: 'combat', icon: Swords, label: 'Combat', ja: '戦闘' },
-    { id: 'character', icon: User, label: 'Profile', ja: '人物' },
+    { id: 'gear', icon: Shield, label: 'Gear', ja: '装備' },
     { id: 'more', icon: Menu, label: 'Menu', ja: '目録' },
 ];
 
@@ -27,6 +27,7 @@ export function AppShell({
     onTabChange,
     toast
 }: AppShellProps) {
+
     const isTablet = useMediaQuery('(min-width: 768px)');
 
     return (

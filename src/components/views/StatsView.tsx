@@ -1,4 +1,4 @@
-import { Brain, Star, Zap, Heart, Eye, Sparkles, Dumbbell, ChevronRight } from 'lucide-react';
+import { Brain, Star, Zap, Heart, Eye, Sparkles, Dumbbell, ChevronRight, X } from 'lucide-react';
 import type { AbilityKey, Skill } from '../../types';
 
 

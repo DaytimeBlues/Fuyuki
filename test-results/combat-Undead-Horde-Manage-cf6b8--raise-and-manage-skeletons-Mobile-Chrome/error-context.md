@@ -1,0 +1,207 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - generic: ウォーロック
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e9]
+          - generic [ref=e14]:
+            - generic [ref=e15]:
+              - heading "Fuyuki" [level=1] [ref=e16]
+              - generic [ref=e17]: 冬木
+            - paragraph [ref=e18]: Warlock Tracker
+        - generic [ref=e19]:
+          - button "Switch to Combat Mode" [ref=e20]:
+            - img [ref=e22]
+            - generic:
+              - generic: RP
+              - generic: CMBT
+          - img "Fuyuki" [ref=e26]
+    - main [ref=e27]:
+      - generic [ref=e29]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - generic [ref=e35]: 🎯
+              - heading "Tactical Advisor" [level=3] [ref=e36]
+            - button "×" [ref=e37]
+          - generic [ref=e40]:
+            - img [ref=e42]
+            - generic [ref=e44]:
+              - generic [ref=e45]:
+                - heading "High-Level Slots Available" [level=4] [ref=e46]
+                - generic [ref=e47]: low
+              - paragraph [ref=e48]: Level 4 slots ready. Consider powerful spells.
+            - button "×" [ref=e49]
+          - generic: 戦術
+        - generic [ref=e52]:
+          - button "+6 Spell Atk" [ref=e54] [cursor=pointer]:
+            - img [ref=e56]
+            - generic [ref=e58]: "+6"
+            - generic [ref=e59]: Spell Atk
+          - button "+14 Save DC" [ref=e62] [cursor=pointer]:
+            - img [ref=e64]
+            - generic [ref=e66]: "+14"
+            - generic [ref=e67]: Save DC
+          - button "+3 Prof" [ref=e70]:
+            - img [ref=e72]
+            - generic [ref=e75]: "+3"
+            - generic [ref=e76]: Prof
+          - button "+0 INT" [ref=e79]:
+            - img [ref=e81]
+            - generic [ref=e89]: "+0"
+            - generic [ref=e90]: INT
+        - generic [ref=e91]:
+          - generic [ref=e93]:
+            - img [ref=e94]
+            - generic [ref=e103]:
+              - heading "Combat Status" [level=3] [ref=e104]
+              - generic [ref=e105]: 戦闘状況
+          - generic [ref=e106]:
+            - generic [ref=e107]:
+              - generic [ref=e108]: Round
+              - generic [ref=e109]:
+                - img [ref=e110]
+                - generic [ref=e113]: "1"
+            - generic [ref=e114]:
+              - generic [ref=e115]: Turn Count
+              - generic [ref=e116]: "0"
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - generic [ref=e119]:
+              - generic [ref=e120]: HP
+              - generic [ref=e121]: 38/38
+            - generic [ref=e122]:
+              - generic [ref=e123]: Temp
+              - generic [ref=e124]: "0"
+            - generic [ref=e125]:
+              - generic [ref=e126]: AC
+              - generic [ref=e127]: "13"
+          - generic [ref=e128]:
+            - generic [ref=e129]:
+              - spinbutton [ref=e130]
+              - button "Take" [ref=e131]
+            - generic [ref=e132]:
+              - spinbutton [ref=e133]
+              - button "Heal" [ref=e134]
+            - generic [ref=e135]:
+              - spinbutton [ref=e136]
+              - button "Set" [ref=e137]
+        - generic [ref=e138]:
+          - generic [ref=e139]:
+            - img [ref=e140]
+            - heading "Active Buffs / Conditions" [level=3] [ref=e143]
+          - generic [ref=e144]:
+            - textbox "Custom Condition" [ref=e145]
+            - button "Add" [ref=e146]
+          - generic [ref=e147]:
+            - button "Prone" [ref=e148]
+            - button "Poisoned" [ref=e149]
+            - button "Frightened" [ref=e150]
+            - button "Grappled" [ref=e151]
+            - button "Restrained" [ref=e152]
+            - button "Invisible" [ref=e153]
+            - button "Stunned" [ref=e154]
+            - button "Paralyzed" [ref=e155]
+        - generic [ref=e156]:
+          - generic [ref=e157]:
+            - generic [ref=e159]:
+              - img [ref=e160]
+              - heading "Pact Magic" [level=3] [ref=e163]
+            - generic [ref=e164]:
+              - generic [ref=e166]:
+                - generic [ref=e167]: Level 1
+                - generic [ref=e168]: 呪文枠
+              - generic [ref=e170]:
+                - generic [ref=e171]: Level 2
+                - generic [ref=e172]: 呪文枠
+              - generic [ref=e174]:
+                - generic [ref=e175]: Level 3
+                - generic [ref=e176]: 呪文枠
+              - generic [ref=e178]:
+                - generic [ref=e179]: Level 4
+                - generic [ref=e180]: 呪文枠
+              - generic [ref=e182]:
+                - generic [ref=e183]: Level 5
+                - generic [ref=e184]: 呪文枠
+              - generic [ref=e186]:
+                - generic [ref=e187]: Level 6
+                - generic [ref=e188]: 呪文枠
+              - generic [ref=e190]:
+                - generic [ref=e191]: Level 7
+                - generic [ref=e192]: 呪文枠
+              - generic [ref=e194]:
+                - generic [ref=e195]: Level 8
+                - generic [ref=e196]: 呪文枠
+              - generic [ref=e198]:
+                - generic [ref=e199]: Level 9
+                - generic [ref=e200]: 呪文枠
+          - generic [ref=e201]:
+            - generic [ref=e202]:
+              - img [ref=e203]
+              - heading "Action Economy" [level=3] [ref=e206]
+            - generic [ref=e207]:
+              - button "Reaction Ready" [ref=e208]
+              - button "Bonus Ready" [ref=e209]
+        - generic [ref=e210]:
+          - generic [ref=e211]:
+            - img [ref=e212]
+            - generic [ref=e215]:
+              - heading "Combat Log" [level=3] [ref=e216]
+              - generic [ref=e217]: 戦闘記録
+          - generic [ref=e218]:
+            - textbox "Quick note" [ref=e219]
+            - button "Log" [ref=e220]
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - generic: Armor Class
+              - generic: "13"
+          - generic:
+            - img
+            - generic:
+              - generic: Spell DC
+              - generic: "14"
+        - button "Expand combat quick stats" [ref=e221]:
+          - img [ref=e222]
+    - navigation "Main navigation":
+      - generic [ref=e232]:
+        - button "Stats" [ref=e233]:
+          - img [ref=e234]
+          - generic [ref=e236]: Stats
+          - generic: ステータス
+        - button "Spells" [ref=e237]:
+          - img [ref=e238]
+          - generic [ref=e241]: Spells
+          - generic: 呪文
+        - button "Combat" [active] [ref=e242]:
+          - img [ref=e243]
+          - generic [ref=e252]: Combat
+          - generic: 戦闘
+        - button "Gear" [ref=e254]:
+          - img [ref=e255]
+          - generic [ref=e257]: Gear
+          - generic: 装備
+        - button "Menu" [ref=e258]:
+          - img [ref=e259]
+          - generic [ref=e260]: Menu
+          - generic: 目録
+    - generic [ref=e261]:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - heading "No Familiar" [level=3]
+              - paragraph: 使い魔
+          - button "Close familiar details":
+            - img
+      - button "Summon familiar" [ref=e263]:
+        - img [ref=e264]
+```

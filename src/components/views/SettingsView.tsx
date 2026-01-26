@@ -8,6 +8,7 @@ interface SettingsViewProps {
     actions: {
         itemAttuned: (itemName: string) => void;
         itemUnattuned: (index: number) => void;
+        conditionRemoved: (condition: string) => void;
     };
     onLevelChange: (level: number) => void;
     onAbilityChange: (ability: AbilityKey, score: number) => void;

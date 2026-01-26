@@ -107,7 +107,7 @@ export function SRDBrowserModal({ isOpen, onClose }: SRDBrowserModalProps) {
                         </div>
                     ) : (
                         results.map((result, idx) => (
-                            <Card key={`${result.type}-${idx}`} variant="interactive" className="group">
+                            <Card key={`${result.type}-${idx}`} variant="elevated" interactive className="group">
                                 <div className="flex justify-between items-start gap-4">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2 mb-1">

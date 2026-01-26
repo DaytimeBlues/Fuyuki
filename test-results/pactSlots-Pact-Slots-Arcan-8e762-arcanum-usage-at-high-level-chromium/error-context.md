@@ -1,0 +1,79 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - generic: ウォーロック
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - complementary [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]:
+            - img [ref=e9]
+            - generic [ref=e12]:
+              - heading "Fuyuki" [level=1] [ref=e13]
+              - paragraph [ref=e14]: Warlock Tracker
+          - button "Switch to Combat Mode" [ref=e16]:
+            - img [ref=e18]
+            - generic:
+              - generic: RP
+              - generic: CMBT
+          - navigation "Main navigation" [ref=e21]:
+            - button "Stats" [active] [ref=e22]:
+              - img [ref=e23]
+              - generic [ref=e26]: Stats
+            - button "Spells" [ref=e28]:
+              - img [ref=e29]
+              - generic [ref=e33]: Spells
+            - button "Combat" [ref=e34]:
+              - img [ref=e35]
+              - generic [ref=e45]: Combat
+            - button "Gear" [ref=e46]:
+              - img [ref=e47]
+              - generic [ref=e50]: Gear
+            - button "Menu" [ref=e51]:
+              - img [ref=e52]
+              - generic [ref=e54]: Menu
+        - generic [ref=e55]:
+          - img "Fuyuki" [ref=e57]
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Level 5
+            - paragraph [ref=e60]: 狐の妖術師
+      - main [ref=e61]:
+        - generic [ref=e62]:
+          - generic [ref=e64]: Loading...
+          - generic:
+            - generic:
+              - generic:
+                - img
+                - generic:
+                  - generic: Armor Class
+                  - generic: "13"
+              - generic:
+                - img
+                - generic:
+                  - generic: Spell DC
+                  - generic: "14"
+              - generic:
+                - img
+                - generic:
+                  - generic: Pact Rapier
+                  - generic:
+                    - generic: 1d8
+                    - generic: Piercing
+                    - generic: "+8"
+            - button "Expand combat quick stats" [ref=e65]:
+              - img [ref=e66]
+    - generic [ref=e75]:
+      - generic:
+        - generic:
+          - generic:
+            - img
+            - generic:
+              - heading "No Familiar" [level=3]
+              - paragraph: 使い魔
+          - button "Close familiar details":
+            - img
+      - button "Summon familiar" [ref=e77]:
+        - img [ref=e78]
+```

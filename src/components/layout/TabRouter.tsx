@@ -15,10 +15,9 @@ const SpellsView = lazy(() => import('../views/SpellsView'));
 const CombatView = lazy(() => import('../views/CombatView').then(m => ({ default: m.CombatView })));
 const CharacterHubView = lazy(() => import('../views/CharacterHubView').then(m => ({ default: m.CharacterHubView })));
 const MoreView = lazy(() => import('../views/MoreView').then(m => ({ default: m.MoreView })));
-const InventoryView = lazy(() => import('../views/InventoryView').then(m => ({ default: m.InventoryView })));
-const PatronView = lazy(() => import('../views/PatronView').then(m => ({ default: m.PatronView })));
-const GrimoireView = lazy(() => import('../views/GrimoireView').then(m => ({ default: m.GrimoireView })));
+const GearView = lazy(() => import('../views/GearView').then(m => ({ default: m.GearView })));
 const SettingsView = lazy(() => import('../views/SettingsView').then(m => ({ default: m.SettingsView })));
+
 
 function ViewFallback() {
     return (
@@ -105,10 +104,10 @@ export function TabRouter({
                                 )}
                             </div>
                         );
-                    case 'grimoire':
+                    case 'gear':
                         return (
                             <div className="animate-fade-in">
-                                <GrimoireView />
+                                <GearView />
                             </div>
                         );
                     case 'character':
@@ -124,35 +123,15 @@ export function TabRouter({
                         );
                     case 'more':
                         return <MoreView onSelectView={onNavigate} />;
-                    case 'patron':
-                        return (
-                            <div className="animate-fade-in">
-                                <button
-                                    onClick={() => onNavigate('more')}
-                                    className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
-                                >
-                                    ← Back to Menu
-                                </button>
-                                <PatronView />
-                            </div>
-                        );
-                    case 'inventory':
-                        return (
-                            <div className="animate-fade-in">
-                                <button
-                                    onClick={() => onNavigate('more')}
-                                    className="mb-4 flex items-center gap-1 text-sm text-accent hover:text-white transition-colors"
-                                >
-                                    ← Back to Menu
-                                </button>
-                                <InventoryView />
-                            </div>
-                        );
                     case 'settings':
                         return (
                             <SettingsView
                                 character={character}
-                                actions={{ itemAttuned, itemUnattuned }}
+                                actions={{
+                                    itemAttuned,
+                                    itemUnattuned,
+                                    conditionRemoved: (condition: string) => dispatch(conditionRemoved(condition))
+                                }}
                                 onLevelChange={onLevelChange}
                                 onAbilityChange={onAbilityChange}
                                 onSpendHitDie={onSpendHitDie}

@@ -13,6 +13,7 @@ import uiReducer from '../store/slices/uiSlice';
 import widgetReducer from '../store/slices/widgetSlice';
 import equipmentReducer from '../store/slices/equipmentSlice';
 import familiarReducer from '../store/slices/familiarSlice';
+import tacticalReducer from '../store/slices/tacticalSlice';
 import concentrationMiddleware from '../store/middleware/concentrationMiddleware';
 import { open5eApi } from '../store/api/open5eApi';
 
@@ -37,9 +38,10 @@ const createStore = () =>
       combat: combatReducer,
       equipment: equipmentReducer,
       familiar: familiarReducer,
+      tactical: tacticalReducer,
       [open5eApi.reducerPath]: open5eApi.reducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(concentrationMiddleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(concentrationMiddleware, open5eApi.middleware),
   });
 
 describe('ConcentrationWidget', () => {

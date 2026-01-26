@@ -39,42 +39,42 @@ export function CombatBubble() {
     return (
         <div
             {...bind}
-            className={`flex flex-col items-end gap-3 pointer-events-none fixed bottom-24 right-4 z-50 ${isExpanded ? 'pointer-events-auto' : 'pointer-events-none'}`}
+            className={`flex flex-col items-end gap-4 fixed bottom-24 right-4 z-50 ${isExpanded ? 'pointer-events-auto' : 'pointer-events-none'}`}
         >
             {/* Sprouting Stats */}
-            <div className={`flex flex-col gap-2 transition-all duration-500 origin-bottom pointer-events-auto ${isExpanded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-10 pointer-events-none'}`}>
+            <div className={`flex flex-col gap-3 transition-all duration-500 origin-bottom pointer-events-auto ${isExpanded ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-50 translate-y-12 pointer-events-none'} transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)`}>
                 {/* AC Sprout */}
-                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-md border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
-                    <Shield size={14} className="text-blue-400" />
+                <div className="flex items-center gap-4 bg-bg-ink/95 backdrop-blur-md border border-white/15 rounded-full pl-4 pr-6 py-3 shadow-2xl min-h-[48px]">
+                    <Shield size={16} className="text-gold-mid" />
                     <div className="flex flex-col">
-                        <span className="text-[8px] uppercase tracking-tighter text-muted">Armor Class</span>
-                        <span className="font-display text-base text-white leading-none">{currentAC}</span>
+                        <span className="text-[9px] font-display uppercase tracking-[0.2em] text-muted">Armor Class</span>
+                        <span className="font-display text-lg text-white leading-none">{currentAC}</span>
                     </div>
                 </div>
 
                 {/* DC Sprout */}
-                <div className="flex items-center gap-3 bg-bg-dark/90 backdrop-blur-md border border-white/20 rounded-full pl-3 pr-4 py-2 shadow-2xl">
-                    <Target size={14} className="text-purple-400" />
+                <div className="flex items-center gap-4 bg-bg-ink/95 backdrop-blur-md border border-white/15 rounded-full pl-4 pr-6 py-3 shadow-2xl min-h-[48px]">
+                    <Target size={16} className="text-purple-400" />
                     <div className="flex flex-col">
-                        <span className="text-[8px] uppercase tracking-tighter text-muted">Spell DC</span>
-                        <span className="font-display text-base text-white leading-none">{spellSaveDC}</span>
+                        <span className="text-[9px] font-display uppercase tracking-[0.2em] text-muted">Spell DC</span>
+                        <span className="font-display text-lg text-white leading-none">{spellSaveDC}</span>
                     </div>
                 </div>
 
                 {/* Weapons Sprout */}
                 {equippedWeapons.map((weapon, idx) => (
-                    <div key={idx} className="flex items-center gap-3 bg-bg-dark/95 backdrop-blur-md border border-accent/40 rounded-full pl-3 pr-4 py-2 shadow-2xl ring-1 ring-accent/20">
-                        <SwordsIcon size={14} className="text-accent" />
+                    <div key={idx} className="flex items-center gap-4 bg-bg-void border border-accent/40 rounded-full pl-4 pr-6 py-3 shadow-2xl ring-1 ring-accent/20 min-h-[48px] animate-fade-in">
+                        <SwordsIcon size={16} className="text-accent" />
                         <div className="flex flex-col">
-                            <span className="text-[8px] uppercase tracking-tighter text-accent/80">{weapon.name}</span>
+                            <span className="text-[9px] font-display uppercase tracking-[0.2em] text-accent/80">{weapon.name}</span>
                             <div className="flex items-baseline gap-2">
-                                <span className="font-display text-sm text-white leading-none">
+                                <span className="font-display text-base text-white leading-none">
                                     {weapon.weaponStats?.damage}
                                 </span>
-                                <span className="text-[9px] text-muted italic">
+                                <span className="text-[10px] text-muted italic font-japanese">
                                     {weapon.weaponStats?.damageType}
                                 </span>
-                                <span className="text-[10px] text-accent font-bold">
+                                <span className="text-xs text-accent font-bold">
                                     {spellAttackBonus >= 0 ? '+' : ''}{spellAttackBonus + (weapon.weaponStats?.bonus || 0)}
                                 </span>
                             </div>
@@ -99,18 +99,18 @@ export function CombatBubble() {
             {/* Core Bubble */}
             <button
                 onClick={handleClick}
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 relative pointer-events-auto
-                    bg-black/40 backdrop-blur-md border border-white/10 shadow-xl
+                className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 relative pointer-events-auto cubic-bezier(0.16, 1, 0.3, 1)
+                    bg-bg-ink border border-white/15 shadow-2xl
                     ${isExpanded
-                        ? 'bg-accent text-bg-dark scale-90 rotate-45 shadow-accent-lg'
-                        : 'text-white hover:border-white/40 hover:scale-105 active:scale-95'
+                        ? 'bg-gold-bright text-bg-dark scale-90 rotate-[135deg] shadow-accent-lg border-gold-bright'
+                        : 'text-white hover:border-gold-mid/40 hover:scale-110 active:scale-95'
                     }
-                    ${isDragging ? 'scale-110 shadow-2xl shadow-accent/30 ring-2 ring-accent/50' : ''}
+                    ${isDragging ? 'scale-110 shadow-gold-mid/30 ring-2 ring-gold-mid/50' : ''}
                 `}
                 aria-label={isExpanded ? 'Collapse combat quick stats' : 'Expand combat quick stats'}
                 aria-expanded={isExpanded}
             >
-                <Swords size={24} className={isExpanded ? '-rotate-45' : ''} />
+                <Swords size={24} className={isExpanded ? '-rotate-[135deg]' : ''} />
             </button>
         </div>
     );

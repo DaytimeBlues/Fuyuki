@@ -160,6 +160,7 @@ describe('RAW Compliance Tests', () => {
         hitDice: { current: 0, max: 5, size: 8 },
         concentration: 'Hex',
         transformed: null,
+        conditions: [],
       };
 
       const store = configureStore({
